@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "code": "UAH",
+    "symbol": "₴",
+    "name": "Гривня"
+  },
+  {
+    "id": "2",
+    "code": "RON",
+    "symbol": "RON",
+    "name": "Рон"
+  },
+  {
+    "id": "3",
+    "code": "EUR",
+    "symbol": "€",
+    "name": "Євро"
+  },
+  {
+    "id": "4",
+    "code": "USD",
+    "symbol": "$",
+    "name": "Долар"
+  },
+  {
+    "id": "5",
+    "code": "PLN",
+    "symbol": "zł",
+    "name": "Злотий"
+  }
+]
