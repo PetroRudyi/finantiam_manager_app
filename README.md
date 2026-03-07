@@ -1,54 +1,54 @@
 # Expense Tracker
 
-Мінімалістичний застосунок для обліку витрат і надходжень.
-Побудований на [Flet](https://flet.dev/) >= 0.80.0 (Python).
+A minimalist app for tracking expenses and income.
+Built with [Flet](https://flet.dev/) >= 0.80.0 (Python).
 
 ---
 
-## Швидкий старт
+## Quick Start
 
 ```bash
-# 1. Встанови залежності
+# 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Запусти
+# 2. Run
 python main.py
 ```
 
 ---
 
-## Структура проекту
+## Project Structure
 
 ```
 expense_tracker/
-├── main.py                        # Точка входу
+├── main.py                        # Entry point
 ├── requirements.txt
 ├── README.md
 ├── backend/
 │   ├── __init__.py
 │   ├── models.py                  # Pydantic: Receipt, InvoiceItem, AppSettings
-│   ├── storage.py                 # JSON/CSV зберігання
-│   └── ai_service.py             # Gemini AI розпізнавання чеків
+│   ├── storage.py                 # JSON/CSV storage
+│   └── ai_service.py             # Gemini AI receipt recognition
 ├── frontend/
 │   ├── __init__.py
-│   ├── theme.py                   # Кольори, padding/border хелпери (Flet 0.80+)
-│   ├── screen_transactions.py    # Екран 01
-│   ├── screen_add_receipt.py     # Екран 02
-│   ├── screen_dashboard.py       # Екран 03
-│   └── screen_settings.py        # Екран 04
+│   ├── theme.py                   # Colors, padding/border helpers (Flet 0.80+)
+│   ├── screen_transactions.py    # Screen 01
+│   ├── screen_add_receipt.py     # Screen 02
+│   ├── screen_dashboard.py       # Screen 03
+│   └── screen_settings.py        # Screen 04
 └── data/
     ├── receipts.json
     ├── settings.json
-    └── export.csv                 # генерується при вигрузці
+    └── export.csv                 # Generated on export
 ```
 
 ---
 
-## Сумісність з Flet 0.80+
+## Flet 0.80+ Compatibility
 
-Ця версія виправляє всі deprecation warnings:
+This version fixes all deprecation warnings:
 
-| Старий API (до 0.80) | Новий API (0.80+) |
+| Old API (pre-0.80) | New API (0.80+) |
 |---|---|
 | `ft.app(target=main)` | `ft.run(target=main)` |
 | `ft.padding.only(...)` | `ft.Padding(left=..., right=..., top=..., bottom=...)` |
@@ -61,16 +61,16 @@ expense_tracker/
 
 ---
 
-## AI розпізнавання чеків
+## AI Receipt Recognition
 
-1. Отримай ключ: [https://aistudio.google.com/apikey](https://aistudio.google.com/apikey)
-2. Встав у **Налаштування → API ключ Gemini**
-3. У формі чеку натисни **Завантажити фото чеку (AI)**
-4. Усі поля заповняться автоматично
+1. Get an API key: [https://aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+2. Paste it in **Settings → Gemini API Key**
+3. In the receipt form, click **Upload Receipt Photo (AI)**
+4. All fields will be filled in automatically
 
 ---
 
-## Вимоги
+## Requirements
 
 - Python 3.10+
 - Flet 0.80+
