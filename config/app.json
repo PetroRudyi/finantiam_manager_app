@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "update": {
+    "version_url": "https://example.com/finance-manager/version.json",
+    "apk_url": "https://example.com/finance-manager/releases/latest/app.apk"
+  }
+}
