@@ -110,3 +110,16 @@ DEFAULT_CATEGORY: str = (
     DEFAULT_CATEGORY_DEFS[-1].name if DEFAULT_CATEGORY_DEFS else "Інше"
 )
 DEFAULT_CATEGORIES: List[str] = [c.name for c in DEFAULT_CATEGORY_DEFS]
+
+
+# ── App meta (version, update URLs) ─────────────────────
+
+_app_cfg = _load_json("app.json") if (CONFIG_DIR / "app.json").exists() else {}
+if isinstance(_app_cfg, list):
+    _app_cfg = {}
+
+APP_VERSION: str = _app_cfg.get("version", "1.0.0")
+
+_update_cfg = _app_cfg.get("update", {})
+UPDATE_VERSION_URL: str = _update_cfg.get("version_url", "")
+UPDATE_APK_URL: str = _update_cfg.get("apk_url", "")

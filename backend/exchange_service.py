@@ -10,12 +10,12 @@ Sources:
 import datetime
 import json
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from typing import Optional, Dict
 
 import httpx
 
-DATA_DIR = Path("data")
+from backend.storage._paths import DATA_DIR
+
 RATES_CACHE_FILE = DATA_DIR / "exchange_rates.json"
 API_TIMEOUT = 10  # seconds
 

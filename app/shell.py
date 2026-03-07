@@ -6,6 +6,7 @@ import flet as ft
 
 from app.state import AppState
 from app.migration import run_background_migration
+from backend.update_service import check_for_update, get_apk_url
 from frontend import theme as t
 from frontend.screens.transactions import TransactionsScreen
 from frontend.screens.dashboard import DashboardScreen
@@ -72,6 +73,35 @@ class AppShell:
             args=(self.state, self.rebuild_nav),
             daemon=True,
         ).start()
+
+        threading.Thread(target=self._check_update, daemon=True).start()
+
+    # ── Update check ────────────────────────────────────────
+
+    def _check_update(self):
+        new_version = check_for_update()
+        if not new_version:
+            return
+        apk_url = get_apk_url()
+        if not apk_url:
+            return
+
+        dlg = ft.AlertDialog(
+            title=ft.Text("Доступне оновлення"),
+            content=ft.Text(f"Нова версія: {new_version}"),
+            actions=[
+                ft.TextButton(
+                    "Оновити",
+                    on_click=lambda _: self.page.launch_url(apk_url),
+                ),
+                ft.TextButton(
+                    "Пізніше",
+                    on_click=lambda _: self.page.close(dlg),
+                ),
+            ],
+        )
+        self.page.open(dlg)
+        self.page.update()
 
     # ── Navigation ───────────────────────────────────────────
 

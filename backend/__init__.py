@@ -29,4 +29,8 @@ from backend.ai_service import extract_receipt_from_image, merge_duplicate_items
 from backend.config import (
     CURRENCIES, CURRENCY_CODES, CURRENCY_MAP, DEFAULT_CURRENCY,
     DEFAULT_CATEGORIES, DEFAULT_CATEGORY, get_symbol, normalize_currency,
+    APP_VERSION,
 )
+
+# Update
+from backend.update_service import check_for_update, get_apk_url
