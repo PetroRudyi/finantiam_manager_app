@@ -105,6 +105,7 @@ class TransactionsScreen(ft.Column):
         swipeable = ft.GestureDetector(
             content=receipt_col,
             on_horizontal_drag_end=self._on_swipe,
+            expand=True,
         )
         self.controls.append(swipeable)
 
@@ -134,7 +135,7 @@ class TransactionsScreen(ft.Column):
 
     def _on_swipe(self, e: ft.DragEndEvent):
         vx = e.velocity.x if e.velocity else 0
-        if abs(vx) < 200:
+        if abs(vx) < 100:
             return
         idx = TAB_MODES.index(self.tab_mode)
         if vx < 0 and idx < len(TAB_MODES) - 1:
