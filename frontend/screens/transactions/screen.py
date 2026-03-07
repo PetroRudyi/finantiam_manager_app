@@ -17,6 +17,9 @@ from frontend.screens.transactions.receipt_list import build_receipt_list
 from frontend import theme as t
 
 
+TAB_MODES = ["daily", "weekly", "total"]
+
+
 class TransactionsScreen(ft.Column):
     def __init__(self, app_state, on_add: Callable, on_refresh: Callable):
         super().__init__(spacing=0, expand=True)
@@ -94,9 +97,16 @@ class TransactionsScreen(ft.Column):
                 build_selection_bar(self.selected_ids,
                                     self._delete_selected,
                                     self._change_date_selected))
-        self.controls.append(
-            build_receipt_list(filtered, self.tab_mode, self.selected_ids,
-                               self.app_state, self._toggle_select, self.on_add))
+
+        receipt_col = build_receipt_list(
+            filtered, self.tab_mode, self.selected_ids,
+            self.app_state, self._toggle_select, self.on_add)
+
+        swipeable = ft.GestureDetector(
+            content=receipt_col,
+            on_horizontal_drag_end=self._on_swipe,
+        )
+        self.controls.append(swipeable)
 
     # ── Handlers ─────────────────────────────────────────────
 
@@ -121,6 +131,16 @@ class TransactionsScreen(ft.Column):
             self.selected_ids = all_ids
         self._build()
         self.update()
+
+    def _on_swipe(self, e: ft.DragEndEvent):
+        vx = e.velocity.x if e.velocity else 0
+        if abs(vx) < 200:
+            return
+        idx = TAB_MODES.index(self.tab_mode)
+        if vx < 0 and idx < len(TAB_MODES) - 1:
+            self._set_tab(TAB_MODES[idx + 1])
+        elif vx > 0 and idx > 0:
+            self._set_tab(TAB_MODES[idx - 1])
 
     def _set_tab(self, mode: str):
         self.tab_mode = mode
