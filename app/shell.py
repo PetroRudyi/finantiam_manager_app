@@ -55,8 +55,10 @@ class AppShell:
 
     def start(self):
         """Add controls to page and kick off initial rendering + migration."""
+        safe_top = ft.Container(height=28, bgcolor=t.BG)
+        safe_bottom = ft.Container(height=16, bgcolor=t.SURFACE)
         self.page.add(ft.Column(
-            [self._content_area, self._tab_bar],
+            [safe_top, self._content_area, self._tab_bar, safe_bottom],
             spacing=0, expand=True,
         ))
         self.rebuild_nav()
