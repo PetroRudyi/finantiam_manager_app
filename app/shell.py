@@ -22,6 +22,7 @@ class AppShell:
     def __init__(self, page: ft.Page, state: AppState):
         self.page = page
         self.state = state
+        self._in_add_screen = False
         self._setup_page()
         self._content_area = ft.Container(expand=True)
         self._tab_row = ft.Row(
@@ -61,6 +62,8 @@ class AppShell:
             [safe_top, self._content_area, self._tab_bar, safe_bottom],
             spacing=0, expand=True,
         ))
+        self.page.on_back = self._on_back
+        self.page.on_keyboard_event = self._on_keyboard
         self.rebuild_nav()
         self.page.update()
 
@@ -102,16 +105,30 @@ class AppShell:
         self._content_area.update()
 
     def open_add_receipt(self, receipt=None):
+        self._in_add_screen = True
         self._tab_bar.visible = False
         self._tab_bar.update()
         s = AddReceiptScreen(
             app_state=self.state,
-            on_save=lambda: self.rebuild_nav(),
-            on_cancel=self.rebuild_nav,
+            on_save=lambda: self._close_add_screen(),
+            on_cancel=self._close_add_screen,
             receipt=receipt,
         )
         self._content_area.content = s
         self._content_area.update()
+
+    def _close_add_screen(self):
+        self._in_add_screen = False
+        self.rebuild_nav()
+
+    def _on_back(self, e):
+        if self._in_add_screen:
+            self._close_add_screen()
+        # On main screens — do nothing (prevent app from closing)
+
+    def _on_keyboard(self, e: ft.KeyboardEvent):
+        if e.key == "Escape":
+            self._on_back(e)
 
     # ── Tab bar ──────────────────────────────────────────────
 
