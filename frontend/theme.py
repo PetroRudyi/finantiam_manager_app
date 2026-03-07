@@ -75,6 +75,11 @@ AMBER       = "#ffb240"
 ACCENT      = "#7c6aff"
 WHITE       = "#ffffff"
 
+CATEGORY_COLORS = [
+    "#ff4d5a", "#ffb240", "#7c6aff", "#3d9bff",
+    "#3dcc8e", "#e5a35a", "#a8d5a2",
+]
+
 
 # ──────────────────────────────────────────
 #  Padding / Margin helpers (Flet 0.80+)

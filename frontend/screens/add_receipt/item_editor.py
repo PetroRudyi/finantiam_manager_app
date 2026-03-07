@@ -1,0 +1,320 @@
+# -*- coding: utf-8 -*-
+"""Bottom sheet item editor with category selector."""
+
+from typing import Callable, List, Optional
+import flet as ft
+
+import backend
+from backend.models import InvoiceItem, AppSettings
+from frontend import theme as t
+
+
+def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
+                     item: Optional[InvoiceItem], idx: Optional[int],
+                     on_done: Callable):
+    """Open a bottom sheet to add/edit an item.
+
+    Parameters:
+        page: Flet page reference
+        app_state: AppState instance
+        items: mutable items list (will be modified in-place)
+        item: existing item to edit, or None for new
+        idx: index of item in list, or None for new
+        on_done: callback() after item is added/edited
+    """
+    settings: AppSettings = app_state.settings
+    is_new = item is None
+
+    _lbl = ft.TextStyle(size=9, color=t.TEXT_DIMMER, font_family="monospace",
+                        letter_spacing=1.2)
+    _txt = ft.TextStyle(size=13, color=t.TEXT)
+
+    name_f = ft.TextField(
+        value=item.name if item else "",
+        label="НАЗВА", hint_text="М'ясо куряче",
+        bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
+        border_radius=9, autofocus=True,
+        label_style=_lbl, text_style=_txt,
+        hint_style=ft.TextStyle(size=13, color=t.TEXT_DIMMER),
+        content_padding=t.pad_sym(horizontal=12, vertical=12),
+    )
+
+    default_quantity = "1"
+
+    qty_f = ft.TextField(
+        value=str(item.quantity) if item else default_quantity,
+        hint_text="",
+        label="КІЛЬКІСТЬ", keyboard_type=ft.KeyboardType.NUMBER,
+        input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"^(\d+(\.\d{0,2})?)?$",
+            replacement_string=""
+        ),
+        bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
+        border_radius=9, expand=True,
+        label_style=_lbl, text_style=_txt,
+        content_padding=t.pad_sym(horizontal=12, vertical=12),
+    )
+
+    def _price_on_focus(e: ft.ControlEvent):
+        tf: ft.TextField = e.control
+        if (tf.value or "").strip() == default_quantity:
+            tf.value = ""
+            tf.update()
+
+    def _price_on_blur(e: ft.ControlEvent):
+        tf: ft.TextField = e.control
+        if (tf.value or "").strip() == "":
+            tf.value = default_quantity
+            tf.update()
+
+    qty_f.on_focus = _price_on_focus
+    qty_f.on_blur = _price_on_blur
+
+    price_f = ft.TextField(
+        value=str(item.price) if item else "",
+        hint_text="",
+        label="ЦІНА", keyboard_type=ft.KeyboardType.NUMBER,
+        input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"^(\d+(\.\d{0,2})?)?$",
+            replacement_string=""
+        ),
+        bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
+        border_radius=9, expand=True,
+        label_style=_lbl, text_style=_txt,
+        content_padding=t.pad_sym(horizontal=12, vertical=12),
+    )
+
+    error_text = ft.Text("", size=10, color=t.RED)
+
+    # ── Category selector ─────────────────────────────────
+    active_cats = [c for c in settings.categories if not c.deleted]
+    default_cat_id = active_cats[0].id if active_cats else ""
+    current_cat = [item.category if item else default_cat_id]
+    adding_new_cat = [False]
+    new_cat_field = ft.TextField(
+        hint_text="Назва категорії",
+        bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
+        border_radius=9, expand=True,
+        text_style=ft.TextStyle(size=13, color=t.TEXT),
+        hint_style=ft.TextStyle(size=12, color=t.TEXT_DIMMER),
+        content_padding=t.pad_sym(horizontal=12, vertical=8),
+    )
+    cat_col = ft.Column(spacing=0)
+
+    def _build_cats():
+        cat_col.controls.clear()
+        for cat in settings.categories:
+            if cat.deleted:
+                continue
+            sel = cat.id == current_cat[0]
+            cat_col.controls.append(ft.Container(
+                content=ft.Row([
+                    ft.Text(cat.name, size=13,
+                            color=t.ACCENT if sel else t.TEXT),
+                    ft.Text("✓", size=13, color=t.ACCENT,
+                            font_family="monospace") if sel else ft.Container(),
+                ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+                bgcolor=t.alpha(t.ACCENT, "18") if sel else "transparent",
+                padding=t.pad_sym(horizontal=14, vertical=10),
+                border_radius=8 if sel else 0,
+                on_click=lambda e, c=cat: _sel_cat(c.id),
+                ink=True,
+            ))
+        if adding_new_cat[0]:
+            cat_col.controls.append(ft.Container(
+                content=ft.Row([
+                    new_cat_field,
+                    ft.Container(
+                        content=ft.Text("OK", size=11, color=t.WHITE,
+                                        font_family="monospace",
+                                        text_align=ft.TextAlign.CENTER),
+                        width=36, height=36, border_radius=9,
+                        bgcolor=t.ACCENT,
+                        alignment=ft.Alignment(0, 0),
+                        on_click=lambda e: _confirm_new_cat(),
+                        ink=True,
+                    ),
+                    ft.Container(
+                        content=ft.Text("✕", size=11, color=t.TEXT_DIM,
+                                        font_family="monospace",
+                                        text_align=ft.TextAlign.CENTER),
+                        width=36, height=36, border_radius=9,
+                        bgcolor=t.SURFACE2,
+                        alignment=ft.Alignment(0, 0),
+                        on_click=lambda e: _cancel_new_cat(),
+                        ink=True,
+                    ),
+                ], spacing=6),
+                padding=t.pad_sym(horizontal=10, vertical=6),
+            ))
+        else:
+            cat_col.controls.append(ft.Container(
+                content=ft.Text("+ Нова категорія", size=12, color=t.ACCENT),
+                padding=t.pad_sym(horizontal=14, vertical=10),
+                on_click=lambda e: _start_new_cat(),
+                ink=True,
+            ))
+        try:
+            cat_col.update()
+        except Exception:
+            pass
+
+    def _sel_cat(c):
+        current_cat[0] = c
+        adding_new_cat[0] = False
+        _build_cats()
+
+    def _start_new_cat():
+        adding_new_cat[0] = True
+        new_cat_field.value = ""
+        _build_cats()
+
+    def _cancel_new_cat():
+        adding_new_cat[0] = False
+        _build_cats()
+
+    def _confirm_new_cat():
+        name = new_cat_field.value.strip()
+        if not name:
+            return
+        existing_id = settings.get_category_id_by_name(name)
+        if existing_id is not None:
+            current_cat[0] = existing_id
+            error_text.value = "Така категорія вже існує"
+            try:
+                error_text.update()
+            except Exception:
+                pass
+            adding_new_cat[0] = False
+            _build_cats()
+            return
+        cid = settings.ensure_category(name)
+        backend.save_settings(settings)
+        app_state.settings = settings
+        current_cat[0] = cid
+        error_text.value = ""
+        try:
+            error_text.update()
+        except Exception:
+            pass
+        adding_new_cat[0] = False
+        _build_cats()
+
+    _build_cats()
+
+    # ── Bottom sheet ──────────────────────────────────────
+    bs_ref: list = [None]
+
+    def _close_bs():
+        bs_ref[0].open = False
+        page.update()
+
+    def _confirm(e):
+        name = name_f.value.strip()
+        if not name:
+            error_text.value = "Введіть назву"
+            error_text.update()
+            return
+        try:
+            qty = float(qty_f.value or "1")
+            price = float(price_f.value or "0")
+        except ValueError:
+            error_text.value = "Невірне число"
+            error_text.update()
+            return
+
+        item_kwargs = dict(name=name, quantity=qty, price=price,
+                           category=current_cat[0])
+        if item:
+            item_kwargs["id"] = item.id
+        new_item = InvoiceItem(**item_kwargs)
+        if is_new:
+            items.append(new_item)
+        else:
+            items[idx] = new_item
+
+        on_done()
+        _close_bs()
+
+    sheet_height = int((page.window.height or 720) * 0.7)
+
+    scrollable_body = ft.Column([
+        name_f,
+        ft.Row([qty_f, price_f], spacing=7),
+        ft.Container(
+            content=ft.Text("КАТЕГОРІЯ", size=9, color=t.TEXT_DIMMER,
+                            font_family="monospace",
+                            style=ft.TextStyle(letter_spacing=1.2)),
+            padding=t.pad_only(top=4, bottom=2),
+        ),
+        ft.Container(
+            content=ft.Column([cat_col], scroll=ft.ScrollMode.AUTO, spacing=0),
+            expand=True,
+            border=t.border_all(1, t.BORDER),
+            border_radius=9,
+            clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
+        ),
+        error_text,
+    ], spacing=10, expand=True)
+
+    buttons_row = ft.Container(
+        content=ft.Row([
+            ft.OutlinedButton(
+                "Скасувати",
+                style=ft.ButtonStyle(
+                    color=t.TEXT_DIM,
+                    side=ft.BorderSide(1, t.BORDER),
+                    shape=ft.RoundedRectangleBorder(radius=9),
+                    padding=t.pad_sym(horizontal=18, vertical=10),
+                ),
+                on_click=lambda e: _close_bs(),
+            ),
+            ft.ElevatedButton(
+                "Додати позицію" if is_new else "Зберегти",
+                bgcolor=t.ACCENT, color=t.WHITE,
+                style=ft.ButtonStyle(
+                    shape=ft.RoundedRectangleBorder(radius=9),
+                    padding=t.pad_sym(horizontal=18, vertical=10),
+                ),
+                on_click=_confirm,
+            ),
+        ], alignment=ft.MainAxisAlignment.END, spacing=10),
+        padding=t.pad_only(top=8, bottom=8),
+        border=t.border_top(),
+    )
+
+    sheet_content = ft.Container(
+        content=ft.Column([
+            ft.Container(
+                content=ft.Container(width=36, height=4, border_radius=2,
+                                     bgcolor=t.TEXT_DIMMER),
+                alignment=ft.Alignment(0, 0),
+                padding=t.pad_only(top=10, bottom=4),
+            ),
+            ft.Text("Нова позиція" if is_new else "Редагування",
+                    size=15, color=t.TEXT, weight=ft.FontWeight.W_600),
+            scrollable_body,
+            buttons_row,
+        ], spacing=6),
+        padding=t.pad_sym(horizontal=18, vertical=0),
+        bgcolor=t.SURFACE,
+        height=sheet_height,
+        border_radius=ft.BorderRadius(top_left=16, top_right=16,
+                                       bottom_left=0, bottom_right=0),
+    )
+
+    bs = ft.BottomSheet(
+        content=sheet_content,
+        bgcolor=t.SURFACE,
+        open=False,
+        scrollable=True,
+        size_constraints=ft.BoxConstraints(max_height=sheet_height),
+        on_dismiss=lambda e: None,
+    )
+    bs_ref[0] = bs
+    page.overlay.append(bs)
+    page.update()
+    bs.open = True
+    page.update()
