@@ -9,6 +9,7 @@ import flet as ft
 
 from backend.models import Receipt, AppSettings
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 def build_receipt_list(receipts: List[Receipt], tab_mode: str,
@@ -19,9 +20,9 @@ def build_receipt_list(receipts: List[Receipt], tab_mode: str,
         return ft.Column(
             [ft.Container(
                 content=ft.Column([
-                    ft.Text("Немає записів", size=13, color=t.TEXT_DIMMER,
+                    ft.Text(tr("transactions.no_records"), size=13, color=t.TEXT_DIMMER,
                             text_align=ft.TextAlign.CENTER),
-                    ft.Text("Натисніть + щоб додати чек", size=11,
+                    ft.Text(tr("transactions.hint_add"), size=11,
                             color=t.TEXT_DIMMER, text_align=ft.TextAlign.CENTER),
                 ], horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=6),
                 padding=40, alignment=ft.Alignment(0, 0),
@@ -78,7 +79,7 @@ def _day_header(date: datetime.datetime, total: float,
                 day_receipts: List[Receipt], app_state) -> ft.Container:
     has_expense = any(r.transaction_type == "expense" for r in day_receipts)
     color = t.RED if has_expense else t.BLUE
-    day_name = t.UA_DAYS_SHORT.get(date.weekday(), date.strftime("%a"))
+    day_name = t.get_days_short().get(date.weekday(), date.strftime("%a"))
     settings: AppSettings = app_state.settings
     base_amount_str = f"≈ {t.format_amount(total, currency=settings.default_currency)}"
     return ft.Container(
@@ -135,7 +136,7 @@ def _receipt_row(receipt: Receipt, selected_ids: Set[str], app_state,
     ))
     cats_str = ", ".join(cat_names[:3]) + ("..." if len(cat_names) > 3 else "")
     dt_str = receipt.created_date.strftime("%d.%m %H:%M")
-    sub_text = f"{dt_str} · {n_items} позицій · {cats_str}"
+    sub_text = f"{dt_str} · {n_items} {tr('transactions.items_suffix')} · {cats_str}"
 
     base_cur = settings.default_currency
     if receipt.transaction_type == "expense":
@@ -160,7 +161,7 @@ def _receipt_row(receipt: Receipt, selected_ids: Set[str], app_state,
     row_content = ft.Container(
         content=ft.Row([
             ft.Column([
-                ft.Text(receipt.business_name or "Чек", size=13,
+                ft.Text(receipt.business_name or tr("transactions.receipt"), size=13,
                         color=t.TEXT, weight=ft.FontWeight.W_500,
                         overflow=ft.TextOverflow.ELLIPSIS),
                 ft.Text(sub_text, size=9, color=t.TEXT_DIMMER),

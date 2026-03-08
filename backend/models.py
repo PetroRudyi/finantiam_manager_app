@@ -13,6 +13,9 @@ from backend.config import (
     normalize_currency,
 )
 
+# Original default category names (from categories.json) keyed by ID
+_DEFAULT_CAT_NAMES: dict = {c.id: c.name for c in DEFAULT_CATEGORY_DEFS}
+
 
 class Category(BaseModel):
     """User category stored in settings (ID + display name)."""
@@ -89,6 +92,7 @@ class Receipt(BaseModel):
 class AppSettings(BaseModel):
     # ID / код валюти за замовчуванням
     default_currency: str = DEFAULT_CURRENCY
+    language: str = "en"
     dark_theme: bool = True
     date_format: str = "DD.MM.YY"
     gemini_api_key: str = ""
@@ -122,6 +126,13 @@ class AppSettings(BaseModel):
     def get_category_name(self, category_id: str) -> str:
         for c in self.categories:
             if c.id == category_id:
+                # Default categories (ID in defaults): if name hasn't been
+                # renamed by user, return translated name for current language.
+                if c.id in _DEFAULT_CAT_NAMES and c.name == _DEFAULT_CAT_NAMES[c.id]:
+                    from frontend.localisation import t
+                    translated = t(f"default_categories.{c.id}")
+                    if translated != f"default_categories.{c.id}":
+                        return translated
                 return c.name
         return category_id
 

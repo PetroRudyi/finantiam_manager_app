@@ -15,6 +15,7 @@ from frontend.screens.dashboard.bar_chart import build_bar_chart
 from frontend.screens.dashboard.donut_chart import build_donut_chart
 from frontend.screens.dashboard.top_categories import build_top_categories
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 class DashboardScreen(ft.Column):
@@ -43,7 +44,7 @@ class DashboardScreen(ft.Column):
         ]
 
         extra_right = ft.Container(
-            content=ft.Text("Кастом", size=9, color=t.TEXT_DIM,
+            content=ft.Text(tr("dashboard.custom"), size=9, color=t.TEXT_DIM,
                             font_family="monospace"),
             bgcolor=t.SURFACE2, border_radius=8,
             padding=t.pad_sym(horizontal=10, vertical=5),

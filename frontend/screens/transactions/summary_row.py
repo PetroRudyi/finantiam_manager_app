@@ -3,6 +3,7 @@
 
 import flet as ft
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 def build_summary_row(summary: dict, base_currency: str) -> ft.Container:
@@ -17,11 +18,11 @@ def build_summary_row(summary: dict, base_currency: str) -> ft.Container:
 
     return ft.Container(
         content=ft.Row([
-            stat("Дохід",   summary["income"],   t.BLUE),
+            stat(tr("summary.income"),   summary["income"],   t.BLUE),
             ft.VerticalDivider(width=1, color=t.BORDER),
-            stat("Витрати", summary["expenses"], t.RED),
+            stat(tr("summary.expenses"), summary["expenses"], t.RED),
             ft.VerticalDivider(width=1, color=t.BORDER),
-            stat("Залишок", summary["balance"],  t.TEXT),
+            stat(tr("summary.balance"), summary["balance"],  t.TEXT),
         ], alignment=ft.MainAxisAlignment.SPACE_AROUND),
         padding=t.pad_only(left=18, right=18, bottom=10, top=4),
         border=t.border_bottom(),

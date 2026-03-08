@@ -4,6 +4,7 @@
 from typing import Callable
 import flet as ft
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 def build_period_tabs(current_mode: str, on_change: Callable[[str], None]) -> ft.Container:
@@ -30,7 +31,7 @@ def build_period_tabs(current_mode: str, on_change: Callable[[str], None]) -> ft
 
     return ft.Container(
         content=ft.Row(
-            [tab("Daily", "daily"), tab("Weekly", "weekly"), tab("Total", "total")],
+            [tab(tr("period_tabs.daily"), "daily"), tab(tr("period_tabs.weekly"), "weekly"), tab(tr("period_tabs.total"), "total")],
             spacing=0,
         ),
         border=t.border_bottom(),

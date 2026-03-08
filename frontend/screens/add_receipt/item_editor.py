@@ -7,6 +7,7 @@ import flet as ft
 import backend
 from backend.models import InvoiceItem, AppSettings
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
@@ -31,7 +32,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
 
     name_f = ft.TextField(
         value=item.name if item else "",
-        label="НАЗВА", hint_text="М'ясо куряче",
+        label=tr("item_editor.name"), hint_text=tr("item_editor.name_hint"),
         bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
         border_radius=9, autofocus=True,
         label_style=_lbl, text_style=_txt,
@@ -44,7 +45,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
     qty_f = ft.TextField(
         value=str(item.quantity) if item else default_quantity,
         hint_text="",
-        label="КІЛЬКІСТЬ", keyboard_type=ft.KeyboardType.NUMBER,
+        label=tr("item_editor.quantity"), keyboard_type=ft.KeyboardType.NUMBER,
         input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"^(\d+(\.\d{0,2})?)?$",
@@ -74,7 +75,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
     price_f = ft.TextField(
         value=str(item.price) if item else "",
         hint_text="",
-        label="ЦІНА", keyboard_type=ft.KeyboardType.NUMBER,
+        label=tr("item_editor.price"), keyboard_type=ft.KeyboardType.NUMBER,
         input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"^(\d+(\.\d{0,2})?)?$",
@@ -94,7 +95,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
     current_cat = [item.category if item else default_cat_id]
     adding_new_cat = [False]
     new_cat_field = ft.TextField(
-        hint_text="Назва категорії",
+        hint_text=tr("item_editor.category_hint"),
         bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
         border_radius=9, expand=True,
         text_style=ft.TextStyle(size=13, color=t.TEXT),
@@ -151,7 +152,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
             ))
         else:
             cat_col.controls.append(ft.Container(
-                content=ft.Text("+ Нова категорія", size=12, color=t.ACCENT),
+                content=ft.Text(tr("item_editor.new_category"), size=12, color=t.ACCENT),
                 padding=t.pad_sym(horizontal=14, vertical=10),
                 on_click=lambda e: _start_new_cat(),
                 ink=True,
@@ -182,7 +183,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
         existing_id = settings.get_category_id_by_name(name)
         if existing_id is not None:
             current_cat[0] = existing_id
-            error_text.value = "Така категорія вже існує"
+            error_text.value = tr("item_editor.category_exists")
             try:
                 error_text.update()
             except Exception:
@@ -214,14 +215,14 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
     def _confirm(e):
         name = name_f.value.strip()
         if not name:
-            error_text.value = "Введіть назву"
+            error_text.value = tr("item_editor.enter_name")
             error_text.update()
             return
         try:
             qty = float(qty_f.value or "1")
             price = float(price_f.value or "0")
         except ValueError:
-            error_text.value = "Невірне число"
+            error_text.value = tr("item_editor.invalid_number")
             error_text.update()
             return
 
@@ -244,7 +245,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
         name_f,
         ft.Row([qty_f, price_f], spacing=7),
         ft.Container(
-            content=ft.Text("КАТЕГОРІЯ", size=9, color=t.TEXT_DIMMER,
+            content=ft.Text(tr("item_editor.category"), size=9, color=t.TEXT_DIMMER,
                             font_family="monospace",
                             style=ft.TextStyle(letter_spacing=1.2)),
             padding=t.pad_only(top=4, bottom=2),
@@ -262,7 +263,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
     buttons_row = ft.Container(
         content=ft.Row([
             ft.OutlinedButton(
-                "Скасувати",
+                tr("item_editor.cancel"),
                 style=ft.ButtonStyle(
                     color=t.TEXT_DIM,
                     side=ft.BorderSide(1, t.BORDER),
@@ -272,7 +273,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
                 on_click=lambda e: _close_bs(),
             ),
             ft.ElevatedButton(
-                "Додати позицію" if is_new else "Зберегти",
+                tr("item_editor.add_item") if is_new else tr("item_editor.save"),
                 bgcolor=t.ACCENT, color=t.WHITE,
                 style=ft.ButtonStyle(
                     shape=ft.RoundedRectangleBorder(radius=9),
@@ -293,7 +294,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
                 alignment=ft.Alignment(0, 0),
                 padding=t.pad_only(top=10, bottom=4),
             ),
-            ft.Text("Нова позиція" if is_new else "Редагування",
+            ft.Text(tr("item_editor.new_item") if is_new else tr("item_editor.editing"),
                     size=15, color=t.TEXT, weight=ft.FontWeight.W_600),
             scrollable_body,
             buttons_row,

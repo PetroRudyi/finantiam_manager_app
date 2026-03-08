@@ -3,6 +3,7 @@
 
 import flet as ft
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
@@ -15,8 +16,8 @@ def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
     """
     api_key_field = ft.TextField(
         value=settings.gemini_api_key,
-        label="API ключ Gemini",
-        hint_text="AIza...",
+        label=tr("api_key_editor.label"),
+        hint_text=tr("api_key_editor.hint"),
         password=True,
         can_reveal_password=True,
         bgcolor=t.SURFACE2,
@@ -30,10 +31,7 @@ def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
     )
 
     info_text = ft.Text(
-        "Ключ використовується лише для запитів до сервісу Gemini "
-        "для розпізнавання чеків.\n"
-        "Розробник програми не має доступу до вашого API ключа "
-        "і не може списувати кошти з вашого акаунта.",
+        tr("api_key_editor.info"),
         size=9,
         color=t.TEXT_DIMMER,
     )
@@ -53,7 +51,7 @@ def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
         ft.Container(
             content=ft.Row([
                 ft.OutlinedButton(
-                    "Скасувати",
+                    tr("api_key_editor.cancel"),
                     style=ft.ButtonStyle(
                         color=t.TEXT_DIM,
                         side=ft.BorderSide(1, t.BORDER),
@@ -63,7 +61,7 @@ def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
                     on_click=lambda e: on_cancel(),
                 ),
                 ft.ElevatedButton(
-                    "Зберегти",
+                    tr("api_key_editor.save"),
                     bgcolor=t.ACCENT, color=t.WHITE,
                     style=ft.ButtonStyle(
                         shape=ft.RoundedRectangleBorder(radius=9),

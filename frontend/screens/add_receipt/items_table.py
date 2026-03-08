@@ -7,20 +7,21 @@ import flet as ft
 from backend.models import InvoiceItem, AppSettings
 from backend.config import get_symbol
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 def build_column_headers() -> ft.Container:
     return ft.Container(
         content=ft.Row([
-            ft.Text("Назва", size=8, color=t.TEXT_DIMMER,
+            ft.Text(tr("items_table.name"), size=8, color=t.TEXT_DIMMER,
                     font_family="monospace", expand=True),
-            ft.Text("К-ть", size=8, color=t.TEXT_DIMMER,
+            ft.Text(tr("items_table.qty"), size=8, color=t.TEXT_DIMMER,
                     font_family="monospace", width=30,
                     text_align=ft.TextAlign.CENTER),
-            ft.Text("Ціна", size=8, color=t.TEXT_DIMMER,
+            ft.Text(tr("items_table.price"), size=8, color=t.TEXT_DIMMER,
                     font_family="monospace", width=58,
                     text_align=ft.TextAlign.RIGHT),
-            ft.Text("Кат.", size=8, color=t.TEXT_DIMMER,
+            ft.Text(tr("items_table.cat"), size=8, color=t.TEXT_DIMMER,
                     font_family="monospace", width=44,
                     text_align=ft.TextAlign.RIGHT),
             ft.Container(width=40),
@@ -31,7 +32,7 @@ def build_column_headers() -> ft.Container:
 
 def build_add_row(on_click: Callable) -> ft.Container:
     return ft.Container(
-        content=ft.Text("+ Додати позицію", size=11, color=t.ACCENT,
+        content=ft.Text(tr("items_table.add_item"), size=11, color=t.ACCENT,
                         font_family="monospace"),
         padding=t.pad_only(left=18, top=8, bottom=4),
         on_click=on_click,

@@ -8,13 +8,15 @@ from app.state import AppState
 from app.migration import run_background_migration
 from backend.update_service import check_for_update, get_apk_url
 from frontend import theme as t
+from frontend.localisation import t as tr
 from frontend.screens.transactions import TransactionsScreen
 from frontend.screens.dashboard import DashboardScreen
 from frontend.screens.add_receipt import AddReceiptScreen
 from frontend.screens.settings import SettingsScreen
 
 
-TAB_LABELS = ["ВИТРАТИ", "ДАШБОРД", "НАЛАШТ."]
+def _get_tab_labels():
+    return [tr("shell.tab_expenses"), tr("shell.tab_dashboard"), tr("shell.tab_settings")]
 
 
 class AppShell:
@@ -27,7 +29,7 @@ class AppShell:
         self._setup_page()
         self._content_area = ft.Container(expand=True)
         self._tab_row = ft.Row(
-            [self._make_tab(label, idx) for idx, label in enumerate(TAB_LABELS)],
+            [self._make_tab(label, idx) for idx, label in enumerate(_get_tab_labels())],
             spacing=0,
         )
         self._fab_button = ft.Container(
@@ -87,15 +89,15 @@ class AppShell:
             return
 
         dlg = ft.AlertDialog(
-            title=ft.Text("Доступне оновлення"),
-            content=ft.Text(f"Нова версія: {new_version}"),
+            title=ft.Text(tr("update.title")),
+            content=ft.Text(tr("update.new_version").replace("{new_version}", new_version)),
             actions=[
                 ft.TextButton(
-                    "Оновити",
+                    tr("update.update"),
                     on_click=lambda _: self.page.launch_url(apk_url),
                 ),
                 ft.TextButton(
-                    "Пізніше",
+                    tr("update.later"),
                     on_click=lambda _: self.page.close(dlg),
                 ),
             ],
@@ -108,6 +110,11 @@ class AppShell:
     def rebuild_nav(self):
         self.state.reload()
         tab = self.state.current_tab
+
+        # Rebuild tab labels (language may have changed)
+        tab_labels = _get_tab_labels()
+        for i, c in enumerate(self._tab_row.controls):
+            c.content.controls[1].value = tab_labels[i]
 
         self._tab_bar.visible = True
         self._tab_bar.update()

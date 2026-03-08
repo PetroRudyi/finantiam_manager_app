@@ -70,6 +70,24 @@ CURRENCIES: List[CurrencyDef] = _load_currencies()
 CURRENCY_CODES: List[str] = [c.code for c in CURRENCIES]
 CURRENCY_MAP: Dict[str, CurrencyDef] = {c.code: c for c in CURRENCIES}
 
+
+# ── Languages ─────────────────────────────────────────
+
+def _load_languages() -> Dict[str, str]:
+    """Load supported languages from config/languages.json → {code: name}."""
+    data = _load_json("languages.json")
+    result: Dict[str, str] = {}
+    for row in data:
+        code = str(row.get("code", ""))
+        name = str(row.get("name", code))
+        if code:
+            result[code] = name
+    return result if result else {"en": "English"}
+
+
+SUPPORTED_LANGUAGES: Dict[str, str] = _load_languages()
+LANGUAGE_CODES: List[str] = list(SUPPORTED_LANGUAGES.keys())
+
 # Map: symbol / name / id → canonical code  (for normalizing "Lei" → "RON" etc.)
 _ALIAS_TO_CODE: Dict[str, str] = {}
 for _c in CURRENCIES:

@@ -9,6 +9,7 @@ import flet.canvas as cv
 import backend
 from backend.models import Receipt, AppSettings
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 def build_donut_chart(receipts: List[Receipt], mode: str,
@@ -60,7 +61,7 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
         ], spacing=5))
 
     if not legend_items:
-        legend_items.append(ft.Text("Немає даних", size=11, color=t.TEXT_DIMMER))
+        legend_items.append(ft.Text(tr("dashboard.no_data"), size=11, color=t.TEXT_DIMMER))
 
     if not shapes:
         shapes.append(cv.Arc(
@@ -80,7 +81,7 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
 
     return ft.Container(
         content=ft.Column([
-            ft.Text("КАТЕГОРІЇ", size=9, color=t.TEXT_DIMMER,
+            ft.Text(tr("dashboard.categories_title"), size=9, color=t.TEXT_DIMMER,
                     font_family="monospace",
                     style=ft.TextStyle(letter_spacing=1.2)),
             ft.Row([

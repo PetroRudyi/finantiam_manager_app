@@ -12,6 +12,7 @@ import backend
 from backend.models import AppSettings, Category
 from backend.config import DEFAULT_CATEGORY_DEFS
 from frontend import theme as t
+from frontend.localisation import t as tr
 from frontend.helpers import show_snack
 from frontend.screens.settings.main_settings import build_main_settings
 from frontend.screens.settings.category_editor import CategoryEditor
@@ -42,12 +43,12 @@ class SettingsScreen(ft.Column):
 
         if self._show_categories:
             self.controls += [
-                self._sub_header("Категорії"),
+                self._sub_header(tr("settings.categories")),
                 self._cat_editor.build(),
             ]
         elif self._show_api_key_editor:
             self.controls += [
-                self._sub_header("API ключ Gemini"),
+                self._sub_header(tr("settings.api_key")),
                 build_api_key_editor(settings,
                                      on_save=self._save_api_key,
                                      on_cancel=self._go_back),
@@ -55,7 +56,7 @@ class SettingsScreen(ft.Column):
         else:
             self.controls += [
                 ft.Container(
-                    content=ft.Text("Налаштування", size=15, color=t.TEXT,
+                    content=ft.Text(tr("settings.title"), size=15, color=t.TEXT,
                                     weight=ft.FontWeight.W_600),
                     padding=t.pad_only(left=18, right=18, top=4, bottom=10),
                 ),
@@ -113,6 +114,12 @@ class SettingsScreen(ft.Column):
         setattr(settings, key, value)
         backend.save_settings(settings)
 
+        if key == "language" and value != old_value:
+            from frontend.localisation import init as init_localisation
+            init_localisation(value)
+            self.on_refresh()
+            return
+
         if key == "default_currency" and value != old_value:
             self._recalculate_base_currency(value)
 
@@ -133,14 +140,14 @@ class SettingsScreen(ft.Column):
         receipts = self.app_state.receipts
         settings: AppSettings = self.app_state.settings
         path = backend.export_to_csv(receipts, settings)
-        show_snack(self.page, f"Збережено: {path}")
+        show_snack(self.page, tr("settings.saved").replace("{path}", str(path)))
 
     def _recalculate_base_currency(self, new_currency: str):
         progress = ft.ProgressBar(width=250, color=t.ACCENT, bgcolor=t.SURFACE2)
-        status = ft.Text("Перерахунок валют... 0%", size=11, color=t.TEXT_DIM)
+        status = ft.Text(tr("settings.recalc_progress").replace("{percent}", "0"), size=11, color=t.TEXT_DIM)
         dlg = ft.AlertDialog(
             modal=True,
-            title=ft.Text("Зміна базової валюти", size=13, color=t.TEXT),
+            title=ft.Text(tr("settings.currency_change_title"), size=13, color=t.TEXT),
             bgcolor=t.SURFACE,
             content=ft.Column([status, progress], spacing=10, tight=True, width=280),
         )
@@ -150,7 +157,7 @@ class SettingsScreen(ft.Column):
 
         def on_progress(current, total):
             progress.value = current / total
-            status.value = f"Перерахунок валют... {int(current / total * 100)}%"
+            status.value = tr("settings.recalc_progress").replace("{percent}", str(int(current / total * 100)))
             try:
                 progress.update()
                 status.update()

@@ -11,20 +11,20 @@ import backend
 from backend.models import InvoiceItem
 from backend.config import DEFAULT_CATEGORY
 from frontend.helpers import show_snack
+from frontend.localisation import t as tr
 
 
 async def pick_ai_image(screen, page: ft.Page):
     """Handle AI receipt photo selection and processing."""
     settings = screen.app_state.settings
     if not settings.gemini_api_key:
-        show_snack(page, "Gemini API ключ не налаштований. Перевірте Налаштування.")
+        show_snack(page, tr("ai.no_api_key"))
         return
     if screen._ai_running:
         return
 
-    # Відкриваємо діалог вибору файлу через FilePicker service (async API)
     files = await ft.FilePicker().pick_files(
-        dialog_title="Оберіть фото чеку",
+        dialog_title=tr("ai.pick_photo"),
         allowed_extensions=["jpg", "jpeg", "png", "gif"],
         allow_multiple=False,
         file_type=ft.FilePickerFileType.CUSTOM,
@@ -34,7 +34,7 @@ async def pick_ai_image(screen, page: ft.Page):
 
     path = files[0].path
     if not path:
-        show_snack(page, "Не вдалося отримати шлях до файлу.")
+        show_snack(page, tr("ai.no_file_path"))
         return
 
     screen._ai_running = True
@@ -44,25 +44,25 @@ async def pick_ai_image(screen, page: ft.Page):
         screen._form.ai_btn.update()
     except Exception:
         pass
-    _set_ai_status(screen, "AI: підготовка фото…")
+    _set_ai_status(screen, tr("ai.status_photo"))
 
     def run():
         try:
-            _set_ai_status(screen, "AI: запит до Gemini…")
+            _set_ai_status(screen, tr("ai.status_gemini"))
             data = backend.extract_receipt_from_image(
                 image_path=path,
                 api_key=settings.gemini_api_key,
                 default_currency=settings.default_currency,
                 categories=settings.categories,
             )
-            _set_ai_status(screen, "AI: обробка відповіді…")
+            _set_ai_status(screen, tr("ai.status_response"))
             merged = backend.merge_duplicate_items(data.invoice_items)
             screen._business = data.business_name or ""
             screen._currency = data.currency
             if data.created_date:
                 screen._date = data.created_date
 
-            _set_ai_status(screen, "AI: категорії та позиції…")
+            _set_ai_status(screen, tr("ai.status_categories"))
             screen._items = [
                 InvoiceItem(
                     name=i.name,
@@ -72,10 +72,10 @@ async def pick_ai_image(screen, page: ft.Page):
                 )
                 for i in merged
             ]
-            _set_ai_status(screen, "AI: оновлення форми…")
+            _set_ai_status(screen, tr("ai.status_form"))
 
             screen._ai_running = False
-            screen._ai_status_text = f"Готово: {len(screen._items)} позицій"
+            screen._ai_status_text = tr("ai.status_done").replace("{count}", str(len(screen._items)))
             screen._build()
             try:
                 screen.update()
@@ -87,7 +87,7 @@ async def pick_ai_image(screen, page: ft.Page):
                 pass
         except Exception:
             screen._ai_running = False
-            _set_ai_status(screen, "AI: помилка (перевірте API ключ)")
+            _set_ai_status(screen, tr("ai.status_error"))
             try:
                 from frontend.screens.add_receipt.ai_handler import get_ai_click_handler
 
