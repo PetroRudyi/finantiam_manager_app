@@ -138,6 +138,11 @@ if isinstance(_app_cfg, list):
 
 APP_VERSION: str = _app_cfg.get("version", "1.0.0")
 
+_window_cfg = _app_cfg.get("window", {})
+BASE_WIDTH: int = _window_cfg.get("base_width", 390)
+BASE_HEIGHT: int = _window_cfg.get("base_height", 720)
+WINDOW_RESIZABLE: bool = _window_cfg.get("resizable", False)
+
 _update_cfg = _app_cfg.get("update", {})
 UPDATE_VERSION_URL: str = _update_cfg.get("version_url", "")
 UPDATE_APK_URL: str = _update_cfg.get("apk_url", "")

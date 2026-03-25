@@ -1,5 +1,10 @@
 {
   "version": "1.0.0",
+  "window": {
+    "base_width": 390,
+    "base_height": 720,
+    "resizable": true
+  },
   "update": {
     "version_url": "https://example.com/finance-manager/version.json",
     "apk_url": "https://github.com/PetroRudyi/finantiam_manager_app/releases/tag/apk/finance_manager.apk"

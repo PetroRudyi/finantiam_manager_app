@@ -5,19 +5,19 @@ Color palette and reusable UI constants.
 Compatible with Flet >= 0.80.0
 
 Key changes vs old API:
-- ft.padding.only()     → ft.Padding(left=..., right=..., top=..., bottom=...)
-- ft.padding.symmetric()→ ft.Padding(left=h, right=h, top=v, bottom=v)
-- ft.margin.only()      → ft.Margin(left=..., right=..., top=..., bottom=...)
-- ft.border.all()       → ft.Border(left=s, right=s, top=s, bottom=s)  where s=ft.BorderSide
-- ft.border.only()      → ft.Border(top=ft.BorderSide(...)) etc.
-- ft.border_radius.only()→ ft.BorderRadius(tl, tr, br, bl)
-- ft.Text(letter_spacing=)  NOT supported as kwarg — use ft.TextStyle inside style
-- ft.app()              → ft.run()
+- ft.padding.only()     -> ft.Padding(left=..., right=..., top=..., bottom=...)
+- ft.padding.symmetric()-> ft.Padding(left=h, right=h, top=v, bottom=v)
+- ft.margin.only()      -> ft.Margin(left=..., right=..., top=..., bottom=...)
+- ft.border.all()       -> ft.Border(left=side, right=side, top=side, bottom=side)
+- ft.border.only()      -> ft.Border(top=ft.BorderSide(...)) etc.
+- ft.border_radius.only()-> ft.BorderRadius(tl, tr, br, bl)
+- ft.Text(letter_spacing=)  NOT supported as kwarg -- use ft.TextStyle inside style
+- ft.app()              -> ft.run()
 """
 
 import flet as ft
 
-from backend.config import get_symbol, DEFAULT_CURRENCY
+from backend.config import get_symbol, DEFAULT_CURRENCY, BASE_WIDTH, BASE_HEIGHT
 
 
 # ──────────────────────────────────────────
@@ -39,6 +39,33 @@ def get_months_chart() -> dict:
     return {i: t(f"months_chart.{i}") for i in range(1, 13)}
 
 
+# ──────────────────────────────────────────
+#  Scaling utility
+# ──────────────────────────────────────────
+
+_scale_factor: float = 1.0
+
+
+def init_scale(page_width: float, page_height: float):
+    """Calculate scale factor based on actual screen size vs base resolution.
+
+    Must be called AFTER page.update() so that page.width / page.height
+    reflect the real viewport dimensions (especially on mobile).
+    """
+    global _scale_factor
+    if page_width > 0 and page_height > 0:
+        _scale_factor = min(page_width / BASE_WIDTH, page_height / BASE_HEIGHT)
+
+
+def scaled(value: float) -> float:
+    """Scale a design-time pixel value to match the current screen density.
+
+    Usage:  scaled(18)  — returns 18 on the base 390x720 design,
+            ~50 on a Pixel 7 (1080x2400), etc.
+    """
+    return round(value * _scale_factor)
+
+
 def alpha(color: str, a: str) -> str:
     """Add alpha to hex color. Flet uses #AARRGGBB format."""
     return f"#{a}{color[1:]}"
@@ -48,14 +75,14 @@ def format_amount(val: float, sign: bool = False, currency: str = DEFAULT_CURREN
     """Format amount: space thousands, omit .00 decimals, use currency symbol."""
     abs_val = abs(val)
     if abs_val == int(abs_val):
-        s = f"{int(abs_val):,}".replace(",", " ")
+        formatted = f"{int(abs_val):,}".replace(",", " ")
     else:
-        s = f"{abs_val:,.2f}".replace(",", " ")
+        formatted = f"{abs_val:,.2f}".replace(",", " ")
     prefix = ""
     if sign:
-        prefix = "+" if val > 0 else "−" if val < 0 else ""
+        prefix = "+" if val > 0 else "\u2212" if val < 0 else ""
     symbol = get_symbol(currency)
-    return f"{prefix}{symbol}{s}"
+    return f"{prefix}{symbol}{formatted}"
 
 
 # ──────────────────────────────────────────
@@ -105,16 +132,16 @@ def mar_only(left=0, right=0, top=0, bottom=0) -> ft.Margin:
     return ft.Margin(left=left, right=right, top=top, bottom=bottom)
 
 
-def border_all(width=1, color=BORDER) -> ft.Border:
-    s = ft.BorderSide(width, color)
-    return ft.Border(left=s, right=s, top=s, bottom=s)
+def border_all(width=scaled(1), color=BORDER) -> ft.Border:
+    side = ft.BorderSide(width, color)
+    return ft.Border(left=side, right=side, top=side, bottom=side)
 
 
-def border_top(width=1, color=BORDER) -> ft.Border:
+def border_top(width=scaled(1), color=BORDER) -> ft.Border:
     return ft.Border(top=ft.BorderSide(width, color))
 
 
-def border_bottom(width=1, color=BORDER) -> ft.Border:
+def border_bottom(width=scaled(1), color=BORDER) -> ft.Border:
     return ft.Border(bottom=ft.BorderSide(width, color))
 
 
@@ -122,26 +149,26 @@ def border_bottom(width=1, color=BORDER) -> ft.Border:
 #  Text helpers  (letter_spacing NOT a Text kwarg in 0.80+)
 # ──────────────────────────────────────────
 
-def mono_label(text: str, size=9, color=TEXT_DIMMER) -> ft.Text:
+def mono_label(text: str, size=None, color=TEXT_DIMMER) -> ft.Text:
     """Uppercase monospace label (replaces letter_spacing on Text)."""
     return ft.Text(
         text.upper(),
-        size=size,
+        size=size if size is not None else scaled(9),
         color=color,
         font_family="monospace",
-        style=ft.TextStyle(letter_spacing=1.2),
+        style=ft.TextStyle(letter_spacing=scaled(1.2)),
     )
 
 
 def section_title(text: str) -> ft.Container:
     return ft.Container(
         content=mono_label(text),
-        padding=pad_only(left=18, right=18, top=12, bottom=6),
+        padding=pad_only(left=int(scaled(18)), right=int(scaled(18)), top=int(scaled(12)), bottom=int(scaled(6))),
     )
 
 
 def divider() -> ft.Divider:
-    return ft.Divider(height=1, color=BORDER, thickness=1)
+    return ft.Divider(height=scaled(1), color=BORDER, thickness=scaled(1))
 
 
 # ──────────────────────────────────────────
@@ -159,11 +186,11 @@ def text_field(label_text: str, value="", hint="", on_change=None,
         bgcolor=SURFACE2,
         border_color=BORDER,
         focused_border_color=ACCENT,
-        label_style=ft.TextStyle(size=9, color=TEXT_DIMMER, font_family="monospace"),
-        text_style=ft.TextStyle(size=13, color=TEXT),
-        hint_style=ft.TextStyle(size=12, color=TEXT_DIMMER),
-        border_radius=9,
-        content_padding=pad_sym(horizontal=12, vertical=9),
+        label_style=ft.TextStyle(size=scaled(9), color=TEXT_DIMMER, font_family="monospace"),
+        text_style=ft.TextStyle(size=scaled(13), color=TEXT),
+        hint_style=ft.TextStyle(size=scaled(12), color=TEXT_DIMMER),
+        border_radius=scaled(9),
+        content_padding=pad_sym(horizontal=int(scaled(12)), vertical=int(scaled(9))),
     )
     if on_change:
         tf.on_change = on_change

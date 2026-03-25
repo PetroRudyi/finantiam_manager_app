@@ -7,6 +7,7 @@ import flet as ft
 import backend
 from backend.models import Receipt
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr
 
 _ENG_MONTH_TO_NUM = {
@@ -31,37 +32,37 @@ def build_bar_chart(receipts: List[Receipt], mode: str,
     months_chart = t.get_months_chart()
     for i, (month_label, val) in enumerate(items):
         is_selected = i == selected_idx
-        height = max(4, int((val / max_v) * 55)) if max_v > 0 else 4
+        height = max(scaled(4), int((val / max_v) * scaled(55))) if max_v > 0 else scaled(4)
         month_num = _ENG_MONTH_TO_NUM.get(month_label, 0)
         chart_label = months_chart.get(month_num, month_label)
         bars.append(ft.Column([
             ft.Container(
                 height=height, bgcolor=chart_color,
-                border_radius=ft.BorderRadius(top_left=3, top_right=3,
+                border_radius=ft.BorderRadius(top_left=scaled(3), top_right=scaled(3),
                                               bottom_left=0, bottom_right=0),
                 opacity=1.0 if is_selected else 0.5,
             ),
-            ft.Text(chart_label, size=8,
+            ft.Text(chart_label, size=scaled(8),
                     color=t.ACCENT if is_selected else t.TEXT_DIMMER,
                     font_family="monospace"),
-        ], spacing=3, horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ], spacing=scaled(3), horizontal_alignment=ft.CrossAxisAlignment.CENTER,
            expand=True))
 
     return ft.Container(
         content=ft.Column([
-            ft.Text(tr("dashboard.trend_title"), size=9, color=t.TEXT_DIMMER,
+            ft.Text(tr("dashboard.trend_title"), size=scaled(9), color=t.TEXT_DIMMER,
                     font_family="monospace",
-                    style=ft.TextStyle(letter_spacing=1.2)),
+                    style=ft.TextStyle(letter_spacing=scaled(1.2))),
             ft.Text(t.format_amount(selected_total, currency=base_currency),
-                    size=20, color=chart_color,
+                    size=scaled(20), color=chart_color,
                     font_family="monospace", weight=ft.FontWeight.W_600),
             ft.Container(
-                content=ft.Row(bars, spacing=4,
+                content=ft.Row(bars, spacing=scaled(4),
                                alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-                height=72,
+                height=scaled(72),
             ),
-        ], spacing=8),
-        bgcolor=t.SURFACE2, border_radius=12, padding=12,
-        margin=t.mar_only(left=18, right=18, bottom=10),
+        ], spacing=scaled(8)),
+        bgcolor=t.SURFACE2, border_radius=scaled(12), padding=scaled(12),
+        margin=t.mar_only(left=scaled(18), right=scaled(18), bottom=scaled(10)),
         border=t.border_all(),
     )

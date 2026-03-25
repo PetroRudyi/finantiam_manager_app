@@ -7,34 +7,35 @@ import flet as ft
 from backend.models import InvoiceItem, AppSettings
 from backend.config import get_symbol
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr
 
 
 def build_column_headers() -> ft.Container:
     return ft.Container(
         content=ft.Row([
-            ft.Text(tr("items_table.name"), size=8, color=t.TEXT_DIMMER,
+            ft.Text(tr("items_table.name"), size=scaled(8), color=t.TEXT_DIMMER,
                     font_family="monospace", expand=True),
-            ft.Text(tr("items_table.qty"), size=8, color=t.TEXT_DIMMER,
-                    font_family="monospace", width=30,
+            ft.Text(tr("items_table.qty"), size=scaled(8), color=t.TEXT_DIMMER,
+                    font_family="monospace", width=scaled(30),
                     text_align=ft.TextAlign.CENTER),
-            ft.Text(tr("items_table.price"), size=8, color=t.TEXT_DIMMER,
-                    font_family="monospace", width=58,
+            ft.Text(tr("items_table.price"), size=scaled(8), color=t.TEXT_DIMMER,
+                    font_family="monospace", width=scaled(58),
                     text_align=ft.TextAlign.RIGHT),
-            ft.Text(tr("items_table.cat"), size=8, color=t.TEXT_DIMMER,
-                    font_family="monospace", width=44,
+            ft.Text(tr("items_table.cat"), size=scaled(8), color=t.TEXT_DIMMER,
+                    font_family="monospace", width=scaled(44),
                     text_align=ft.TextAlign.RIGHT),
-            ft.Container(width=40),
-        ], spacing=4),
-        padding=t.pad_only(left=18, right=18, bottom=4),
+            ft.Container(width=scaled(40)),
+        ], spacing=scaled(4)),
+        padding=t.pad_only(left=scaled(18), right=scaled(18), bottom=scaled(4)),
     )
 
 
 def build_add_row(on_click: Callable) -> ft.Container:
     return ft.Container(
-        content=ft.Text(tr("items_table.add_item"), size=11, color=t.ACCENT,
+        content=ft.Text(tr("items_table.add_item"), size=scaled(11), color=t.ACCENT,
                         font_family="monospace"),
-        padding=t.pad_only(left=18, top=8, bottom=4),
+        padding=t.pad_only(left=scaled(18), top=scaled(8), bottom=scaled(4)),
         on_click=on_click,
         ink=True,
     )
@@ -45,47 +46,47 @@ def build_item_row(item: InvoiceItem, idx: int, settings: AppSettings,
     cat_label = settings.get_category_name(item.category)[:6]
     return ft.Container(
         content=ft.Row([
-            ft.Text(item.name, size=12, color=t.TEXT, expand=True,
+            ft.Text(item.name, size=scaled(12), color=t.TEXT, expand=True,
                     overflow=ft.TextOverflow.ELLIPSIS,
                     weight=ft.FontWeight.W_500),
-            ft.Text(f"{item.quantity:g}", size=10, color=t.TEXT_DIM,
-                    font_family="monospace", width=30,
+            ft.Text(f"{item.quantity:g}", size=scaled(10), color=t.TEXT_DIM,
+                    font_family="monospace", width=scaled(30),
                     text_align=ft.TextAlign.CENTER),
-            ft.Text(f"{get_symbol(currency)}{item.price:.2f}", size=11, color=t.TEXT,
-                    font_family="monospace", width=58,
+            ft.Text(f"{get_symbol(currency)}{item.price:.2f}", size=scaled(11), color=t.TEXT,
+                    font_family="monospace", width=scaled(58),
                     text_align=ft.TextAlign.RIGHT),
             ft.Container(
-                content=ft.Text(cat_label, size=8, color=t.TEXT_DIM,
+                content=ft.Text(cat_label, size=scaled(8), color=t.TEXT_DIM,
                                 font_family="monospace",
                                 text_align=ft.TextAlign.CENTER),
-                bgcolor=t.SURFACE2, border_radius=4,
-                padding=t.pad_sym(horizontal=5, vertical=2),
-                width=44,
+                bgcolor=t.SURFACE2, border_radius=scaled(4),
+                padding=t.pad_sym(horizontal=scaled(5), vertical=scaled(2)),
+                width=scaled(44),
             ),
             ft.Row([
                 ft.Container(
-                    content=ft.Text("✎", size=9, color=t.ACCENT,
+                    content=ft.Text("✎", size=scaled(9), color=t.ACCENT,
                                     font_family="monospace"),
-                    width=18, height=18, border_radius=4,
+                    width=scaled(18), height=scaled(18), border_radius=scaled(4),
                     bgcolor=t.alpha(t.ACCENT, "18"),
-                    border=t.border_all(1, t.alpha(t.ACCENT, "44")),
+                    border=t.border_all(scaled(1), t.alpha(t.ACCENT, "44")),
                     alignment=ft.Alignment(0, 0),
                     on_click=lambda e, i=idx: on_edit(i),
                     ink=True,
                 ),
                 ft.Container(
-                    content=ft.Text("×", size=9, color=t.RED,
+                    content=ft.Text("×", size=scaled(9), color=t.RED,
                                     font_family="monospace"),
-                    width=18, height=18, border_radius=4,
+                    width=scaled(18), height=scaled(18), border_radius=scaled(4),
                     bgcolor=t.alpha(t.RED, "18"),
-                    border=t.border_all(1, t.alpha(t.RED, "33")),
+                    border=t.border_all(scaled(1), t.alpha(t.RED, "33")),
                     alignment=ft.Alignment(0, 0),
                     on_click=lambda e, i=idx: on_remove(i),
                     ink=True,
                 ),
-            ], spacing=2, width=40),
-        ], spacing=4),
-        padding=t.pad_only(left=18, right=18, top=7, bottom=7),
+            ], spacing=scaled(2), width=scaled(40)),
+        ], spacing=scaled(4)),
+        padding=t.pad_only(left=scaled(18), right=scaled(18), top=scaled(7), bottom=scaled(7)),
         border=t.border_bottom(),
     )
 

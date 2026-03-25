@@ -3,6 +3,7 @@
 
 import flet as ft
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr
 
 
@@ -23,16 +24,16 @@ def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
         bgcolor=t.SURFACE2,
         border_color=t.BORDER,
         focused_border_color=t.ACCENT,
-        border_radius=9,
+        border_radius=scaled(9),
         expand=True,
-        label_style=ft.TextStyle(size=9, color=t.TEXT_DIMMER, font_family="monospace"),
-        text_style=ft.TextStyle(size=12, color=t.TEXT),
-        content_padding=t.pad_sym(horizontal=12, vertical=9),
+        label_style=ft.TextStyle(size=scaled(9), color=t.TEXT_DIMMER, font_family="monospace"),
+        text_style=ft.TextStyle(size=scaled(12), color=t.TEXT),
+        content_padding=t.pad_sym(horizontal=scaled(12), vertical=scaled(9)),
     )
 
     info_text = ft.Text(
         tr("api_key_editor.info"),
-        size=9,
+        size=scaled(9),
         color=t.TEXT_DIMMER,
     )
 
@@ -42,11 +43,11 @@ def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
     return ft.Column([
         ft.Container(
             content=api_key_field,
-            padding=t.pad_sym(horizontal=18, vertical=10),
+            padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(10)),
         ),
         ft.Container(
             content=info_text,
-            padding=t.pad_only(left=18, right=18, bottom=12),
+            padding=t.pad_only(left=scaled(18), right=scaled(18), bottom=scaled(12)),
         ),
         ft.Container(
             content=ft.Row([
@@ -54,9 +55,9 @@ def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
                     tr("api_key_editor.cancel"),
                     style=ft.ButtonStyle(
                         color=t.TEXT_DIM,
-                        side=ft.BorderSide(1, t.BORDER),
-                        shape=ft.RoundedRectangleBorder(radius=9),
-                        padding=t.pad_sym(horizontal=16, vertical=10),
+                        side=ft.BorderSide(scaled(1), t.BORDER),
+                        shape=ft.RoundedRectangleBorder(radius=scaled(9)),
+                        padding=t.pad_sym(horizontal=scaled(16), vertical=scaled(10)),
                     ),
                     on_click=lambda e: on_cancel(),
                 ),
@@ -64,12 +65,12 @@ def build_api_key_editor(settings, on_save, on_cancel) -> ft.Column:
                     tr("api_key_editor.save"),
                     bgcolor=t.ACCENT, color=t.WHITE,
                     style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=9),
-                        padding=t.pad_sym(horizontal=20, vertical=10),
+                        shape=ft.RoundedRectangleBorder(radius=scaled(9)),
+                        padding=t.pad_sym(horizontal=scaled(20), vertical=scaled(10)),
                     ),
                     on_click=_save,
                 ),
-            ], alignment=ft.MainAxisAlignment.END, spacing=10),
-            padding=t.pad_sym(horizontal=18, vertical=10),
+            ], alignment=ft.MainAxisAlignment.END, spacing=scaled(10)),
+            padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(10)),
         ),
-    ], spacing=4, expand=True)
+    ], spacing=scaled(4), expand=True)

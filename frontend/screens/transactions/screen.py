@@ -15,6 +15,7 @@ from frontend.screens.transactions.period_tabs import build_period_tabs
 from frontend.screens.transactions.selection_bar import build_selection_bar
 from frontend.screens.transactions.receipt_list import build_receipt_list
 from frontend import theme as t
+from frontend.theme import scaled
 
 
 TAB_MODES = ["daily", "weekly", "total"]
@@ -69,21 +70,21 @@ class TransactionsScreen(ft.Column):
 
         extra_right = ft.Row([
             ft.Container(
-                content=ft.Text("✓", size=12, color=t.TEXT_DIM, font_family="monospace"),
-                width=30, height=30, border_radius=8,
+                content=ft.Text("✓", size=scaled(12), color=t.TEXT_DIM, font_family="monospace"),
+                width=scaled(30), height=scaled(30), border_radius=scaled(8),
                 bgcolor=t.SURFACE2, border=t.border_all(),
                 alignment=ft.Alignment(0, 0),
                 on_click=lambda e: self._toggle_select_all(),
                 ink=True,
             ),
             ft.Container(
-                content=ft.Text("···", size=12, color=t.TEXT_DIM, font_family="monospace"),
-                width=30, height=30, border_radius=8,
+                content=ft.Text("···", size=scaled(12), color=t.TEXT_DIM, font_family="monospace"),
+                width=scaled(30), height=scaled(30), border_radius=scaled(8),
                 bgcolor=t.SURFACE2, border=t.border_all(),
                 alignment=ft.Alignment(0, 0),
                 ink=True,
             ),
-        ], spacing=6)
+        ], spacing=scaled(6))
 
         self.controls += [
             MonthNavigator(self._year, self._month,

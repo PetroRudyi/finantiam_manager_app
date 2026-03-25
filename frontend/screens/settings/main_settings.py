@@ -6,6 +6,7 @@ import flet as ft
 from backend.models import AppSettings
 from backend.config import CURRENCY_CODES, SUPPORTED_LANGUAGES
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr, current_language
 from frontend.helpers import show_snack
 from frontend.components.settings_row import settings_section, settings_row
@@ -17,10 +18,10 @@ def build_main_settings(settings: AppSettings,
     # Language dropdown
     lang_dd = ft.Dropdown(
         value=current_language(),
-        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=8,
-        text_style=ft.TextStyle(size=12, color=t.TEXT, font_family="monospace"),
-        content_padding=t.pad_sym(horizontal=10, vertical=4),
-        width=140,
+        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(8),
+        text_style=ft.TextStyle(size=scaled(12), color=t.TEXT, font_family="monospace"),
+        content_padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(4)),
+        width=scaled(140),
         options=[ft.dropdown.Option(key=code, text=name)
                  for code, name in SUPPORTED_LANGUAGES.items()],
     )
@@ -29,10 +30,10 @@ def build_main_settings(settings: AppSettings,
     # Currency dropdown
     currency_dd = ft.Dropdown(
         value=settings.default_currency,
-        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=8,
-        text_style=ft.TextStyle(size=12, color=t.TEXT, font_family="monospace"),
-        content_padding=t.pad_sym(horizontal=10, vertical=4),
-        width=100,
+        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(8),
+        text_style=ft.TextStyle(size=scaled(12), color=t.TEXT, font_family="monospace"),
+        content_padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(4)),
+        width=scaled(100),
         options=[ft.dropdown.Option(c) for c in CURRENCY_CODES],
     )
     currency_dd.on_select = lambda e: on_set("default_currency", e.control.value)
@@ -62,19 +63,19 @@ def build_main_settings(settings: AppSettings,
         settings_row(tr("settings.default_currency"), right=currency_dd),
         settings_row(tr("settings.dark_theme"), right=dark_sw),
         settings_row(tr("settings.date_format"),
-                     right=ft.Text(settings.date_format, size=12,
+                     right=ft.Text(settings.date_format, size=scaled(12),
                                    color=t.TEXT_DIM, font_family="monospace"),
                      on_click=lambda e: None),
 
         settings_section(tr("settings.categories")),
         settings_row(tr("settings.edit_categories"),
                      sub=tr("settings.categories_count").replace("{count}", str(active_count)),
-                     right=ft.Text("›", size=12, color=t.TEXT_DIMMER,
+                     right=ft.Text("›", size=scaled(12), color=t.TEXT_DIMMER,
                                    font_family="monospace"),
                      on_click=lambda e: on_open_categories()),
         settings_row(tr("settings.reset_defaults"),
                      sub=tr("settings.reset_sub"),
-                     right=ft.Text("›", size=12, color=t.TEXT_DIMMER,
+                     right=ft.Text("›", size=scaled(12), color=t.TEXT_DIMMER,
                                    font_family="monospace"),
                      on_click=lambda e: on_reset_categories()),
 
@@ -84,7 +85,7 @@ def build_main_settings(settings: AppSettings,
             sub=tr("settings.for_receipts"),
             right=ft.Text(
                 masked if masked else "—",
-                size=12, color=t.TEXT_DIM, font_family="monospace",
+                size=scaled(12), color=t.TEXT_DIM, font_family="monospace",
             ),
             on_click=lambda e: on_open_api_key(),
         ),
@@ -93,7 +94,7 @@ def build_main_settings(settings: AppSettings,
         settings_section(tr("settings.data")),
         settings_row(tr("settings.backup"),
                      sub=tr("settings.backup_sub"),
-                     right=ft.Text("›", size=12, color=t.TEXT_DIMMER,
+                     right=ft.Text("›", size=scaled(12), color=t.TEXT_DIMMER,
                                    font_family="monospace"),
                      on_click=lambda e: None),
         ft.Container(
@@ -101,20 +102,20 @@ def build_main_settings(settings: AppSettings,
                 tr("settings.export_csv"),
                 bgcolor=t.SURFACE2, color=t.BLUE,
                 style=ft.ButtonStyle(
-                    shape=ft.RoundedRectangleBorder(radius=9),
-                    side=ft.BorderSide(1, t.BORDER),
-                    padding=t.pad_sym(horizontal=12, vertical=10),
+                    shape=ft.RoundedRectangleBorder(radius=scaled(9)),
+                    side=ft.BorderSide(scaled(1), t.BORDER),
+                    padding=t.pad_sym(horizontal=scaled(12), vertical=scaled(10)),
                 ),
                 on_click=lambda e: on_export_csv(),
                 expand=True,
             ),
-            padding=t.pad_sym(horizontal=18, vertical=10),
+            padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(10)),
         ),
         ft.Container(
-            content=ft.Text("v1.0.0", size=9, color=t.TEXT_DIMMER,
+            content=ft.Text("v1.0.0", size=scaled(9), color=t.TEXT_DIMMER,
                             font_family="monospace",
                             text_align=ft.TextAlign.CENTER),
-            padding=t.pad_sym(vertical=12),
+            padding=t.pad_sym(vertical=scaled(12)),
             alignment=ft.Alignment(0, 0),
         ),
     ], scroll=ft.ScrollMode.AUTO, expand=True, spacing=0)

@@ -7,6 +7,7 @@ import flet as ft
 import backend
 from backend.models import InvoiceItem, AppSettings
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr
 
 
@@ -26,18 +27,18 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
     settings: AppSettings = app_state.settings
     is_new = item is None
 
-    _lbl = ft.TextStyle(size=9, color=t.TEXT_DIMMER, font_family="monospace",
-                        letter_spacing=1.2)
-    _txt = ft.TextStyle(size=13, color=t.TEXT)
+    _lbl = ft.TextStyle(size=scaled(9), color=t.TEXT_DIMMER, font_family="monospace",
+                        letter_spacing=scaled(1.2))
+    _txt = ft.TextStyle(size=scaled(13), color=t.TEXT)
 
     name_f = ft.TextField(
         value=item.name if item else "",
         label=tr("item_editor.name"), hint_text=tr("item_editor.name_hint"),
         bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
-        border_radius=9, autofocus=True,
+        border_radius=scaled(9), autofocus=True,
         label_style=_lbl, text_style=_txt,
-        hint_style=ft.TextStyle(size=13, color=t.TEXT_DIMMER),
-        content_padding=t.pad_sym(horizontal=12, vertical=12),
+        hint_style=ft.TextStyle(size=scaled(13), color=t.TEXT_DIMMER),
+        content_padding=t.pad_sym(horizontal=scaled(12), vertical=scaled(12)),
     )
 
     default_quantity = "1"
@@ -52,9 +53,9 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
             replacement_string=""
         ),
         bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
-        border_radius=9, expand=True,
+        border_radius=scaled(9), expand=True,
         label_style=_lbl, text_style=_txt,
-        content_padding=t.pad_sym(horizontal=12, vertical=12),
+        content_padding=t.pad_sym(horizontal=scaled(12), vertical=scaled(12)),
     )
 
     def _price_on_focus(e: ft.ControlEvent):
@@ -82,12 +83,12 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
             replacement_string=""
         ),
         bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
-        border_radius=9, expand=True,
+        border_radius=scaled(9), expand=True,
         label_style=_lbl, text_style=_txt,
-        content_padding=t.pad_sym(horizontal=12, vertical=12),
+        content_padding=t.pad_sym(horizontal=scaled(12), vertical=scaled(12)),
     )
 
-    error_text = ft.Text("", size=10, color=t.RED)
+    error_text = ft.Text("", size=scaled(10), color=t.RED)
 
     # ── Category selector ─────────────────────────────────
     active_cats = [c for c in settings.categories if not c.deleted]
@@ -97,10 +98,10 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
     new_cat_field = ft.TextField(
         hint_text=tr("item_editor.category_hint"),
         bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
-        border_radius=9, expand=True,
-        text_style=ft.TextStyle(size=13, color=t.TEXT),
-        hint_style=ft.TextStyle(size=12, color=t.TEXT_DIMMER),
-        content_padding=t.pad_sym(horizontal=12, vertical=8),
+        border_radius=scaled(9), expand=True,
+        text_style=ft.TextStyle(size=scaled(13), color=t.TEXT),
+        hint_style=ft.TextStyle(size=scaled(12), color=t.TEXT_DIMMER),
+        content_padding=t.pad_sym(horizontal=scaled(12), vertical=scaled(8)),
     )
     cat_col = ft.Column(spacing=0)
 
@@ -112,14 +113,14 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
             sel = cat.id == current_cat[0]
             cat_col.controls.append(ft.Container(
                 content=ft.Row([
-                    ft.Text(cat.name, size=13,
+                    ft.Text(cat.name, size=scaled(13),
                             color=t.ACCENT if sel else t.TEXT),
-                    ft.Text("✓", size=13, color=t.ACCENT,
+                    ft.Text("✓", size=scaled(13), color=t.ACCENT,
                             font_family="monospace") if sel else ft.Container(),
                 ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                 bgcolor=t.alpha(t.ACCENT, "18") if sel else "transparent",
-                padding=t.pad_sym(horizontal=14, vertical=10),
-                border_radius=8 if sel else 0,
+                padding=t.pad_sym(horizontal=scaled(14), vertical=scaled(10)),
+                border_radius=scaled(8) if sel else 0,
                 on_click=lambda e, c=cat: _sel_cat(c.id),
                 ink=True,
             ))
@@ -128,32 +129,32 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
                 content=ft.Row([
                     new_cat_field,
                     ft.Container(
-                        content=ft.Text("OK", size=11, color=t.WHITE,
+                        content=ft.Text("OK", size=scaled(11), color=t.WHITE,
                                         font_family="monospace",
                                         text_align=ft.TextAlign.CENTER),
-                        width=36, height=36, border_radius=9,
+                        width=scaled(36), height=scaled(36), border_radius=scaled(9),
                         bgcolor=t.ACCENT,
                         alignment=ft.Alignment(0, 0),
                         on_click=lambda e: _confirm_new_cat(),
                         ink=True,
                     ),
                     ft.Container(
-                        content=ft.Text("✕", size=11, color=t.TEXT_DIM,
+                        content=ft.Text("✕", size=scaled(11), color=t.TEXT_DIM,
                                         font_family="monospace",
                                         text_align=ft.TextAlign.CENTER),
-                        width=36, height=36, border_radius=9,
+                        width=scaled(36), height=scaled(36), border_radius=scaled(9),
                         bgcolor=t.SURFACE2,
                         alignment=ft.Alignment(0, 0),
                         on_click=lambda e: _cancel_new_cat(),
                         ink=True,
                     ),
-                ], spacing=6),
-                padding=t.pad_sym(horizontal=10, vertical=6),
+                ], spacing=scaled(6)),
+                padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(6)),
             ))
         else:
             cat_col.controls.append(ft.Container(
-                content=ft.Text(tr("item_editor.new_category"), size=12, color=t.ACCENT),
-                padding=t.pad_sym(horizontal=14, vertical=10),
+                content=ft.Text(tr("item_editor.new_category"), size=scaled(12), color=t.ACCENT),
+                padding=t.pad_sym(horizontal=scaled(14), vertical=scaled(10)),
                 on_click=lambda e: _start_new_cat(),
                 ink=True,
             ))
@@ -239,26 +240,26 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
         on_done()
         _close_bs()
 
-    sheet_height = int((page.window.height or 720) * 0.7)
+    sheet_height = int((page.window.height or 720) * 0.7) #todo double check this one, does it need scaled()
 
     scrollable_body = ft.Column([
         name_f,
-        ft.Row([qty_f, price_f], spacing=7),
+        ft.Row([qty_f, price_f], spacing=scaled(7)),
         ft.Container(
-            content=ft.Text(tr("item_editor.category"), size=9, color=t.TEXT_DIMMER,
+            content=ft.Text(tr("item_editor.category"), size=scaled(9), color=t.TEXT_DIMMER,
                             font_family="monospace",
-                            style=ft.TextStyle(letter_spacing=1.2)),
-            padding=t.pad_only(top=4, bottom=2),
+                            style=ft.TextStyle(letter_spacing=scaled(1.2))),
+            padding=t.pad_only(top=scaled(4), bottom=scaled(2)),
         ),
         ft.Container(
             content=ft.Column([cat_col], scroll=ft.ScrollMode.AUTO, spacing=0),
             expand=True,
-            border=t.border_all(1, t.BORDER),
-            border_radius=9,
+            border=t.border_all(scaled(1), t.BORDER),
+            border_radius=scaled(9),
             clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
         ),
         error_text,
-    ], spacing=10, expand=True)
+    ], spacing=scaled(10), expand=True)
 
     buttons_row = ft.Container(
         content=ft.Row([
@@ -267,8 +268,8 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
                 style=ft.ButtonStyle(
                     color=t.TEXT_DIM,
                     side=ft.BorderSide(1, t.BORDER),
-                    shape=ft.RoundedRectangleBorder(radius=9),
-                    padding=t.pad_sym(horizontal=18, vertical=10),
+                    shape=ft.RoundedRectangleBorder(radius=scaled(9)),
+                    padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(10)),
                 ),
                 on_click=lambda e: _close_bs(),
             ),
@@ -276,33 +277,33 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
                 tr("item_editor.add_item") if is_new else tr("item_editor.save"),
                 bgcolor=t.ACCENT, color=t.WHITE,
                 style=ft.ButtonStyle(
-                    shape=ft.RoundedRectangleBorder(radius=9),
-                    padding=t.pad_sym(horizontal=18, vertical=10),
+                    shape=ft.RoundedRectangleBorder(radius=scaled(9)),
+                    padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(10)),
                 ),
                 on_click=_confirm,
             ),
-        ], alignment=ft.MainAxisAlignment.END, spacing=10),
-        padding=t.pad_only(top=8, bottom=8),
+        ], alignment=ft.MainAxisAlignment.END, spacing=scaled(10)),
+        padding=t.pad_only(top=scaled(8), bottom=scaled(8)),
         border=t.border_top(),
     )
 
     sheet_content = ft.Container(
         content=ft.Column([
             ft.Container(
-                content=ft.Container(width=36, height=4, border_radius=2,
+                content=ft.Container(width=scaled(36), height=scaled(4), border_radius=scaled(2),
                                      bgcolor=t.TEXT_DIMMER),
                 alignment=ft.Alignment(0, 0),
-                padding=t.pad_only(top=10, bottom=4),
+                padding=t.pad_only(top=scaled(10), bottom=scaled(4)),
             ),
             ft.Text(tr("item_editor.new_item") if is_new else tr("item_editor.editing"),
-                    size=15, color=t.TEXT, weight=ft.FontWeight.W_600),
+                    size=scaled(15), color=t.TEXT, weight=ft.FontWeight.W_600),
             scrollable_body,
             buttons_row,
-        ], spacing=6),
-        padding=t.pad_sym(horizontal=18, vertical=0),
+        ], spacing=scaled(6)),
+        padding=t.pad_sym(horizontal=scaled(18), vertical=0),
         bgcolor=t.SURFACE,
         height=sheet_height,
-        border_radius=ft.BorderRadius(top_left=16, top_right=16,
+        border_radius=ft.BorderRadius(top_left=scaled(16), top_right=scaled(16),
                                        bottom_left=0, bottom_right=0),
     )
 

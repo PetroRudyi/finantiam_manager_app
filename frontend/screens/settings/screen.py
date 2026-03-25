@@ -12,6 +12,7 @@ import backend
 from backend.models import AppSettings, Category
 from backend.config import DEFAULT_CATEGORY_DEFS
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr
 from frontend.helpers import show_snack
 from frontend.screens.settings.main_settings import build_main_settings
@@ -56,9 +57,9 @@ class SettingsScreen(ft.Column):
         else:
             self.controls += [
                 ft.Container(
-                    content=ft.Text(tr("settings.title"), size=15, color=t.TEXT,
+                    content=ft.Text(tr("settings.title"), size=scaled(15), color=t.TEXT,
                                     weight=ft.FontWeight.W_600),
-                    padding=t.pad_only(left=18, right=18, top=4, bottom=10),
+                    padding=t.pad_only(left=scaled(18), right=scaled(18), top=scaled(4), bottom=scaled(10)),
                 ),
                 build_main_settings(
                     settings,
@@ -74,14 +75,14 @@ class SettingsScreen(ft.Column):
         return ft.Container(
             content=ft.Row([
                 ft.Container(
-                    content=ft.Text("←", size=14, color=t.TEXT_DIM),
+                    content=ft.Text("←", size=scaled(14), color=t.TEXT_DIM),
                     on_click=lambda e: self._go_back(),
-                    ink=True, padding=t.pad_sym(horizontal=6, vertical=4),
+                    ink=True, padding=t.pad_sym(horizontal=scaled(6), vertical=scaled(4)),
                 ),
-                ft.Text(title, size=15, color=t.TEXT, weight=ft.FontWeight.W_600),
-                ft.Container(width=40),
+                ft.Text(title, size=scaled(15), color=t.TEXT, weight=ft.FontWeight.W_600),
+                ft.Container(width=scaled(40)),
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-            padding=t.pad_only(left=12, right=18, top=4, bottom=10),
+            padding=t.pad_only(left=scaled(12), right=scaled(18), top=scaled(4), bottom=scaled(10)),
         )
 
     # ── Navigation ─────────────────────────────────────────────
@@ -143,13 +144,13 @@ class SettingsScreen(ft.Column):
         show_snack(self.page, tr("settings.saved").replace("{path}", str(path)))
 
     def _recalculate_base_currency(self, new_currency: str):
-        progress = ft.ProgressBar(width=250, color=t.ACCENT, bgcolor=t.SURFACE2)
-        status = ft.Text(tr("settings.recalc_progress").replace("{percent}", "0"), size=11, color=t.TEXT_DIM)
+        progress = ft.ProgressBar(width=scaled(250), color=t.ACCENT, bgcolor=t.SURFACE2)
+        status = ft.Text(tr("settings.recalc_progress").replace("{percent}", "0"), size=scaled(11), color=t.TEXT_DIM)
         dlg = ft.AlertDialog(
             modal=True,
-            title=ft.Text(tr("settings.currency_change_title"), size=13, color=t.TEXT),
+            title=ft.Text(tr("settings.currency_change_title"), size=scaled(13), color=t.TEXT),
             bgcolor=t.SURFACE,
-            content=ft.Column([status, progress], spacing=10, tight=True, width=280),
+            content=ft.Column([status, progress], spacing=scaled(10), tight=True, width=scaled(280)),
         )
         self.page.dialog = dlg
         dlg.open = True

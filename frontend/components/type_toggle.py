@@ -4,6 +4,7 @@
 from typing import Callable
 import flet as ft
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr
 
 
@@ -24,8 +25,8 @@ class TypeToggle(ft.Container):
             content = self._filled(current_mode)
             super().__init__(
                 content=content,
-                bgcolor=t.SURFACE2, border_radius=9, padding=3,
-                margin=t.mar_only(left=18, right=18, bottom=8),
+                bgcolor=t.SURFACE2, border_radius=scaled(9), padding=scaled(3),
+                margin=t.mar_only(left=scaled(18), right=scaled(18), bottom=scaled(8)),
             )
         else:
             content = self._outlined(current_mode)
@@ -35,14 +36,14 @@ class TypeToggle(ft.Container):
         def btn(label, mode):
             active = current_mode == mode
             return ft.Container(
-                content=ft.Text(label, size=10,
+                content=ft.Text(label, size=scaled(10),
                                 color=t.TEXT if active else t.TEXT_DIMMER,
                                 font_family="monospace",
                                 text_align=ft.TextAlign.CENTER),
                 expand=True,
                 bgcolor=t.SURFACE if active else "transparent",
-                border_radius=7,
-                padding=t.pad_sym(vertical=5),
+                border_radius=scaled(7),
+                padding=t.pad_sym(vertical=scaled(5)),
                 on_click=lambda e, m=mode: self._on_change(m),
                 ink=True,
             )
@@ -54,15 +55,15 @@ class TypeToggle(ft.Container):
             active = current_mode == mode
             color = t.RED if mode == "expense" else t.BLUE
             return ft.Container(
-                content=ft.Text(label, size=11, font_family="monospace",
+                content=ft.Text(label, size=scaled(11), font_family="monospace",
                                 color=color if active else t.TEXT_DIMMER,
                                 text_align=ft.TextAlign.CENTER),
                 expand=True,
                 bgcolor=t.alpha(color, "18") if active else t.SURFACE2,
                 border=t.border_all(1, t.alpha(color, "88") if active else t.BORDER),
-                border_radius=9,
-                padding=t.pad_sym(vertical=7),
+                border_radius=scaled(9),
+                padding=t.pad_sym(vertical=scaled(7)),
                 on_click=lambda e, m=mode: self._on_change(m),
                 ink=True,
             )
-        return ft.Row([btn(tr("components.expense_singular"), "expense"), btn(tr("components.income"), "income")], spacing=7)
+        return ft.Row([btn(tr("components.expense_singular"), "expense"), btn(tr("components.income"), "income")], spacing=scaled(7))

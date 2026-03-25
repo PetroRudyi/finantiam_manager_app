@@ -6,8 +6,10 @@ import flet as ft
 
 from app.state import AppState
 from app.migration import run_background_migration
+from backend.config import WINDOW_RESIZABLE
 from backend.update_service import check_for_update, get_apk_url
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr
 from frontend.screens.transactions import TransactionsScreen
 from frontend.screens.dashboard import DashboardScreen
@@ -26,15 +28,31 @@ class AppShell:
         self.page = page
         self.state = state
         self._in_add_screen = False
-        self._setup_page()
+        self._setup_page(width=1000, height=1000)
+
+    # ── Page setup ───────────────────────────────────────────
+
+    def _setup_page(self, width=390, height=720):
+        self.page.title = "Expense Tracker"
+        self.page.bgcolor = t.BG
+        self.page.padding = 0
+        self.page.spacing = 0
+        self.page.theme_mode = ft.ThemeMode.DARK
+        self.page.theme = ft.Theme(color_scheme_seed=t.ACCENT)
+        self.page.window.width = width
+        self.page.window.height = height
+        self.page.window.resizable = WINDOW_RESIZABLE
+
+    def _build_ui(self):
+        """Create all UI controls. Called AFTER init_scale so scaled() works."""
         self._content_area = ft.Container(expand=True)
         self._tab_row = ft.Row(
             [self._make_tab(label, idx) for idx, label in enumerate(_get_tab_labels())],
             spacing=0,
         )
         self._fab_button = ft.Container(
-            content=ft.Icon(ft.Icons.ADD_ROUNDED, size=28, color=t.WHITE),
-            width=52, height=52, border_radius=13,
+            content=ft.Icon(ft.Icons.ADD_ROUNDED, size=scaled(28), color=t.WHITE),
+            width=scaled(52), height=scaled(52), border_radius=scaled(13),
             bgcolor=t.ACCENT,
             alignment=ft.Alignment(0, 0),
             on_click=lambda e: self.open_add_receipt(),
@@ -46,27 +64,26 @@ class AppShell:
             border=ft.Border(top=ft.BorderSide(1, t.BORDER)),
         )
 
-    def _setup_page(self):
-        self.page.title = "Expense Tracker"
-        self.page.bgcolor = t.BG
-        self.page.padding = 0
-        self.page.spacing = 0
-        self.page.theme_mode = ft.ThemeMode.DARK
-        self.page.theme = ft.Theme(color_scheme_seed=t.ACCENT)
-        self.page.window.width = 390
-        self.page.window.height = 720
-        self.page.window.resizable = False
-
     def start(self):
         """Add controls to page and kick off initial rendering + migration."""
-        safe_top = ft.Container(height=28, bgcolor=t.BG)
-        safe_bottom = ft.Container(height=16, bgcolor=t.SURFACE)
+        # Flush page so that window dimensions are applied
+        self.page.update()
+
+        # Calculate scale based on window dimensions (not viewport — it may be 0 this early)
+        t.init_scale(self.page.window.width, self.page.window.height)
+
+        # Build all UI with correct scale
+        self._build_ui()
+
+        safe_top = ft.Container(height=scaled(28), bgcolor=t.BG)
+        safe_bottom = ft.Container(height=scaled(16), bgcolor=t.SURFACE)
         self.page.add(ft.Column(
             [safe_top, self._content_area, self._tab_bar, safe_bottom],
             spacing=0, expand=True,
         ))
         self.page.on_back = self._on_back
         self.page.on_keyboard_event = self._on_keyboard
+        self.page.on_resized = self._on_resized
         self.rebuild_nav()
         self.page.update()
 
@@ -120,15 +137,15 @@ class AppShell:
         self._tab_bar.update()
 
         if tab == 0:
-            s = TransactionsScreen(
+            screen = TransactionsScreen(
                 app_state=self.state,
                 on_add=self.open_add_receipt,
                 on_refresh=self.rebuild_nav,
             )
             self._content_area.content = ft.Stack(
                 controls=[
-                    s,
-                    ft.Container(content=self._fab_button, right=16, bottom=12),
+                    screen,
+                    ft.Container(content=self._fab_button, right=scaled(16), bottom=scaled(12)),
                 ],
                 expand=True,
             )
@@ -145,18 +162,33 @@ class AppShell:
         self._in_add_screen = True
         self._tab_bar.visible = False
         self._tab_bar.update()
-        s = AddReceiptScreen(
+        screen = AddReceiptScreen(
             app_state=self.state,
             on_save=lambda: self._close_add_screen(),
             on_cancel=self._close_add_screen,
             receipt=receipt,
         )
-        self._content_area.content = s
+        self._content_area.content = screen
         self._content_area.update()
 
     def _close_add_screen(self):
         self._in_add_screen = False
         self.rebuild_nav()
+
+    def _on_resized(self, e):
+        """Recalculate scale factor and rebuild the entire UI on window resize."""
+        t.init_scale(self.page.window.width, self.page.window.height)
+        # Rebuild all UI controls with new scale
+        self._build_ui()
+        safe_top = ft.Container(height=scaled(28), bgcolor=t.BG)
+        safe_bottom = ft.Container(height=scaled(16), bgcolor=t.SURFACE)
+        self.page.controls.clear()
+        self.page.add(ft.Column(
+            [safe_top, self._content_area, self._tab_bar, safe_bottom],
+            spacing=0, expand=True,
+        ))
+        self.rebuild_nav()
+        self.page.update()
 
     def _on_back(self, e):
         if self._in_add_screen:
@@ -174,20 +206,20 @@ class AppShell:
         return ft.Container(
             content=ft.Column(
                 controls=[
-                    ft.Container(height=2, width=24,
+                    ft.Container(height=scaled(2), width=scaled(24),
                                  bgcolor=t.ACCENT if active else "transparent",
-                                 border_radius=1),
-                    ft.Text(label, size=9,
+                                 border_radius=scaled(1)),
+                    ft.Text(label, size=scaled(9),
                             color=t.ACCENT if active else t.TEXT_DIMMER,
                             font_family="monospace",
                             text_align=ft.TextAlign.CENTER,
-                            style=ft.TextStyle(letter_spacing=1.0)),
+                            style=ft.TextStyle(letter_spacing=scaled(1.0))),
                 ],
-                spacing=3,
+                spacing=scaled(3),
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             ),
             expand=True,
-            padding=ft.Padding(left=0, right=0, top=9, bottom=14),
+            padding=ft.Padding(left=0, right=0, top=scaled(9), bottom=scaled(14)),
             on_click=lambda e, i=idx: self._set_tab(i),
             ink=True,
         )

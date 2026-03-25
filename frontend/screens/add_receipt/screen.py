@@ -12,6 +12,7 @@ import backend
 from backend.models import Receipt, InvoiceItem, AppSettings
 from backend.config import DEFAULT_CURRENCY, get_symbol
 from frontend import theme as t
+from frontend.theme import scaled
 from frontend.localisation import t as tr
 from frontend.screens.add_receipt.receipt_form import ReceiptForm
 from frontend.screens.add_receipt.items_table import (
@@ -58,10 +59,10 @@ class AddReceiptScreen(ft.Column):
                               style=ft.ButtonStyle(color=t.TEXT_DIM),
                               on_click=lambda e: self.on_cancel()),
                 ft.Text(tr("add_receipt.new_receipt") if not self.editing_receipt else tr("add_receipt.editing"),
-                        size=15, color=t.TEXT, weight=ft.FontWeight.W_600),
-                ft.Container(width=80),
+                        size=scaled(15), color=t.TEXT, weight=ft.FontWeight.W_600),
+                ft.Container(width=scaled(80)),
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-            padding=t.pad_only(left=8, right=18, top=4, bottom=10),
+            padding=t.pad_only(left=scaled(8), right=scaled(18), top=scaled(4), bottom=scaled(10)),
         )
 
         self._form = ReceiptForm(
@@ -86,27 +87,27 @@ class AddReceiptScreen(ft.Column):
         add_row = build_add_row(lambda e: self._open_item_dialog(None, None))
 
         self._total_text = ft.Text(
-            "", size=17, font_family="monospace", weight=ft.FontWeight.W_600)
+            "", size=scaled(17), font_family="monospace", weight=ft.FontWeight.W_600)
         self._update_total()
 
         save_bar = ft.Container(
             content=ft.Row([
                 ft.Column([
-                    ft.Text(tr("add_receipt.total"), size=8, color=t.TEXT_DIMMER,
+                    ft.Text(tr("add_receipt.total"), size=scaled(8), color=t.TEXT_DIMMER,
                             font_family="monospace",
-                            style=ft.TextStyle(letter_spacing=1.2)),
+                            style=ft.TextStyle(letter_spacing=scaled(1.2))),
                     self._total_text,
-                ], spacing=2),
+                ], spacing=scaled(2)),
                 ft.ElevatedButton(
                     tr("add_receipt.save"), bgcolor=t.ACCENT, color=t.WHITE,
                     style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=9),
-                        padding=t.pad_sym(horizontal=22, vertical=9),
+                        shape=ft.RoundedRectangleBorder(radius=scaled(9)),
+                        padding=t.pad_sym(horizontal=scaled(22), vertical=scaled(9)),
                     ),
                     on_click=self._save,
                 ),
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-            padding=t.pad_sym(horizontal=18, vertical=9),
+            padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(9)),
             border=t.border_top(),
         )
 
