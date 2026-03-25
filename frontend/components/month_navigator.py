@@ -23,7 +23,7 @@ class MonthNavigator(ft.Container):
         self._month = month
         self._on_change = on_change
 
-        month_label = f"{t.UA_MONTHS_SHORT[month]} {year}"
+        month_label = f"{t.get_months_short()[month]} {year}"
 
         right_controls = extra_right or ft.Container()
 

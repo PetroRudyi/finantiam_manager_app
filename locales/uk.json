@@ -1,0 +1,187 @@
+{
+  "shell": {
+    "tab_expenses": "ВИТРАТИ",
+    "tab_dashboard": "ДАШБОРД",
+    "tab_settings": "НАЛАШТ."
+  },
+  "update": {
+    "title": "Доступне оновлення",
+    "new_version": "Нова версія: {new_version}",
+    "update": "Оновити",
+    "later": "Пізніше"
+  },
+  "transactions": {
+    "no_records": "Немає записів",
+    "hint_add": "Натисніть + щоб додати чек",
+    "selected": "{count} обрано",
+    "delete": "Видалити",
+    "change_date": "Змінити дату",
+    "receipt": "Чек",
+    "items_suffix": "позицій"
+  },
+  "period_tabs": {
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "total": "Total"
+  },
+  "summary": {
+    "income": "Дохід",
+    "expenses": "Витрати",
+    "balance": "Залишок"
+  },
+  "dashboard": {
+    "custom": "Кастом",
+    "trend_title": "ТРЕНД ПО МІСЯЦЯХ",
+    "categories_title": "КАТЕГОРІЇ",
+    "no_data": "Немає даних",
+    "top_categories": "ТОП КАТЕГОРІЙ"
+  },
+  "add_receipt": {
+    "back": "← Назад",
+    "new_receipt": "Новий чек",
+    "editing": "Редагування",
+    "total": "РАЗОМ",
+    "save": "Зберегти"
+  },
+  "receipt_form": {
+    "date": "Дата",
+    "time": "Час",
+    "shop": "Магазин / джерело",
+    "optional": "необов'язково",
+    "currency": "Валюта",
+    "api_key_not_set": "API ключ не налаштований",
+    "ai_processing": "AI: обробка…",
+    "upload_photo": "Завантажити фото чеку (AI)"
+  },
+  "item_editor": {
+    "name": "НАЗВА",
+    "name_hint": "М'ясо куряче",
+    "quantity": "КІЛЬКІСТЬ",
+    "price": "ЦІНА",
+    "category": "КАТЕГОРІЯ",
+    "category_hint": "Назва категорії",
+    "new_category": "+ Нова категорія",
+    "new_item": "Нова позиція",
+    "editing": "Редагування",
+    "cancel": "Скасувати",
+    "add_item": "Додати позицію",
+    "save": "Зберегти",
+    "enter_name": "Введіть назву",
+    "invalid_number": "Невірне число",
+    "category_exists": "Така категорія вже існує"
+  },
+  "items_table": {
+    "name": "Назва",
+    "qty": "К-ть",
+    "price": "Ціна",
+    "cat": "Кат.",
+    "add_item": "+ Додати позицію"
+  },
+  "ai": {
+    "no_api_key": "Gemini API ключ не налаштований. Перевірте Налаштування.",
+    "pick_photo": "Оберіть фото чеку",
+    "no_file_path": "Не вдалося отримати шлях до файлу.",
+    "status_photo": "AI: підготовка фото…",
+    "status_gemini": "AI: запит до Gemini…",
+    "status_response": "AI: обробка відповіді…",
+    "status_categories": "AI: категорії та позиції…",
+    "status_form": "AI: оновлення форми…",
+    "status_done": "Готово: {count} позицій",
+    "status_error": "AI: помилка (перевірте API ключ)"
+  },
+  "settings": {
+    "title": "Налаштування",
+    "general": "ЗАГАЛЬНЕ",
+    "language": "Мова",
+    "default_currency": "Валюта за замовч.",
+    "dark_theme": "Темна тема",
+    "date_format": "Формат дати",
+    "categories": "КАТЕГОРІЇ",
+    "edit_categories": "Редагувати категорії",
+    "categories_count": "{count} категорій у списку",
+    "reset_defaults": "Відновити початкові",
+    "reset_sub": "Скинути до дефолтних",
+    "ai_gemini": "AI · GEMINI",
+    "api_key": "API ключ Gemini",
+    "for_receipts": "Для розпізнавання чеків",
+    "auto_fill": "Авто-заповнення",
+    "data": "ДАНІ",
+    "backup": "Резервна копія",
+    "backup_sub": "Останнє: дані в data/",
+    "export_csv": "Вигрузити всі дані у CSV",
+    "saved": "Збережено: {path}",
+    "currency_change_title": "Зміна базової валюти",
+    "recalc_progress": "Перерахунок валют... {percent}%"
+  },
+  "category_editor": {
+    "drag_hint": "Перетягніть рядок для зміни порядку",
+    "new_category_hint": "Нова категорія...",
+    "add": "+ Додати",
+    "categories_count": "{count} категорій",
+    "editing_label": "Редагується: {name}",
+    "category_exists": "Така категорія вже існує"
+  },
+  "api_key_editor": {
+    "label": "API ключ Gemini",
+    "hint": "AIza...",
+    "info": "Ключ використовується лише для запитів до сервісу Gemini для розпізнавання чеків.\nРозробник програми не має доступу до вашого API ключа і не може списувати кошти з вашого акаунта.",
+    "cancel": "Скасувати",
+    "save": "Зберегти"
+  },
+  "components": {
+    "expenses": "Витрати",
+    "income": "Дохід",
+    "expense_singular": "Витрата"
+  },
+  "months_short": {
+    "1": "Січ.",
+    "2": "Лют.",
+    "3": "Бер.",
+    "4": "Квіт.",
+    "5": "Трав.",
+    "6": "Черв.",
+    "7": "Лип.",
+    "8": "Серп.",
+    "9": "Вер.",
+    "10": "Жовт.",
+    "11": "Лист.",
+    "12": "Груд."
+  },
+  "days_short": {
+    "0": "Пн",
+    "1": "Вт",
+    "2": "Ср",
+    "3": "Чт",
+    "4": "Пт",
+    "5": "Сб",
+    "6": "Нд"
+  },
+  "months_chart": {
+    "1": "Сі",
+    "2": "Лю",
+    "3": "Бе",
+    "4": "Кв",
+    "5": "Тр",
+    "6": "Чр",
+    "7": "Лп",
+    "8": "Сп",
+    "9": "Ве",
+    "10": "Жо",
+    "11": "Лс",
+    "12": "Гр"
+  },
+  "default_categories": {
+    "1": "Дім",
+    "2": "Їжа",
+    "3": "М'ясо",
+    "4": "Смаколики",
+    "5": "Здоров'я",
+    "6": "Ігри",
+    "7": "Хобі",
+    "8": "Відео ігри",
+    "9": "Подарунки",
+    "10": "Транспорт",
+    "11": "Одяг",
+    "12": "Інше"
+  }
+}

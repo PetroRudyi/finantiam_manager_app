@@ -5,6 +5,7 @@ from typing import List
 
 import backend
 from backend.models import AppSettings, Receipt
+from frontend.localisation import init as init_localisation
 
 
 class AppState:
@@ -16,16 +17,19 @@ class AppState:
 
     def __init__(self):
         self.settings: AppSettings = backend.load_settings()
+        init_localisation(self.settings.language)
         self.receipts: List[Receipt] = backend.load_receipts()
         self.current_tab: int = 0
 
     def reload(self):
         """Reload both settings and receipts from disk."""
         self.settings = backend.load_settings()
+        init_localisation(self.settings.language)
         self.receipts = backend.load_receipts()
 
     def reload_settings(self):
         self.settings = backend.load_settings()
+        init_localisation(self.settings.language)
 
     def reload_receipts(self):
         self.receipts = backend.load_receipts()

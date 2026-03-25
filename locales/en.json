@@ -1,0 +1,187 @@
+{
+  "shell": {
+    "tab_expenses": "EXPENSES",
+    "tab_dashboard": "DASHBOARD",
+    "tab_settings": "SETTINGS"
+  },
+  "update": {
+    "title": "Update available",
+    "new_version": "New version: {new_version}",
+    "update": "Update",
+    "later": "Later"
+  },
+  "transactions": {
+    "no_records": "No records",
+    "hint_add": "Press + to add a receipt",
+    "selected": "{count} selected",
+    "delete": "Delete",
+    "change_date": "Change date",
+    "receipt": "Receipt",
+    "items_suffix": "items"
+  },
+  "period_tabs": {
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "total": "Total"
+  },
+  "summary": {
+    "income": "Income",
+    "expenses": "Expenses",
+    "balance": "Balance"
+  },
+  "dashboard": {
+    "custom": "Custom",
+    "trend_title": "MONTHLY TREND",
+    "categories_title": "CATEGORIES",
+    "no_data": "No data",
+    "top_categories": "TOP CATEGORIES"
+  },
+  "add_receipt": {
+    "back": "← Back",
+    "new_receipt": "New receipt",
+    "editing": "Editing",
+    "total": "TOTAL",
+    "save": "Save"
+  },
+  "receipt_form": {
+    "date": "Date",
+    "time": "Time",
+    "shop": "Shop / source",
+    "optional": "optional",
+    "currency": "Currency",
+    "api_key_not_set": "API key not configured",
+    "ai_processing": "AI: processing…",
+    "upload_photo": "Upload receipt photo (AI)"
+  },
+  "item_editor": {
+    "name": "NAME",
+    "name_hint": "Chicken breast",
+    "quantity": "QUANTITY",
+    "price": "PRICE",
+    "category": "CATEGORY",
+    "category_hint": "Category name",
+    "new_category": "+ New category",
+    "new_item": "New item",
+    "editing": "Editing",
+    "cancel": "Cancel",
+    "add_item": "Add item",
+    "save": "Save",
+    "enter_name": "Enter a name",
+    "invalid_number": "Invalid number",
+    "category_exists": "This category already exists"
+  },
+  "items_table": {
+    "name": "Name",
+    "qty": "Qty",
+    "price": "Price",
+    "cat": "Cat.",
+    "add_item": "+ Add item"
+  },
+  "ai": {
+    "no_api_key": "Gemini API key not configured. Check Settings.",
+    "pick_photo": "Select receipt photo",
+    "no_file_path": "Could not get file path.",
+    "status_photo": "AI: preparing photo…",
+    "status_gemini": "AI: requesting Gemini…",
+    "status_response": "AI: processing response…",
+    "status_categories": "AI: categories & items…",
+    "status_form": "AI: updating form…",
+    "status_done": "Done: {count} items",
+    "status_error": "AI: error (check API key)"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "GENERAL",
+    "language": "Language",
+    "default_currency": "Default currency",
+    "dark_theme": "Dark theme",
+    "date_format": "Date format",
+    "categories": "CATEGORIES",
+    "edit_categories": "Edit categories",
+    "categories_count": "{count} categories in list",
+    "reset_defaults": "Reset to defaults",
+    "reset_sub": "Reset to default values",
+    "ai_gemini": "AI · GEMINI",
+    "api_key": "Gemini API key",
+    "for_receipts": "For receipt recognition",
+    "auto_fill": "Auto-fill",
+    "data": "DATA",
+    "backup": "Backup",
+    "backup_sub": "Latest: data in data/",
+    "export_csv": "Export all data to CSV",
+    "saved": "Saved: {path}",
+    "currency_change_title": "Base currency change",
+    "recalc_progress": "Currency recalculation... {percent}%"
+  },
+  "category_editor": {
+    "drag_hint": "Drag row to reorder",
+    "new_category_hint": "New category...",
+    "add": "+ Add",
+    "categories_count": "{count} categories",
+    "editing_label": "Editing: {name}",
+    "category_exists": "This category already exists"
+  },
+  "api_key_editor": {
+    "label": "Gemini API key",
+    "hint": "AIza...",
+    "info": "The key is used only for requests to Gemini service for receipt recognition.\nThe app developer has no access to your API key and cannot charge your account.",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "components": {
+    "expenses": "Expenses",
+    "income": "Income",
+    "expense_singular": "Expense"
+  },
+  "months_short": {
+    "1": "Jan",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Aug",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec"
+  },
+  "days_short": {
+    "0": "Mo",
+    "1": "Tu",
+    "2": "We",
+    "3": "Th",
+    "4": "Fr",
+    "5": "Sa",
+    "6": "Su"
+  },
+  "months_chart": {
+    "1": "Ja",
+    "2": "Fe",
+    "3": "Mr",
+    "4": "Ap",
+    "5": "Ma",
+    "6": "Jn",
+    "7": "Jl",
+    "8": "Au",
+    "9": "Se",
+    "10": "Oc",
+    "11": "No",
+    "12": "De"
+  },
+  "default_categories": {
+    "1": "Home",
+    "2": "Food",
+    "3": "Meat",
+    "4": "Sweets",
+    "5": "Health",
+    "6": "Games",
+    "7": "Hobby",
+    "8": "Video games",
+    "9": "Gifts",
+    "10": "Transport",
+    "11": "Clothing",
+    "12": "Other"
+  }
+}

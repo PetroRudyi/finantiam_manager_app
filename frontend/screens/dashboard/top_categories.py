@@ -7,6 +7,7 @@ import flet as ft
 import backend
 from backend.models import Receipt, AppSettings
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 def build_top_categories(receipts: List[Receipt], mode: str,
@@ -19,7 +20,7 @@ def build_top_categories(receipts: List[Receipt], mode: str,
     grand = sum(cat_totals.values()) or 1
 
     header = ft.Container(
-        content=ft.Text("ТОП КАТЕГОРІЙ", size=9, color=t.TEXT_DIMMER,
+        content=ft.Text(tr("dashboard.top_categories"), size=9, color=t.TEXT_DIMMER,
                         font_family="monospace",
                         style=ft.TextStyle(letter_spacing=1.2)),
         padding=t.pad_only(left=18, right=18, top=6, bottom=4),
@@ -54,7 +55,7 @@ def build_top_categories(receipts: List[Receipt], mode: str,
 
     if not cat_totals:
         rows.append(ft.Container(
-            content=ft.Text("Немає даних", size=12, color=t.TEXT_DIMMER,
+            content=ft.Text(tr("dashboard.no_data"), size=12, color=t.TEXT_DIMMER,
                             text_align=ft.TextAlign.CENTER),
             padding=30, alignment=ft.Alignment(0, 0),
         ))

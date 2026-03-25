@@ -12,6 +12,7 @@ import flet as ft
 import backend
 from backend.models import AppSettings, Category
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 class CategoryEditor:
@@ -31,7 +32,7 @@ class CategoryEditor:
         settings: AppSettings = self.app_state.settings
 
         self._new_cat_field = ft.TextField(
-            hint_text="Нова категорія...",
+            hint_text=tr("category_editor.new_category_hint"),
             bgcolor=t.SURFACE2,
             border_color=t.BORDER,
             focused_border_color=t.ACCENT,
@@ -58,13 +59,13 @@ class CategoryEditor:
         active_cats = [c for c in settings.categories if not c.deleted]
         editing_label = ""
         if self._editing_cat_idx is not None and 0 <= self._editing_cat_idx < len(active_cats):
-            editing_label = f" · Редагується: {active_cats[self._editing_cat_idx].name}"
+            editing_label = f" · {tr('category_editor.editing_label').replace('{name}', active_cats[self._editing_cat_idx].name)}"
 
         return ft.Column(
             [
                 ft.Container(
                     content=ft.Text(
-                        "Перетягніть рядок для зміни порядку",
+                        tr("category_editor.drag_hint"),
                         size=9,
                         color=t.TEXT_DIMMER,
                         font_family="monospace",
@@ -77,7 +78,7 @@ class CategoryEditor:
                         [
                             self._new_cat_field,
                             ft.ElevatedButton(
-                                "+ Додати",
+                                tr("category_editor.add"),
                                 bgcolor=t.ACCENT,
                                 color=t.WHITE,
                                 style=ft.ButtonStyle(
@@ -97,7 +98,7 @@ class CategoryEditor:
                 ),
                 ft.Container(
                     content=ft.Text(
-                        f"{len(active_cats)} категорій{editing_label}",
+                        tr("category_editor.categories_count").replace("{count}", str(len(active_cats))) + editing_label,
                         size=9,
                         color=t.TEXT_DIMMER,
                         font_family="monospace",
@@ -282,7 +283,7 @@ class CategoryEditor:
         if new_name and new_name != cat.name:
             for c in active:
                 if c.id != cat.id and c.name == new_name:
-                    self._cat_error.value = "Така категорія вже існує"
+                    self._cat_error.value = tr("category_editor.category_exists")
                     try:
                         self._cat_error.update()
                     except Exception:
@@ -304,7 +305,7 @@ class CategoryEditor:
 
         for c in settings.categories:
             if not c.deleted and c.name == name:
-                self._cat_error.value = "Така категорія вже існує"
+                self._cat_error.value = tr("category_editor.category_exists")
                 try:
                     self._cat_error.update()
                 except Exception:

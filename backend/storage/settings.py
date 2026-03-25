@@ -9,14 +9,18 @@ from backend.storage._paths import SETTINGS_FILE, API_KEY_FILE, ensure_data_dir
 
 def load_settings() -> AppSettings:
     ensure_data_dir()
+    first_launch = not SETTINGS_FILE.exists()
     settings = AppSettings()
-    if SETTINGS_FILE.exists():
+    if not first_launch:
         try:
             settings = AppSettings.from_dict(
                 json.loads(SETTINGS_FILE.read_text("utf-8"))
             )
         except Exception:
             pass
+    if first_launch:
+        from frontend.localisation import detect_system_language
+        settings.language = detect_system_language()
     if API_KEY_FILE.exists():
         try:
             data = json.loads(API_KEY_FILE.read_text("utf-8"))

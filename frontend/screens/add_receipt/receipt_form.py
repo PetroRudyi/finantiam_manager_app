@@ -7,6 +7,7 @@ import flet as ft
 
 from backend.config import CURRENCY_CODES
 from frontend import theme as t
+from frontend.localisation import t as tr
 from frontend.components.type_toggle import TypeToggle
 
 
@@ -41,7 +42,7 @@ class ReceiptForm:
         _txt = ft.TextStyle(size=12, color=t.TEXT)
 
         self.date_field = ft.TextField(
-            value=self._date.strftime("%d.%m.%Y"), label="Дата",
+            value=self._date.strftime("%d.%m.%Y"), label=tr("receipt_form.date"),
             bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
             border_radius=9, expand=True, read_only=True,
             label_style=_lbl, text_style=_txt,
@@ -50,7 +51,7 @@ class ReceiptForm:
         self.date_field.on_click = self._open_date_picker
 
         self.time_field = ft.TextField(
-            value=self._date.strftime("%H:%M"), label="Час",
+            value=self._date.strftime("%H:%M"), label=tr("receipt_form.time"),
             bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
             border_radius=9, expand=True,
             label_style=_lbl, text_style=_txt,
@@ -58,8 +59,8 @@ class ReceiptForm:
         )
 
         self.shop_field = ft.TextField(
-            value=self._business, hint_text="необов'язково",
-            label="Магазин / джерело",
+            value=self._business, hint_text=tr("receipt_form.optional"),
+            label=tr("receipt_form.shop"),
             bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
             border_radius=9, expand=True,
             label_style=_lbl, text_style=_txt,
@@ -68,7 +69,7 @@ class ReceiptForm:
         )
 
         self.currency_field = ft.Dropdown(
-            value=self._currency, label="Валюта",
+            value=self._currency, label=tr("receipt_form.currency"),
             bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=9,
             width=100,
             label_style=_lbl, text_style=_txt,
@@ -82,16 +83,16 @@ class ReceiptForm:
 
         status_text = self._ai_status_text
         if not self._has_api_key:
-            status_text = "API ключ не налаштований"
+            status_text = tr("receipt_form.api_key_not_set")
         elif self._ai_running and not status_text:
-            status_text = "AI: обробка…"
+            status_text = tr("receipt_form.ai_processing")
 
         self.ai_status = ft.Text(status_text, size=10, color=t.TEXT_DIMMER,
                                  font_family="monospace")
 
         self.ai_btn = ft.Container(
             content=ft.Row([
-                ft.Text("Завантажити фото чеку (AI)", size=11,
+                ft.Text(tr("receipt_form.upload_photo"), size=11,
                         color=t.ACCENT if self._has_api_key else t.TEXT_DIMMER,
                         font_family="monospace"),
                 self.ai_status,

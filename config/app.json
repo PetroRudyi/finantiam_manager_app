@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "update": {
+    "version_url": "https://example.com/finance-manager/version.json",
+    "apk_url": "https://github.com/PetroRudyi/finantiam_manager_app/releases/tag/apk/finance_manager.apk"
+  }
+}

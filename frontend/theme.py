@@ -21,22 +21,22 @@ from backend.config import get_symbol, DEFAULT_CURRENCY
 
 
 # ──────────────────────────────────────────
-#  Ukrainian locale helpers
+#  Locale helpers (loaded from translations)
 # ──────────────────────────────────────────
 
-UA_MONTHS_SHORT = {
-    1: "Січ.", 2: "Лют.", 3: "Бер.", 4: "Квіт.", 5: "Трав.", 6: "Черв.",
-    7: "Лип.", 8: "Серп.", 9: "Вер.", 10: "Жовт.", 11: "Лист.", 12: "Груд.",
-}
+def get_months_short() -> dict:
+    from frontend.localisation import t
+    return {i: t(f"months_short.{i}") for i in range(1, 13)}
 
-UA_DAYS_SHORT = {
-    0: "Пн", 1: "Вт", 2: "Ср", 3: "Чт", 4: "Пт", 5: "Сб", 6: "Нд",
-}
 
-UA_MONTHS_CHART = {
-    1: "Сі", 2: "Лю", 3: "Бе", 4: "Кв", 5: "Тр", 6: "Чр",
-    7: "Лп", 8: "Сп", 9: "Ве", 10: "Жо", 11: "Лс", 12: "Гр",
-}
+def get_days_short() -> dict:
+    from frontend.localisation import t
+    return {i: t(f"days_short.{i}") for i in range(7)}
+
+
+def get_months_chart() -> dict:
+    from frontend.localisation import t
+    return {i: t(f"months_chart.{i}") for i in range(1, 13)}
 
 
 def alpha(color: str, a: str) -> str:

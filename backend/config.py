@@ -70,6 +70,24 @@ CURRENCIES: List[CurrencyDef] = _load_currencies()
 CURRENCY_CODES: List[str] = [c.code for c in CURRENCIES]
 CURRENCY_MAP: Dict[str, CurrencyDef] = {c.code: c for c in CURRENCIES}
 
+
+# ── Languages ─────────────────────────────────────────
+
+def _load_languages() -> Dict[str, str]:
+    """Load supported languages from config/languages.json → {code: name}."""
+    data = _load_json("languages.json")
+    result: Dict[str, str] = {}
+    for row in data:
+        code = str(row.get("code", ""))
+        name = str(row.get("name", code))
+        if code:
+            result[code] = name
+    return result if result else {"en": "English"}
+
+
+SUPPORTED_LANGUAGES: Dict[str, str] = _load_languages()
+LANGUAGE_CODES: List[str] = list(SUPPORTED_LANGUAGES.keys())
+
 # Map: symbol / name / id → canonical code  (for normalizing "Lei" → "RON" etc.)
 _ALIAS_TO_CODE: Dict[str, str] = {}
 for _c in CURRENCIES:
@@ -110,3 +128,16 @@ DEFAULT_CATEGORY: str = (
     DEFAULT_CATEGORY_DEFS[-1].name if DEFAULT_CATEGORY_DEFS else "Інше"
 )
 DEFAULT_CATEGORIES: List[str] = [c.name for c in DEFAULT_CATEGORY_DEFS]
+
+
+# ── App meta (version, update URLs) ─────────────────────
+
+_app_cfg = _load_json("app.json") if (CONFIG_DIR / "app.json").exists() else {}
+if isinstance(_app_cfg, list):
+    _app_cfg = {}
+
+APP_VERSION: str = _app_cfg.get("version", "1.0.0")
+
+_update_cfg = _app_cfg.get("update", {})
+UPDATE_VERSION_URL: str = _update_cfg.get("version_url", "")
+UPDATE_APK_URL: str = _update_cfg.get("apk_url", "")

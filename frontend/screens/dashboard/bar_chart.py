@@ -7,11 +7,11 @@ import flet as ft
 import backend
 from backend.models import Receipt
 from frontend import theme as t
+from frontend.localisation import t as tr
 
-_ENG_TO_UA = {
-    "Jan": "Сі", "Feb": "Лю", "Mar": "Бе", "Apr": "Кв",
-    "May": "Тр", "Jun": "Чр", "Jul": "Лп", "Aug": "Сп",
-    "Sep": "Ве", "Oct": "Жо", "Nov": "Лс", "Dec": "Гр",
+_ENG_MONTH_TO_NUM = {
+    "Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6,
+    "Jul": 7, "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12,
 }
 
 
@@ -28,10 +28,12 @@ def build_bar_chart(receipts: List[Receipt], mode: str,
     selected_total = items[selected_idx][1] if len(items) > selected_idx else 0
 
     bars = []
+    months_chart = t.get_months_chart()
     for i, (month_label, val) in enumerate(items):
         is_selected = i == selected_idx
         height = max(4, int((val / max_v) * 55)) if max_v > 0 else 4
-        ua_label = _ENG_TO_UA.get(month_label, month_label)
+        month_num = _ENG_MONTH_TO_NUM.get(month_label, 0)
+        chart_label = months_chart.get(month_num, month_label)
         bars.append(ft.Column([
             ft.Container(
                 height=height, bgcolor=chart_color,
@@ -39,7 +41,7 @@ def build_bar_chart(receipts: List[Receipt], mode: str,
                                               bottom_left=0, bottom_right=0),
                 opacity=1.0 if is_selected else 0.5,
             ),
-            ft.Text(ua_label, size=8,
+            ft.Text(chart_label, size=8,
                     color=t.ACCENT if is_selected else t.TEXT_DIMMER,
                     font_family="monospace"),
         ], spacing=3, horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -47,7 +49,7 @@ def build_bar_chart(receipts: List[Receipt], mode: str,
 
     return ft.Container(
         content=ft.Column([
-            ft.Text("ТРЕНД ПО МІСЯЦЯХ", size=9, color=t.TEXT_DIMMER,
+            ft.Text(tr("dashboard.trend_title"), size=9, color=t.TEXT_DIMMER,
                     font_family="monospace",
                     style=ft.TextStyle(letter_spacing=1.2)),
             ft.Text(t.format_amount(selected_total, currency=base_currency),

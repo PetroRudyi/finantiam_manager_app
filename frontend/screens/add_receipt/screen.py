@@ -12,6 +12,7 @@ import backend
 from backend.models import Receipt, InvoiceItem, AppSettings
 from backend.config import DEFAULT_CURRENCY, get_symbol
 from frontend import theme as t
+from frontend.localisation import t as tr
 from frontend.screens.add_receipt.receipt_form import ReceiptForm
 from frontend.screens.add_receipt.items_table import (
     build_column_headers, build_add_row, build_item_row, update_total_text,
@@ -53,10 +54,10 @@ class AddReceiptScreen(ft.Column):
 
         header = ft.Container(
             content=ft.Row([
-                ft.TextButton("← Назад",
+                ft.TextButton(tr("add_receipt.back"),
                               style=ft.ButtonStyle(color=t.TEXT_DIM),
                               on_click=lambda e: self.on_cancel()),
-                ft.Text("Новий чек" if not self.editing_receipt else "Редагування",
+                ft.Text(tr("add_receipt.new_receipt") if not self.editing_receipt else tr("add_receipt.editing"),
                         size=15, color=t.TEXT, weight=ft.FontWeight.W_600),
                 ft.Container(width=80),
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
@@ -91,13 +92,13 @@ class AddReceiptScreen(ft.Column):
         save_bar = ft.Container(
             content=ft.Row([
                 ft.Column([
-                    ft.Text("РАЗОМ", size=8, color=t.TEXT_DIMMER,
+                    ft.Text(tr("add_receipt.total"), size=8, color=t.TEXT_DIMMER,
                             font_family="monospace",
                             style=ft.TextStyle(letter_spacing=1.2)),
                     self._total_text,
                 ], spacing=2),
                 ft.ElevatedButton(
-                    "Зберегти", bgcolor=t.ACCENT, color=t.WHITE,
+                    tr("add_receipt.save"), bgcolor=t.ACCENT, color=t.WHITE,
                     style=ft.ButtonStyle(
                         shape=ft.RoundedRectangleBorder(radius=9),
                         padding=t.pad_sym(horizontal=22, vertical=9),

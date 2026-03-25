@@ -4,6 +4,7 @@
 from typing import Callable
 import flet as ft
 from frontend import theme as t
+from frontend.localisation import t as tr
 
 
 class TypeToggle(ft.Container):
@@ -45,7 +46,7 @@ class TypeToggle(ft.Container):
                 on_click=lambda e, m=mode: self._on_change(m),
                 ink=True,
             )
-        return ft.Row([btn("Витрати", "expense"), btn("Дохід", "income")],
+        return ft.Row([btn(tr("components.expenses"), "expense"), btn(tr("components.income"), "income")],
                       spacing=0)
 
     def _outlined(self, current_mode: str) -> ft.Row:
@@ -64,4 +65,4 @@ class TypeToggle(ft.Container):
                 on_click=lambda e, m=mode: self._on_change(m),
                 ink=True,
             )
-        return ft.Row([btn("Витрата", "expense"), btn("Дохід", "income")], spacing=7)
+        return ft.Row([btn(tr("components.expense_singular"), "expense"), btn(tr("components.income"), "income")], spacing=7)

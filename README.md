@@ -20,44 +20,72 @@ python main.py
 ## Project Structure
 
 ```
-expense_tracker/
+finance_manager/
 ├── main.py                        # Entry point
 ├── requirements.txt
-├── README.md
+├── app/
+│   ├── state.py                   # Centralized app state
+│   ├── shell.py                   # Tab bar, navigation, FAB
+│   └── migration.py               # Background exchange rate migration
 ├── backend/
-│   ├── __init__.py
 │   ├── models.py                  # Pydantic: Receipt, InvoiceItem, AppSettings
-│   ├── storage.py                 # JSON/CSV storage
-│   └── ai_service.py             # Gemini AI receipt recognition
+│   ├── config.py                  # Currency/category/language configuration
+│   ├── analytics.py               # Receipt analytics
+│   ├── exchange_service.py        # Currency exchange rates (with caching)
+│   ├── update_service.py          # App version checking
+│   ├── ai_service.py              # Gemini AI receipt recognition
+│   └── storage/
+│       ├── _paths.py              # File path definitions
+│       ├── settings.py            # Settings persistence (JSON)
+│       ├── receipts.py            # Receipt persistence (JSON)
+│       ├── export.py              # CSV export
+│       └── recalculation.py       # Batch exchange rate recalculation
 ├── frontend/
-│   ├── __init__.py
-│   ├── theme.py                   # Colors, padding/border helpers (Flet 0.80+)
-│   ├── screen_transactions.py    # Screen 01
-│   ├── screen_add_receipt.py     # Screen 02
-│   ├── screen_dashboard.py       # Screen 03
-│   └── screen_settings.py        # Screen 04
-└── data/
-    ├── receipts.json
-    ├── settings.json
-    └── export.csv                 # Generated on export
+│   ├── localisation.py            # Translation module
+│   ├── theme.py                   # Colors, typography helpers (Flet 0.80+)
+│   ├── helpers.py                 # Utility functions
+│   └── screens/
+│       ├── transactions/          # Transactions list screen
+│       ├── dashboard/             # Analytics dashboard
+│       ├── add_receipt/           # Receipt entry & editing
+│       └── settings/              # Settings screen
+├── config/                        # Static configuration files
+│   ├── currencies.json
+│   ├── categories.json
+│   ├── app.json
+│   └── languages.json
+└── locales/                       # Translation files
+    ├── en.json
+    └── uk.json
 ```
 
 ---
 
-## Flet 0.80+ Compatibility
+## Data Storage
 
-This version fixes all deprecation warnings:
+App data is stored **outside the project directory** to prevent test data from leaking into APK builds.
 
-| Old API (pre-0.80) | New API (0.80+) |
+| Platform | Path                                                                                           |
+|---|------------------------------------------------------------------------------------------------|
+| **Android / iOS** | `FLET_APP_STORAGE_DATA` (set by Flet runtime)                                                  |
+| **Windows** | `%APPDATA%\finance_manager\`                                                                   |
+| **Windows (MS Store Python)** | `%LOCALAPPDATA%\Packages\PythonSoftwareFoundation.Python.*\LocalCache\Roaming\finance_manager\` |
+| **macOS** | `~/Library/Application Support/finance_manager/`                                               |
+| **Linux** | `$XDG_DATA_HOME/finance_manager/` (`~/.local/share/finance_manager/`)                          |
+
+Important: can be in python local AppData. Not Windows`s one.
+
+Stored files:
+
+| File | Contents |
 |---|---|
-| `ft.app(target=main)` | `ft.run(target=main)` |
-| `ft.padding.only(...)` | `ft.Padding(left=..., right=..., top=..., bottom=...)` |
-| `ft.padding.symmetric(...)` | `ft.Padding(left=h, right=h, top=v, bottom=v)` |
-| `ft.margin.only(...)` | `ft.Margin(left=..., right=..., ...)` |
-| `ft.border.all(w, c)` | `ft.Border(left=ft.BorderSide(w,c), right=..., top=..., bottom=...)` |
-| `ft.border.only(top=...)` | `ft.Border(top=ft.BorderSide(w, c))` |
-| `ft.border_radius.only(...)` | `ft.BorderRadius(tl, tr, br, bl)` |
-| `ft.Text(letter_spacing=...)` | `ft.Text(style=ft.TextStyle(letter_spacing=...))` |
+| `receipts.json` | All receipts |
+| `settings.json` | User settings (currency, language, theme, categories) |
+| `gemini_api_key.json` | Gemini API key (separate for security) |
+| `exchange_rates.json` | Cached exchange rates |
+| `export.csv` | Generated on export |
+
+The directory is created automatically on first launch.
 
 ---
 
