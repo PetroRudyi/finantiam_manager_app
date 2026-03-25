@@ -17,6 +17,10 @@ from frontend.screens.dashboard.top_categories import build_top_categories
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
+from frontend.sizes import FONT_SM
+from frontend.screens.dashboard.sizes import (
+    CUSTOM_BTN_RADIUS, CUSTOM_BTN_PAD_H, CUSTOM_BTN_PAD_V,
+)
 
 
 class DashboardScreen(ft.Column):
@@ -45,10 +49,10 @@ class DashboardScreen(ft.Column):
         ]
 
         extra_right = ft.Container(
-            content=ft.Text(tr("dashboard.custom"), size=scaled(9), color=t.TEXT_DIM,
+            content=ft.Text(tr("dashboard.custom"), size=scaled(FONT_SM), color=t.TEXT_DIM,
                             font_family="monospace"),
-            bgcolor=t.SURFACE2, border_radius=scaled(8),
-            padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(5)),
+            bgcolor=t.SURFACE2, border_radius=scaled(CUSTOM_BTN_RADIUS),
+            padding=t.pad_sym(horizontal=scaled(CUSTOM_BTN_PAD_H), vertical=scaled(CUSTOM_BTN_PAD_V)),
             border=t.border_all(),
         )
 

@@ -6,6 +6,9 @@ import flet as ft
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
+from frontend.sizes import (
+    FONT_SM_MD, FONT_MD, PAD_PAGE_H, FIELD_RADIUS, GAP_LG, GAP_MD,
+)
 
 
 class TypeToggle(ft.Container):
@@ -25,8 +28,8 @@ class TypeToggle(ft.Container):
             content = self._filled(current_mode)
             super().__init__(
                 content=content,
-                bgcolor=t.SURFACE2, border_radius=scaled(9), padding=scaled(3),
-                margin=t.mar_only(left=scaled(18), right=scaled(18), bottom=scaled(8)),
+                bgcolor=t.SURFACE2, border_radius=scaled(FIELD_RADIUS), padding=scaled(3),
+                margin=t.mar_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H), bottom=scaled(GAP_LG)),
             )
         else:
             content = self._outlined(current_mode)
@@ -36,7 +39,7 @@ class TypeToggle(ft.Container):
         def btn(label, mode):
             active = current_mode == mode
             return ft.Container(
-                content=ft.Text(label, size=scaled(10),
+                content=ft.Text(label, size=scaled(FONT_SM_MD),
                                 color=t.TEXT if active else t.TEXT_DIMMER,
                                 font_family="monospace",
                                 text_align=ft.TextAlign.CENTER),
@@ -55,13 +58,13 @@ class TypeToggle(ft.Container):
             active = current_mode == mode
             color = t.RED if mode == "expense" else t.BLUE
             return ft.Container(
-                content=ft.Text(label, size=scaled(11), font_family="monospace",
+                content=ft.Text(label, size=scaled(FONT_MD), font_family="monospace",
                                 color=color if active else t.TEXT_DIMMER,
                                 text_align=ft.TextAlign.CENTER),
                 expand=True,
                 bgcolor=t.alpha(color, "18") if active else t.SURFACE2,
                 border=t.border_all(1, t.alpha(color, "88") if active else t.BORDER),
-                border_radius=scaled(9),
+                border_radius=scaled(FIELD_RADIUS),
                 padding=t.pad_sym(vertical=scaled(7)),
                 on_click=lambda e, m=mode: self._on_change(m),
                 ink=True,

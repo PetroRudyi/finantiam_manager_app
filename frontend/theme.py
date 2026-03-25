@@ -18,6 +18,12 @@ Key changes vs old API:
 import flet as ft
 
 from backend.config import get_symbol, DEFAULT_CURRENCY, BASE_WIDTH, BASE_HEIGHT
+from frontend.sizes import (
+    FONT_SM, FONT_BODY, FONT_LG, LETTER_SPACING,
+    PAD_PAGE_H, PAD_SECTION_TOP, PAD_SECTION_BOTTOM,
+    FIELD_RADIUS, FIELD_PAD_H, FIELD_PAD_V,
+    BORDER_WIDTH, DIVIDER_H,
+)
 
 
 # ──────────────────────────────────────────
@@ -132,16 +138,16 @@ def mar_only(left=0, right=0, top=0, bottom=0) -> ft.Margin:
     return ft.Margin(left=left, right=right, top=top, bottom=bottom)
 
 
-def border_all(width=scaled(1), color=BORDER) -> ft.Border:
+def border_all(width=scaled(BORDER_WIDTH), color=BORDER) -> ft.Border:
     side = ft.BorderSide(width, color)
     return ft.Border(left=side, right=side, top=side, bottom=side)
 
 
-def border_top(width=scaled(1), color=BORDER) -> ft.Border:
+def border_top(width=scaled(BORDER_WIDTH), color=BORDER) -> ft.Border:
     return ft.Border(top=ft.BorderSide(width, color))
 
 
-def border_bottom(width=scaled(1), color=BORDER) -> ft.Border:
+def border_bottom(width=scaled(BORDER_WIDTH), color=BORDER) -> ft.Border:
     return ft.Border(bottom=ft.BorderSide(width, color))
 
 
@@ -153,22 +159,23 @@ def mono_label(text: str, size=None, color=TEXT_DIMMER) -> ft.Text:
     """Uppercase monospace label (replaces letter_spacing on Text)."""
     return ft.Text(
         text.upper(),
-        size=size if size is not None else scaled(9),
+        size=size if size is not None else scaled(FONT_SM),
         color=color,
         font_family="monospace",
-        style=ft.TextStyle(letter_spacing=scaled(1.2)),
+        style=ft.TextStyle(letter_spacing=scaled(LETTER_SPACING)),
     )
 
 
 def section_title(text: str) -> ft.Container:
     return ft.Container(
         content=mono_label(text),
-        padding=pad_only(left=int(scaled(18)), right=int(scaled(18)), top=int(scaled(12)), bottom=int(scaled(6))),
+        padding=pad_only(left=int(scaled(PAD_PAGE_H)), right=int(scaled(PAD_PAGE_H)),
+                         top=int(scaled(PAD_SECTION_TOP)), bottom=int(scaled(PAD_SECTION_BOTTOM))),
     )
 
 
 def divider() -> ft.Divider:
-    return ft.Divider(height=scaled(1), color=BORDER, thickness=scaled(1))
+    return ft.Divider(height=scaled(DIVIDER_H), color=BORDER, thickness=scaled(DIVIDER_H))
 
 
 # ──────────────────────────────────────────
@@ -186,11 +193,11 @@ def text_field(label_text: str, value="", hint="", on_change=None,
         bgcolor=SURFACE2,
         border_color=BORDER,
         focused_border_color=ACCENT,
-        label_style=ft.TextStyle(size=scaled(9), color=TEXT_DIMMER, font_family="monospace"),
-        text_style=ft.TextStyle(size=scaled(13), color=TEXT),
-        hint_style=ft.TextStyle(size=scaled(12), color=TEXT_DIMMER),
-        border_radius=scaled(9),
-        content_padding=pad_sym(horizontal=int(scaled(12)), vertical=int(scaled(9))),
+        label_style=ft.TextStyle(size=scaled(FONT_SM), color=TEXT_DIMMER, font_family="monospace"),
+        text_style=ft.TextStyle(size=scaled(FONT_LG), color=TEXT),
+        hint_style=ft.TextStyle(size=scaled(FONT_BODY), color=TEXT_DIMMER),
+        border_radius=scaled(FIELD_RADIUS),
+        content_padding=pad_sym(horizontal=int(scaled(FIELD_PAD_H)), vertical=int(scaled(FIELD_PAD_V))),
     )
     if on_change:
         tf.on_change = on_change

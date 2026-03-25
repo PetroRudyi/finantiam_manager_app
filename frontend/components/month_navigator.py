@@ -5,6 +5,7 @@ from typing import Callable, Optional
 import flet as ft
 from frontend import theme as t
 from frontend.theme import scaled
+from frontend.sizes import FONT_NAV, PAD_PAGE_H
 
 
 class MonthNavigator(ft.Container):
@@ -32,21 +33,22 @@ class MonthNavigator(ft.Container):
             content=ft.Row([
                 ft.Row([
                     ft.Container(
-                        content=ft.Text("\u2039", size=scaled(14), color=t.TEXT_DIM),
+                        content=ft.Text("\u2039", size=scaled(FONT_NAV), color=t.TEXT_DIM),
                         on_click=lambda e: self._prev_month(),
                         ink=True, padding=t.pad_sym(horizontal=scaled(4), vertical=scaled(2)),
                     ),
-                    ft.Text(month_label, size=scaled(14), color=t.TEXT,
+                    ft.Text(month_label, size=scaled(FONT_NAV), color=t.TEXT,
                             weight=ft.FontWeight.W_600),
                     ft.Container(
-                        content=ft.Text("\u203a", size=scaled(14), color=t.TEXT_DIM),
+                        content=ft.Text("\u203a", size=scaled(FONT_NAV), color=t.TEXT_DIM),
                         on_click=lambda e: self._next_month(),
                         ink=True, padding=t.pad_sym(horizontal=scaled(4), vertical=scaled(2)),
                     ),
                 ], spacing=scaled(5)),
                 right_controls,
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-            padding=t.pad_only(left=scaled(18), right=scaled(18), top=scaled(8), bottom=scaled(6)),
+            padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                               top=scaled(8), bottom=scaled(6)),
         )
 
     def _prev_month(self):

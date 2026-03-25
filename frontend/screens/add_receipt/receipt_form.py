@@ -10,6 +10,14 @@ from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
 from frontend.components.type_toggle import TypeToggle
+from frontend.sizes import (
+    FONT_SM, FONT_SM_MD, FONT_MD, FONT_BODY,
+    PAD_PAGE_H, FIELD_RADIUS, BORDER_WIDTH, GAP_LG,
+)
+from frontend.screens.add_receipt.sizes import (
+    FORM_FIELD_PAD_H, FORM_FIELD_PAD_V, FORM_GAP, FORM_PAD_V,
+    CURRENCY_DD_W,
+)
 
 
 class ReceiptForm:
@@ -39,42 +47,42 @@ class ReceiptForm:
         self._page = page
 
     def build(self) -> ft.Container:
-        _lbl = ft.TextStyle(size=scaled(9), color=t.TEXT_DIMMER, font_family="monospace")
-        _txt = ft.TextStyle(size=scaled(12), color=t.TEXT)
+        _lbl = ft.TextStyle(size=scaled(FONT_SM), color=t.TEXT_DIMMER, font_family="monospace")
+        _txt = ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT)
 
         self.date_field = ft.TextField(
             value=self._date.strftime("%d.%m.%Y"), label=tr("receipt_form.date"),
             bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
-            border_radius=scaled(9), expand=True, read_only=True,
+            border_radius=scaled(FIELD_RADIUS), expand=True, read_only=True,
             label_style=_lbl, text_style=_txt,
-            content_padding=t.pad_sym(horizontal=scaled(11), vertical=scaled(8)),
+            content_padding=t.pad_sym(horizontal=scaled(FORM_FIELD_PAD_H), vertical=scaled(FORM_FIELD_PAD_V)),
         )
         self.date_field.on_click = self._open_date_picker
 
         self.time_field = ft.TextField(
             value=self._date.strftime("%H:%M"), label=tr("receipt_form.time"),
             bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
-            border_radius=scaled(9), expand=True,
+            border_radius=scaled(FIELD_RADIUS), expand=True,
             label_style=_lbl, text_style=_txt,
-            content_padding=t.pad_sym(horizontal=scaled(11), vertical=scaled(8)),
+            content_padding=t.pad_sym(horizontal=scaled(FORM_FIELD_PAD_H), vertical=scaled(FORM_FIELD_PAD_V)),
         )
 
         self.shop_field = ft.TextField(
             value=self._business, hint_text=tr("receipt_form.optional"),
             label=tr("receipt_form.shop"),
             bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
-            border_radius=scaled(9), expand=True,
+            border_radius=scaled(FIELD_RADIUS), expand=True,
             label_style=_lbl, text_style=_txt,
-            hint_style=ft.TextStyle(size=scaled(12), color=t.TEXT_DIMMER),
-            content_padding=t.pad_sym(horizontal=scaled(11), vertical=scaled(8)),
+            hint_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT_DIMMER),
+            content_padding=t.pad_sym(horizontal=scaled(FORM_FIELD_PAD_H), vertical=scaled(FORM_FIELD_PAD_V)),
         )
 
         self.currency_field = ft.Dropdown(
             value=self._currency, label=tr("receipt_form.currency"),
-            bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(9),
-            width=scaled(100),
+            bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(FIELD_RADIUS),
+            width=scaled(CURRENCY_DD_W),
             label_style=_lbl, text_style=_txt,
-            content_padding=t.pad_sym(horizontal=scaled(11), vertical=scaled(4)),
+            content_padding=t.pad_sym(horizontal=scaled(FORM_FIELD_PAD_H), vertical=scaled(4)),
             options=[ft.dropdown.Option(c) for c in CURRENCY_CODES],
         )
         self.currency_field.on_select = lambda e: self._on_currency_change(e.control.value)
@@ -88,34 +96,34 @@ class ReceiptForm:
         elif self._ai_running and not status_text:
             status_text = tr("receipt_form.ai_processing")
 
-        self.ai_status = ft.Text(status_text, size=scaled(10), color=t.TEXT_DIMMER,
+        self.ai_status = ft.Text(status_text, size=scaled(FONT_SM_MD), color=t.TEXT_DIMMER,
                                  font_family="monospace")
 
         self.ai_btn = ft.Container(
             content=ft.Row([
-                ft.Text(tr("receipt_form.upload_photo"), size=scaled(11),
+                ft.Text(tr("receipt_form.upload_photo"), size=scaled(FONT_MD),
                         color=t.ACCENT if self._has_api_key else t.TEXT_DIMMER,
                         font_family="monospace"),
                 self.ai_status,
-            ], alignment=ft.MainAxisAlignment.CENTER, spacing=scaled(8)),
+            ], alignment=ft.MainAxisAlignment.CENTER, spacing=scaled(GAP_LG)),
             bgcolor=t.alpha(t.ACCENT, "0f") if self._has_api_key else t.SURFACE2,
-            border=t.border_all(scaled(1), t.alpha(t.ACCENT, "66") if self._has_api_key else t.BORDER),
-            border_radius=scaled(9), padding=scaled(10),
+            border=t.border_all(scaled(BORDER_WIDTH), t.alpha(t.ACCENT, "66") if self._has_api_key else t.BORDER),
+            border_radius=scaled(FIELD_RADIUS), padding=scaled(10),
             on_click=(None if self._ai_running else
                       (self._on_pick_ai_image if self._has_api_key else None)),
             ink=(self._has_api_key and not self._ai_running),
         )
 
-        date_block = ft.Row([self.date_field], spacing=scaled(7), expand=True)
+        date_block = ft.Row([self.date_field], spacing=scaled(FORM_GAP), expand=True)
 
         return ft.Container(
             content=ft.Column([
-                ft.Row([date_block, self.time_field], spacing=scaled(7)),
-                ft.Row([self.shop_field, self.currency_field], spacing=scaled(7)),
+                ft.Row([date_block, self.time_field], spacing=scaled(FORM_GAP)),
+                ft.Row([self.shop_field, self.currency_field], spacing=scaled(FORM_GAP)),
                 type_row,
                 self.ai_btn,
-            ], spacing=scaled(7)),
-            padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(6)),
+            ], spacing=scaled(FORM_GAP)),
+            padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(FORM_PAD_V)),
         )
 
     # ── Date picker ───────────────────────────────────────────

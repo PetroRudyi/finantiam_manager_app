@@ -10,6 +10,13 @@ from frontend.theme import scaled
 from frontend.localisation import t as tr, current_language
 from frontend.helpers import show_snack
 from frontend.components.settings_row import settings_section, settings_row
+from frontend.sizes import (
+    FONT_SM, FONT_BODY, PAD_PAGE_H, BTN_RADIUS, BTN_PAD_V, BORDER_WIDTH,
+)
+from frontend.screens.settings.sizes import (
+    LANG_DD_W, CURRENCY_DD_W, DD_RADIUS, DD_PAD_H, DD_PAD_V,
+    EXPORT_BTN_PAD_H, VERSION_PAD_V,
+)
 
 
 def build_main_settings(settings: AppSettings,
@@ -18,10 +25,10 @@ def build_main_settings(settings: AppSettings,
     # Language dropdown
     lang_dd = ft.Dropdown(
         value=current_language(),
-        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(8),
-        text_style=ft.TextStyle(size=scaled(12), color=t.TEXT, font_family="monospace"),
-        content_padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(4)),
-        width=scaled(140),
+        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(DD_RADIUS),
+        text_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT, font_family="monospace"),
+        content_padding=t.pad_sym(horizontal=scaled(DD_PAD_H), vertical=scaled(DD_PAD_V)),
+        width=scaled(LANG_DD_W),
         options=[ft.dropdown.Option(key=code, text=name)
                  for code, name in SUPPORTED_LANGUAGES.items()],
     )
@@ -30,10 +37,10 @@ def build_main_settings(settings: AppSettings,
     # Currency dropdown
     currency_dd = ft.Dropdown(
         value=settings.default_currency,
-        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(8),
-        text_style=ft.TextStyle(size=scaled(12), color=t.TEXT, font_family="monospace"),
-        content_padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(4)),
-        width=scaled(100),
+        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(DD_RADIUS),
+        text_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT, font_family="monospace"),
+        content_padding=t.pad_sym(horizontal=scaled(DD_PAD_H), vertical=scaled(DD_PAD_V)),
+        width=scaled(CURRENCY_DD_W),
         options=[ft.dropdown.Option(c) for c in CURRENCY_CODES],
     )
     currency_dd.on_select = lambda e: on_set("default_currency", e.control.value)
@@ -63,19 +70,19 @@ def build_main_settings(settings: AppSettings,
         settings_row(tr("settings.default_currency"), right=currency_dd),
         settings_row(tr("settings.dark_theme"), right=dark_sw),
         settings_row(tr("settings.date_format"),
-                     right=ft.Text(settings.date_format, size=scaled(12),
+                     right=ft.Text(settings.date_format, size=scaled(FONT_BODY),
                                    color=t.TEXT_DIM, font_family="monospace"),
                      on_click=lambda e: None),
 
         settings_section(tr("settings.categories")),
         settings_row(tr("settings.edit_categories"),
                      sub=tr("settings.categories_count").replace("{count}", str(active_count)),
-                     right=ft.Text("›", size=scaled(12), color=t.TEXT_DIMMER,
+                     right=ft.Text("›", size=scaled(FONT_BODY), color=t.TEXT_DIMMER,
                                    font_family="monospace"),
                      on_click=lambda e: on_open_categories()),
         settings_row(tr("settings.reset_defaults"),
                      sub=tr("settings.reset_sub"),
-                     right=ft.Text("›", size=scaled(12), color=t.TEXT_DIMMER,
+                     right=ft.Text("›", size=scaled(FONT_BODY), color=t.TEXT_DIMMER,
                                    font_family="monospace"),
                      on_click=lambda e: on_reset_categories()),
 
@@ -85,7 +92,7 @@ def build_main_settings(settings: AppSettings,
             sub=tr("settings.for_receipts"),
             right=ft.Text(
                 masked if masked else "—",
-                size=scaled(12), color=t.TEXT_DIM, font_family="monospace",
+                size=scaled(FONT_BODY), color=t.TEXT_DIM, font_family="monospace",
             ),
             on_click=lambda e: on_open_api_key(),
         ),
@@ -94,7 +101,7 @@ def build_main_settings(settings: AppSettings,
         settings_section(tr("settings.data")),
         settings_row(tr("settings.backup"),
                      sub=tr("settings.backup_sub"),
-                     right=ft.Text("›", size=scaled(12), color=t.TEXT_DIMMER,
+                     right=ft.Text("›", size=scaled(FONT_BODY), color=t.TEXT_DIMMER,
                                    font_family="monospace"),
                      on_click=lambda e: None),
         ft.Container(
@@ -102,20 +109,20 @@ def build_main_settings(settings: AppSettings,
                 tr("settings.export_csv"),
                 bgcolor=t.SURFACE2, color=t.BLUE,
                 style=ft.ButtonStyle(
-                    shape=ft.RoundedRectangleBorder(radius=scaled(9)),
-                    side=ft.BorderSide(scaled(1), t.BORDER),
-                    padding=t.pad_sym(horizontal=scaled(12), vertical=scaled(10)),
+                    shape=ft.RoundedRectangleBorder(radius=scaled(BTN_RADIUS)),
+                    side=ft.BorderSide(scaled(BORDER_WIDTH), t.BORDER),
+                    padding=t.pad_sym(horizontal=scaled(EXPORT_BTN_PAD_H), vertical=scaled(BTN_PAD_V)),
                 ),
                 on_click=lambda e: on_export_csv(),
                 expand=True,
             ),
-            padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(10)),
+            padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(BTN_PAD_V)),
         ),
         ft.Container(
-            content=ft.Text("v1.0.0", size=scaled(9), color=t.TEXT_DIMMER,
+            content=ft.Text("v1.0.0", size=scaled(FONT_SM), color=t.TEXT_DIMMER,
                             font_family="monospace",
                             text_align=ft.TextAlign.CENTER),
-            padding=t.pad_sym(vertical=scaled(12)),
+            padding=t.pad_sym(vertical=scaled(VERSION_PAD_V)),
             alignment=ft.Alignment(0, 0),
         ),
     ], scroll=ft.ScrollMode.AUTO, expand=True, spacing=0)

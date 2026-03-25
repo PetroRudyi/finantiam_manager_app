@@ -16,6 +16,10 @@ from frontend.screens.transactions.selection_bar import build_selection_bar
 from frontend.screens.transactions.receipt_list import build_receipt_list
 from frontend import theme as t
 from frontend.theme import scaled
+from frontend.sizes import FONT_BODY
+from frontend.screens.transactions.sizes import (
+    TOOLBAR_BTN_SIZE, TOOLBAR_BTN_RADIUS, TOOLBAR_BTN_GAP,
+)
 
 
 TAB_MODES = ["daily", "weekly", "total"]
@@ -70,21 +74,23 @@ class TransactionsScreen(ft.Column):
 
         extra_right = ft.Row([
             ft.Container(
-                content=ft.Text("✓", size=scaled(12), color=t.TEXT_DIM, font_family="monospace"),
-                width=scaled(30), height=scaled(30), border_radius=scaled(8),
+                content=ft.Text("✓", size=scaled(FONT_BODY), color=t.TEXT_DIM, font_family="monospace"),
+                width=scaled(TOOLBAR_BTN_SIZE), height=scaled(TOOLBAR_BTN_SIZE),
+                border_radius=scaled(TOOLBAR_BTN_RADIUS),
                 bgcolor=t.SURFACE2, border=t.border_all(),
                 alignment=ft.Alignment(0, 0),
                 on_click=lambda e: self._toggle_select_all(),
                 ink=True,
             ),
             ft.Container(
-                content=ft.Text("···", size=scaled(12), color=t.TEXT_DIM, font_family="monospace"),
-                width=scaled(30), height=scaled(30), border_radius=scaled(8),
+                content=ft.Text("···", size=scaled(FONT_BODY), color=t.TEXT_DIM, font_family="monospace"),
+                width=scaled(TOOLBAR_BTN_SIZE), height=scaled(TOOLBAR_BTN_SIZE),
+                border_radius=scaled(TOOLBAR_BTN_RADIUS),
                 bgcolor=t.SURFACE2, border=t.border_all(),
                 alignment=ft.Alignment(0, 0),
                 ink=True,
             ),
-        ], spacing=scaled(6))
+        ], spacing=scaled(TOOLBAR_BTN_GAP))
 
         self.controls += [
             MonthNavigator(self._year, self._month,

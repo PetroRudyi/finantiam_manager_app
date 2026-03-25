@@ -6,6 +6,10 @@ import flet as ft
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
+from frontend.sizes import FONT_MD
+from frontend.screens.transactions.sizes import (
+    TAB_INDICATOR_H, TAB_INDICATOR_RADIUS, TAB_INDICATOR_MARGIN, TAB_PAD_V,
+)
 
 
 def build_period_tabs(current_mode: str, on_change: Callable[[str], None]) -> ft.Container:
@@ -13,19 +17,19 @@ def build_period_tabs(current_mode: str, on_change: Callable[[str], None]) -> ft
         active = current_mode == mode
         return ft.Container(
             content=ft.Column([
-                ft.Text(label, size=scaled(11),
+                ft.Text(label, size=scaled(FONT_MD),
                         color=t.TEXT if active else t.TEXT_DIMMER,
                         font_family="monospace",
                         text_align=ft.TextAlign.CENTER),
                 ft.Container(
-                    height=scaled(2),
+                    height=scaled(TAB_INDICATOR_H),
                     bgcolor=t.ACCENT if active else "transparent",
-                    border_radius=scaled(2),
-                    margin=t.mar_only(top=scaled(6)),
+                    border_radius=scaled(TAB_INDICATOR_RADIUS),
+                    margin=t.mar_only(top=scaled(TAB_INDICATOR_MARGIN)),
                 ),
             ], spacing=0, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
             expand=True,
-            padding=t.pad_sym(vertical=scaled(9)),
+            padding=t.pad_sym(vertical=scaled(TAB_PAD_V)),
             on_click=lambda e, m=mode: on_change(m),
             ink=True,
         )

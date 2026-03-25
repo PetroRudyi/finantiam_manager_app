@@ -14,6 +14,16 @@ from backend.models import AppSettings, Category
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
+from frontend.sizes import (
+    FONT_SM, FONT_SM_MD, FONT_BODY, FONT_LG, FONT_NAV,
+    PAD_PAGE_H, BTN_PAD_V, GAP_LG, BORDER_WIDTH,
+)
+from frontend.screens.settings.sizes import (
+    CAT_EDIT_RADIUS, CAT_EDIT_PAD_H, CAT_EDIT_PAD_V,
+    CAT_ROW_PAD_V, CAT_EDIT_FIELD_RADIUS, CAT_EDIT_FIELD_PAD_V,
+    CAT_ADD_BTN_PAD_H, CAT_ADD_BTN_PAD_V, CAT_HINT_PAD_BOTTOM,
+    DD_PAD_H,
+)
 
 
 class CategoryEditor:
@@ -39,12 +49,12 @@ class CategoryEditor:
             focused_border_color=t.ACCENT,
             border_radius=scaled(8),
             expand=True,
-            text_style=ft.TextStyle(size=scaled(12), color=t.TEXT),
-            hint_style=ft.TextStyle(size=scaled(12), color=t.TEXT_DIMMER),
-            content_padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(7)),
+            text_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT),
+            hint_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT_DIMMER),
+            content_padding=t.pad_sym(horizontal=scaled(DD_PAD_H), vertical=scaled(CAT_ADD_BTN_PAD_V)),
         )
 
-        self._cat_error = ft.Text("", size=scaled(10), color=t.RED)
+        self._cat_error = ft.Text("", size=scaled(FONT_SM_MD), color=t.RED)
 
         # REAL animated reorder list
         self._list = ft.ReorderableListView(
@@ -67,11 +77,12 @@ class CategoryEditor:
                 ft.Container(
                     content=ft.Text(
                         tr("category_editor.drag_hint"),
-                        size=scaled(9),
+                        size=scaled(FONT_SM),
                         color=t.TEXT_DIMMER,
                         font_family="monospace",
                     ),
-                    padding=t.pad_only(left=scaled(18), right=scaled(18), bottom=scaled(8)),
+                    padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                                       bottom=scaled(CAT_HINT_PAD_BOTTOM)),
                 ),
                 self._list,
                 ft.Container(
@@ -84,27 +95,29 @@ class CategoryEditor:
                                 color=t.WHITE,
                                 style=ft.ButtonStyle(
                                     shape=ft.RoundedRectangleBorder(radius=scaled(8)),
-                                    padding=t.pad_sym(horizontal=scaled(14), vertical=scaled(7)),
+                                    padding=t.pad_sym(horizontal=scaled(CAT_ADD_BTN_PAD_H),
+                                                      vertical=scaled(CAT_ADD_BTN_PAD_V)),
                                 ),
                                 on_click=self._add_category,
                             ),
                         ],
-                        spacing=scaled(8),
+                        spacing=scaled(GAP_LG),
                     ),
-                    padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(10)),
+                    padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(BTN_PAD_V)),
                 ),
                 ft.Container(
                     content=self._cat_error,
-                    padding=t.pad_only(left=scaled(18), right=scaled(18), bottom=scaled(4)),
+                    padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H), bottom=scaled(4)),
                 ),
                 ft.Container(
                     content=ft.Text(
                         tr("category_editor.categories_count").replace("{count}", str(len(active_cats))) + editing_label,
-                        size=scaled(9),
+                        size=scaled(FONT_SM),
                         color=t.TEXT_DIMMER,
                         font_family="monospace",
                     ),
-                    padding=t.pad_only(left=scaled(18), right=scaled(18), bottom=scaled(8)),
+                    padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                                       bottom=scaled(CAT_HINT_PAD_BOTTOM)),
                     alignment=ft.Alignment(0, 0),
                 ),
             ],
@@ -170,7 +183,8 @@ class CategoryEditor:
 
     def _row_shell(self, content: ft.Control) -> ft.Container:
         return ft.Container(
-            padding=t.pad_only(left=scaled(18), right=scaled(18), top=scaled(9), bottom=scaled(9)),
+            padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                               top=scaled(CAT_ROW_PAD_V), bottom=scaled(CAT_ROW_PAD_V)),
             border=t.border_bottom(),
             bgcolor=None,
             content=content,
@@ -179,40 +193,40 @@ class CategoryEditor:
     def _row(self, cat: Category, idx: int, settings: AppSettings) -> ft.Control:
         name_text = ft.Text(
             cat.name,
-            size=scaled(13),
+            size=scaled(FONT_LG),
             color=t.TEXT,
             weight=ft.FontWeight.W_500,
             expand=True,
         )
 
         edit_btn = ft.Container(
-            content=ft.Text("✎", size=scaled(10), color=t.ACCENT, font_family="monospace"),
+            content=ft.Text("✎", size=scaled(FONT_SM_MD), color=t.ACCENT, font_family="monospace"),
             bgcolor=t.alpha(t.ACCENT, "18"),
-            border_radius=scaled(5),
-            border=t.border_all(scaled(1), t.alpha(t.ACCENT, "44")),
-            padding=t.pad_sym(horizontal=scaled(8), vertical=scaled(3)),
+            border_radius=scaled(CAT_EDIT_RADIUS),
+            border=t.border_all(scaled(BORDER_WIDTH), t.alpha(t.ACCENT, "44")),
+            padding=t.pad_sym(horizontal=scaled(CAT_EDIT_PAD_H), vertical=scaled(CAT_EDIT_PAD_V)),
             on_click=lambda e, i=idx: self._start_edit(i),
             ink=True,
         )
 
         delete_btn = ft.Container(
-            content=ft.Text("×", size=scaled(10), color=t.RED, font_family="monospace"),
+            content=ft.Text("×", size=scaled(FONT_SM_MD), color=t.RED, font_family="monospace"),
             bgcolor=t.alpha(t.RED, "18"),
-            border_radius=scaled(5),
-            border=t.border_all(scaled(1), t.alpha(t.RED, "33")),
-            padding=t.pad_sym(horizontal=scaled(8), vertical=scaled(3)),
+            border_radius=scaled(CAT_EDIT_RADIUS),
+            border=t.border_all(scaled(BORDER_WIDTH), t.alpha(t.RED, "33")),
+            padding=t.pad_sym(horizontal=scaled(CAT_EDIT_PAD_H), vertical=scaled(CAT_EDIT_PAD_V)),
             on_click=lambda e, c=cat: self._delete_category(c, settings),
             ink=True,
         )
 
         inner = ft.Row(
             [
-                ft.Text("⠿", size=scaled(14), color=t.TEXT_DIMMER, font_family="monospace"),
+                ft.Text("⠿", size=scaled(FONT_NAV), color=t.TEXT_DIMMER, font_family="monospace"),
                 name_text,
                 edit_btn,
                 delete_btn,
             ],
-            spacing=scaled(8),
+            spacing=scaled(GAP_LG),
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
@@ -229,34 +243,35 @@ class CategoryEditor:
             expand=True,
             bgcolor=t.SURFACE2,
             border_color=t.ACCENT,
-            border_radius=scaled(7),
-            text_style=ft.TextStyle(size=scaled(13), color=t.TEXT),
-            content_padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(5)),
+            border_radius=scaled(CAT_EDIT_FIELD_RADIUS),
+            text_style=ft.TextStyle(size=scaled(FONT_LG), color=t.TEXT),
+            content_padding=t.pad_sym(horizontal=scaled(DD_PAD_H), vertical=scaled(CAT_EDIT_FIELD_PAD_V)),
         )
 
         inner = ft.Row(
             [
-                ft.Text("⠿", size=scaled(14), color=t.TEXT_DIMMER, font_family="monospace"),
+                ft.Text("⠿", size=scaled(FONT_NAV), color=t.TEXT_DIMMER, font_family="monospace"),
                 self._edit_cat_field,
                 ft.ElevatedButton(
                     "OK",
                     bgcolor=t.ACCENT,
                     color=t.WHITE,
                     style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=scaled(7)),
-                        padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(3)),
+                        shape=ft.RoundedRectangleBorder(radius=scaled(CAT_EDIT_FIELD_RADIUS)),
+                        padding=t.pad_sym(horizontal=scaled(DD_PAD_H), vertical=scaled(CAT_EDIT_PAD_V)),
                     ),
                     on_click=lambda e, i=idx: self._confirm_edit(i, settings),
                 ),
             ],
-            spacing=scaled(8),
+            spacing=scaled(GAP_LG),
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
         return ft.ReorderableDragHandle(
             mouse_cursor=ft.MouseCursor.GRAB,
             content=ft.Container(
-                padding=t.pad_only(left=scaled(18), right=scaled(18), top=scaled(7), bottom=scaled(7)),
+                padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                                   top=scaled(7), bottom=scaled(7)),
                 border=t.border_bottom(),
                 bgcolor=t.alpha(t.ACCENT, "0a"),
                 content=inner,

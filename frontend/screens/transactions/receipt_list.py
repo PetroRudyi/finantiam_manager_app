@@ -11,6 +11,15 @@ from backend.models import Receipt, AppSettings
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
+from frontend.sizes import (
+    FONT_SM, FONT_MD, FONT_BODY, FONT_LG,
+    PAD_PAGE_H, GAP_XS, GAP_MD, ICON_BTN_SM, ICON_BTN_RADIUS,
+)
+from frontend.screens.transactions.sizes import (
+    DATE_DAY_FONT, HEADER_AMOUNT_FONT, ROW_PAD_V, ROW_HEADER_PAD_BOTTOM,
+    ROW_GAP, AMOUNT_FONT, CHECKBOX_SIZE, CHECKBOX_RADIUS,
+    EMPTY_PAD,
+)
 
 
 def build_receipt_list(receipts: List[Receipt], tab_mode: str,
@@ -21,12 +30,12 @@ def build_receipt_list(receipts: List[Receipt], tab_mode: str,
         return ft.Column(
             [ft.Container(
                 content=ft.Column([
-                    ft.Text(tr("transactions.no_records"), size=scaled(13), color=t.TEXT_DIMMER,
+                    ft.Text(tr("transactions.no_records"), size=scaled(FONT_LG), color=t.TEXT_DIMMER,
                             text_align=ft.TextAlign.CENTER),
-                    ft.Text(tr("transactions.hint_add"), size=scaled(11),
+                    ft.Text(tr("transactions.hint_add"), size=scaled(FONT_MD),
                             color=t.TEXT_DIMMER, text_align=ft.TextAlign.CENTER),
-                ], horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=scaled(6)),
-                padding=scaled(40), alignment=ft.Alignment(0, 0),
+                ], horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=scaled(GAP_MD)),
+                padding=scaled(EMPTY_PAD), alignment=ft.Alignment(0, 0),
             )],
             expand=True,
         )
@@ -50,7 +59,7 @@ def build_receipt_list(receipts: List[Receipt], tab_mode: str,
             rows.append(_day_header(day_receipts[0].created_date, day_total, day_receipts, app_state))
             rows.append(ft.Container(
                 content=ft.Divider(height=1, color=t.BORDER),
-                padding=t.pad_sym(horizontal=scaled(18)),
+                padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H)),
             ))
             for receipt in day_receipts:
                 rows.append(_receipt_row(receipt, selected_ids, app_state, on_toggle_select, on_edit))
@@ -68,7 +77,7 @@ def build_receipt_list(receipts: List[Receipt], tab_mode: str,
             rows.append(_week_header(week_start, week_total, week_receipts, app_state))
             rows.append(ft.Container(
                 content=ft.Divider(height=1, color=t.BORDER),
-                padding=t.pad_sym(horizontal=scaled(18)),
+                padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H)),
             ))
             for receipt in week_receipts:
                 rows.append(_receipt_row(receipt, selected_ids, app_state, on_toggle_select, on_edit))
@@ -86,14 +95,15 @@ def _day_header(date: datetime.datetime, total: float,
     return ft.Container(
         content=ft.Row([
             ft.Row([
-                ft.Text(date.strftime("%d"), size=scaled(19), color=t.TEXT,
+                ft.Text(date.strftime("%d"), size=scaled(DATE_DAY_FONT), color=t.TEXT,
                         weight=ft.FontWeight.W_600, font_family="monospace"),
                 ft.Text(f"{day_name} · {date.strftime('%m.%y')}",
-                        size=scaled(9), color=t.TEXT_DIMMER, font_family="monospace"),
+                        size=scaled(FONT_SM), color=t.TEXT_DIMMER, font_family="monospace"),
             ], spacing=scaled(8)),
-            ft.Text(base_amount_str, size=scaled(11), color=color, font_family="monospace"),
+            ft.Text(base_amount_str, size=scaled(HEADER_AMOUNT_FONT), color=color, font_family="monospace"),
         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-        padding=t.pad_only(left=scaled(18), right=scaled(18), top=scaled(8), bottom=scaled(3)),
+        padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                           top=scaled(ROW_PAD_V), bottom=scaled(ROW_HEADER_PAD_BOTTOM)),
     )
 
 
@@ -107,11 +117,12 @@ def _week_header(week_start: datetime.date, total: float,
     base_amount_str = f"≈ {t.format_amount(total, currency=settings.default_currency)}"
     return ft.Container(
         content=ft.Row([
-            ft.Text(label, size=scaled(13), color=t.TEXT,
+            ft.Text(label, size=scaled(FONT_LG), color=t.TEXT,
                     weight=ft.FontWeight.W_600, font_family="monospace"),
-            ft.Text(base_amount_str, size=scaled(11), color=color, font_family="monospace"),
+            ft.Text(base_amount_str, size=scaled(HEADER_AMOUNT_FONT), color=color, font_family="monospace"),
         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-        padding=t.pad_only(left=scaled(18), right=scaled(18), top=scaled(8), bottom=scaled(3)),
+        padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                           top=scaled(ROW_PAD_V), bottom=scaled(ROW_HEADER_PAD_BOTTOM)),
     )
 
 
@@ -122,7 +133,7 @@ def _receipt_row(receipt: Receipt, selected_ids: Set[str], app_state,
     color = t.RED if receipt.transaction_type == "expense" else t.BLUE
 
     checkbox = ft.Container(
-        width=scaled(16), height=scaled(16), border_radius=scaled(6),
+        width=scaled(CHECKBOX_SIZE), height=scaled(CHECKBOX_SIZE), border_radius=scaled(CHECKBOX_RADIUS),
         bgcolor=t.ACCENT if is_sel else "transparent",
         border=t.border_all(1.5, t.ACCENT if is_sel else t.BORDER),
         alignment=ft.Alignment(0, 0),
@@ -162,21 +173,21 @@ def _receipt_row(receipt: Receipt, selected_ids: Set[str], app_state,
     row_content = ft.Container(
         content=ft.Row([
             ft.Column([
-                ft.Text(receipt.business_name or tr("transactions.receipt"), size=scaled(13),
+                ft.Text(receipt.business_name or tr("transactions.receipt"), size=scaled(FONT_LG),
                         color=t.TEXT, weight=ft.FontWeight.W_500,
                         overflow=ft.TextOverflow.ELLIPSIS),
-                ft.Text(sub_text, size=scaled(9), color=t.TEXT_DIMMER),
-            ], spacing=scaled(2), expand=True),
-            ft.Text(amount_str, size=scaled(12), color=color,
+                ft.Text(sub_text, size=scaled(FONT_SM), color=t.TEXT_DIMMER),
+            ], spacing=scaled(GAP_XS), expand=True),
+            ft.Text(amount_str, size=scaled(AMOUNT_FONT), color=color,
                     font_family="monospace", weight=ft.FontWeight.W_500),
-        ], spacing=scaled(9)),
+        ], spacing=scaled(ROW_GAP)),
         expand=True,
         on_click=lambda e, r=receipt: on_edit(receipt=r),
         ink=True,
     )
 
     return ft.Container(
-        content=ft.Row([checkbox, row_content], spacing=scaled(9)),
+        content=ft.Row([checkbox, row_content], spacing=scaled(ROW_GAP)),
         bgcolor=t.alpha(t.ACCENT, "0f") if is_sel else "transparent",
-        padding=t.pad_sym(horizontal=scaled(18), vertical=scaled(8)),
+        padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(ROW_PAD_V)),
     )

@@ -11,6 +11,12 @@ from backend.models import Receipt, AppSettings
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
+from frontend.sizes import FONT_SM, FONT_SM_MD, FONT_MD, LETTER_SPACING, PAD_PAGE_H, GAP_SM, GAP_LG
+from frontend.screens.dashboard.sizes import (
+    CARD_RADIUS, CARD_PAD, CARD_MARGIN_BOTTOM,
+    DONUT_SIZE, DONUT_STROKE, LEGEND_DOT, LEGEND_DOT_RADIUS,
+    LEGEND_GAP, LEGEND_CHART_GAP,
+)
 
 
 def build_donut_chart(receipts: List[Receipt], mode: str,
@@ -22,8 +28,8 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
     grand = sum(cat_totals.values()) or 1
 
     legend_items = []
-    chart_size = scaled(90)
-    stroke = scaled(18)
+    chart_size = scaled(DONUT_SIZE)
+    stroke = scaled(DONUT_STROKE)
     gap_angle = 0.06
     offset = stroke / 2
     rect_size = chart_size - stroke
@@ -56,13 +62,14 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
         start += sweep + (gap_angle if len(items) > 1 else 0)
 
         legend_items.append(ft.Row([
-            ft.Container(width=scaled(6), height=scaled(6), bgcolor=color, border_radius=scaled(2)),
-            ft.Text(cat, size=scaled(10), color=t.TEXT_DIM, expand=True),
-            ft.Text(f"{pct}%", size=scaled(10), color=t.TEXT, font_family="monospace"),
-        ], spacing=scaled(5)))
+            ft.Container(width=scaled(LEGEND_DOT), height=scaled(LEGEND_DOT),
+                         bgcolor=color, border_radius=scaled(LEGEND_DOT_RADIUS)),
+            ft.Text(cat, size=scaled(FONT_SM_MD), color=t.TEXT_DIM, expand=True),
+            ft.Text(f"{pct}%", size=scaled(FONT_SM_MD), color=t.TEXT, font_family="monospace"),
+        ], spacing=scaled(LEGEND_GAP)))
 
     if not legend_items:
-        legend_items.append(ft.Text(tr("dashboard.no_data"), size=scaled(11), color=t.TEXT_DIMMER))
+        legend_items.append(ft.Text(tr("dashboard.no_data"), size=scaled(FONT_MD), color=t.TEXT_DIMMER))
 
     if not shapes:
         shapes.append(cv.Arc(
@@ -82,15 +89,15 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
 
     return ft.Container(
         content=ft.Column([
-            ft.Text(tr("dashboard.categories_title"), size=scaled(9), color=t.TEXT_DIMMER,
+            ft.Text(tr("dashboard.categories_title"), size=scaled(FONT_SM), color=t.TEXT_DIMMER,
                     font_family="monospace",
-                    style=ft.TextStyle(letter_spacing=scaled(1.2))),
+                    style=ft.TextStyle(letter_spacing=scaled(LETTER_SPACING))),
             ft.Row([
                 chart,
-                ft.Column(legend_items, spacing=scaled(4), expand=True),
-            ], spacing=scaled(14), vertical_alignment=ft.CrossAxisAlignment.CENTER),
-        ], spacing=scaled(8)),
-        bgcolor=t.SURFACE2, border_radius=scaled(12), padding=scaled(12),
-        margin=t.mar_only(left=scaled(18), right=scaled(18), bottom=scaled(10)),
+                ft.Column(legend_items, spacing=scaled(GAP_SM), expand=True),
+            ], spacing=scaled(LEGEND_CHART_GAP), vertical_alignment=ft.CrossAxisAlignment.CENTER),
+        ], spacing=scaled(GAP_LG)),
+        bgcolor=t.SURFACE2, border_radius=scaled(CARD_RADIUS), padding=scaled(CARD_PAD),
+        margin=t.mar_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H), bottom=scaled(CARD_MARGIN_BOTTOM)),
         border=t.border_all(),
     )
