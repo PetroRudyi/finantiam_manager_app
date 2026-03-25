@@ -254,7 +254,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
         on_done()
         _close_bs()
 
-    sheet_height = int((page.window.height or 720) * 0.7) #todo double check this one, does it need scaled()
+    sheet_height = int((page.window.height or 720) * 0.7)
 
     scrollable_body = ft.Column([
         name_f,
