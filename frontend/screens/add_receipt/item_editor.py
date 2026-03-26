@@ -10,7 +10,7 @@ from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
 from frontend.sizes import (
-    FONT_SM, FONT_SM_MD, FONT_MD, FONT_BODY, FONT_LG, FONT_TITLE,
+    FONT_SM, FONT_SM_MD, FONT_MD, FONT_BODY, FONT_LG, FONT_HEADER,
     LETTER_SPACING, PAD_PAGE_H, FIELD_RADIUS, BORDER_WIDTH,
     BTN_RADIUS, BTN_PAD_H, BTN_PAD_V, GAP_MD, GAP_LG, GAP_XL,
 )
@@ -311,7 +311,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
                 padding=t.pad_only(top=scaled(SHEET_HANDLE_PAD_TOP), bottom=scaled(SHEET_HANDLE_PAD_BOTTOM)),
             ),
             ft.Text(tr("item_editor.new_item") if is_new else tr("item_editor.editing"),
-                    size=scaled(FONT_TITLE), color=t.TEXT, weight=ft.FontWeight.W_600),
+                    size=scaled(FONT_HEADER), color=t.TEXT, weight=ft.FontWeight.W_600),
             scrollable_body,
             buttons_row,
         ], spacing=scaled(GAP_MD)),

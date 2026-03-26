@@ -19,7 +19,7 @@ from frontend.sizes import (
     PAD_PAGE_H, BTN_PAD_V, GAP_LG, BORDER_WIDTH,
 )
 from frontend.screens.settings.sizes import (
-    CAT_EDIT_RADIUS, CAT_EDIT_PAD_H, CAT_EDIT_PAD_V,
+    CAT_DRAG_HANDLE, CAT_DRAG_PAD_H, CAT_DRAG_PAD_V, CAT_EDIT_RADIUS, CAT_EDIT_PAD_H, CAT_EDIT_PAD_V,
     CAT_ROW_PAD_V, CAT_EDIT_FIELD_RADIUS, CAT_EDIT_FIELD_PAD_V,
     CAT_ADD_BTN_PAD_H, CAT_ADD_BTN_PAD_V, CAT_HINT_PAD_BOTTOM,
     DD_PAD_H,
@@ -77,8 +77,8 @@ class CategoryEditor:
                 ft.Container(
                     content=ft.Text(
                         tr("category_editor.drag_hint"),
-                        size=scaled(FONT_SM),
-                        color=t.TEXT_DIMMER,
+                        size=scaled(FONT_BODY),
+                        color=t.TEXT,
                         font_family="monospace",
                     ),
                     padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
@@ -112,8 +112,8 @@ class CategoryEditor:
                 ft.Container(
                     content=ft.Text(
                         tr("category_editor.categories_count").replace("{count}", str(len(active_cats))) + editing_label,
-                        size=scaled(FONT_SM),
-                        color=t.TEXT_DIMMER,
+                        size=scaled(FONT_BODY),
+                        color=t.TEXT,
                         font_family="monospace",
                     ),
                     padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
@@ -178,7 +178,7 @@ class CategoryEditor:
         self._on_rebuild()
 
     # -------------------------
-    # Rows (drag whole row)
+    # Rows (drag via ⠿ handle only)
     # -------------------------
 
     def _row_shell(self, content: ft.Control) -> ft.Container:
@@ -200,7 +200,7 @@ class CategoryEditor:
         )
 
         edit_btn = ft.Container(
-            content=ft.Text("✎", size=scaled(FONT_SM_MD), color=t.ACCENT, font_family="monospace"),
+            content=ft.Text("✎", size=scaled(FONT_LG), color=t.ACCENT, font_family="monospace"),
             bgcolor=t.alpha(t.ACCENT, "18"),
             border_radius=scaled(CAT_EDIT_RADIUS),
             border=t.border_all(scaled(BORDER_WIDTH), t.alpha(t.ACCENT, "44")),
@@ -210,7 +210,7 @@ class CategoryEditor:
         )
 
         delete_btn = ft.Container(
-            content=ft.Text("×", size=scaled(FONT_SM_MD), color=t.RED, font_family="monospace"),
+            content=ft.Text("×", size=scaled(FONT_LG), color=t.RED, font_family="monospace"),
             bgcolor=t.alpha(t.RED, "18"),
             border_radius=scaled(CAT_EDIT_RADIUS),
             border=t.border_all(scaled(BORDER_WIDTH), t.alpha(t.RED, "33")),
@@ -219,9 +219,17 @@ class CategoryEditor:
             ink=True,
         )
 
+        drag_handle = ft.ReorderableDragHandle(
+            mouse_cursor=ft.MouseCursor.GRAB,
+            content=ft.Container(
+                content=ft.Text("⠿", size=scaled(CAT_DRAG_HANDLE), color=t.TEXT_DIMMER, font_family="monospace"),
+                padding=t.pad_sym(horizontal=scaled(CAT_DRAG_PAD_H), vertical=scaled(CAT_DRAG_PAD_V)),
+            ),
+        )
+
         inner = ft.Row(
             [
-                ft.Text("⠿", size=scaled(FONT_NAV), color=t.TEXT_DIMMER, font_family="monospace"),
+                drag_handle,
                 name_text,
                 edit_btn,
                 delete_btn,
@@ -230,11 +238,7 @@ class CategoryEditor:
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-        # Make the WHOLE row the drag start area:
-        return ft.ReorderableDragHandle(
-            mouse_cursor=ft.MouseCursor.GRAB,
-            content=self._row_shell(inner),
-        )
+        return self._row_shell(inner)
 
     def _row_editing(self, cat: Category, idx: int, settings: AppSettings) -> ft.Control:
         self._edit_cat_field = ft.TextField(
@@ -248,9 +252,17 @@ class CategoryEditor:
             content_padding=t.pad_sym(horizontal=scaled(DD_PAD_H), vertical=scaled(CAT_EDIT_FIELD_PAD_V)),
         )
 
+        drag_handle = ft.ReorderableDragHandle(
+            mouse_cursor=ft.MouseCursor.GRAB,
+            content=ft.Container(
+                content=ft.Text("⠿", size=scaled(CAT_DRAG_HANDLE), color=t.TEXT_DIMMER, font_family="monospace"),
+                padding=t.pad_sym(horizontal=scaled(CAT_DRAG_PAD_H), vertical=scaled(CAT_DRAG_PAD_V)),
+            ),
+        )
+
         inner = ft.Row(
             [
-                ft.Text("⠿", size=scaled(FONT_NAV), color=t.TEXT_DIMMER, font_family="monospace"),
+                drag_handle,
                 self._edit_cat_field,
                 ft.ElevatedButton(
                     "OK",
@@ -267,15 +279,12 @@ class CategoryEditor:
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-        return ft.ReorderableDragHandle(
-            mouse_cursor=ft.MouseCursor.GRAB,
-            content=ft.Container(
-                padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
-                                   top=scaled(7), bottom=scaled(7)),
-                border=t.border_bottom(),
-                bgcolor=t.alpha(t.ACCENT, "0a"),
-                content=inner,
-            ),
+        return ft.Container(
+            padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                               top=scaled(7), bottom=scaled(7)),
+            border=t.border_bottom(),
+            bgcolor=t.alpha(t.ACCENT, "0a"),
+            content=inner,
         )
 
     # -------------------------

@@ -90,6 +90,7 @@
     "status_error": "AI: error (check API key)"
   },
   "settings": {
+    "back": "Back",
     "title": "Settings",
     "general": "GENERAL",
     "language": "Language",

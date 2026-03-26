@@ -90,6 +90,7 @@
     "status_error": "AI: помилка (перевірте API ключ)"
   },
   "settings": {
+    "back": "Назад",
     "title": "Налаштування",
     "general": "ЗАГАЛЬНЕ",
     "language": "Мова",

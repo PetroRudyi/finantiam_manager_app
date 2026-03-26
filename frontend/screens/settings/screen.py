@@ -19,13 +19,13 @@ from frontend.screens.settings.main_settings import build_main_settings
 from frontend.screens.settings.category_editor import CategoryEditor
 from frontend.screens.settings.api_key_editor import build_api_key_editor
 from frontend.sizes import (
-    FONT_LG, FONT_MD, FONT_NAV, FONT_TITLE,
+    FONT_LG, FONT_MD, FONT_NAV, FONT_HEADER,
     PAD_PAGE_H, PAD_HEADER_TOP, PAD_HEADER_BOTTOM,
     GAP_XL,
 )
 from frontend.screens.settings.sizes import (
-    BACK_ARROW_PAD_H, BACK_ARROW_PAD_V, SUB_HEADER_PAD_LEFT,
-    SPACER_W, PROGRESS_W, DIALOG_W,
+    BACK_ARROW_PAD_H, BACK_ARROW_PAD_V, BACK_BTN_MIN_W,
+    SUB_HEADER_PAD_LEFT, SPACER_W, PROGRESS_W, DIALOG_W,
 )
 
 
@@ -66,7 +66,7 @@ class SettingsScreen(ft.Column):
         else:
             self.controls += [
                 ft.Container(
-                    content=ft.Text(tr("settings.title"), size=scaled(FONT_TITLE), color=t.TEXT,
+                    content=ft.Text(tr("settings.title"), size=scaled(FONT_HEADER), color=t.TEXT,
                                     weight=ft.FontWeight.W_600),
                     padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
                                        top=scaled(PAD_HEADER_TOP), bottom=scaled(PAD_HEADER_BOTTOM)),
@@ -85,12 +85,20 @@ class SettingsScreen(ft.Column):
         return ft.Container(
             content=ft.Row([
                 ft.Container(
-                    content=ft.Text("←", size=scaled(FONT_NAV), color=t.TEXT_DIM),
+                    content=ft.Row(
+                        [
+                            ft.Text("←", size=scaled(FONT_NAV), color=t.TEXT_DIM),
+                            ft.Text(tr("settings.back"), size=scaled(FONT_NAV), color=t.TEXT_DIM),
+                        ],
+                        spacing=scaled(4),
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                    ),
+                    min_width=scaled(BACK_BTN_MIN_W),
                     on_click=lambda e: self._go_back(),
                     ink=True, padding=t.pad_sym(horizontal=scaled(BACK_ARROW_PAD_H),
                                                 vertical=scaled(BACK_ARROW_PAD_V)),
                 ),
-                ft.Text(title, size=scaled(FONT_TITLE), color=t.TEXT, weight=ft.FontWeight.W_600),
+                ft.Text(title, size=scaled(FONT_HEADER), color=t.TEXT, weight=ft.FontWeight.W_600),
                 ft.Container(width=scaled(SPACER_W)),
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
             padding=t.pad_only(left=scaled(SUB_HEADER_PAD_LEFT), right=scaled(PAD_PAGE_H),

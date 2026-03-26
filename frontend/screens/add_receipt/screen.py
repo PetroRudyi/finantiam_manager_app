@@ -21,7 +21,7 @@ from frontend.screens.add_receipt.items_table import (
 from frontend.screens.add_receipt.item_editor import open_item_editor
 from frontend.screens.add_receipt.ai_handler import get_ai_click_handler
 from frontend.sizes import (
-    FONT_XS, FONT_TITLE, LETTER_SPACING,
+    FONT_XS, FONT_HEADER, LETTER_SPACING,
     PAD_PAGE_H, PAD_HEADER_TOP, PAD_HEADER_BOTTOM,
     FIELD_RADIUS, GAP_XS,
 )
@@ -68,7 +68,7 @@ class AddReceiptScreen(ft.Column):
                               style=ft.ButtonStyle(color=t.TEXT_DIM),
                               on_click=lambda e: self.on_cancel()),
                 ft.Text(tr("add_receipt.new_receipt") if not self.editing_receipt else tr("add_receipt.editing"),
-                        size=scaled(FONT_TITLE), color=t.TEXT, weight=ft.FontWeight.W_600),
+                        size=scaled(FONT_HEADER), color=t.TEXT, weight=ft.FontWeight.W_600),
                 ft.Container(width=scaled(HEADER_SPACER_W)),
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
             padding=t.pad_only(left=scaled(HEADER_PAD_LEFT), right=scaled(PAD_PAGE_H),
