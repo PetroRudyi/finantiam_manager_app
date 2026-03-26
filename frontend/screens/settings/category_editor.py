@@ -89,21 +89,21 @@ class CategoryEditor:
                     content=ft.Row(
                         [
                             self._new_cat_field,
-                            ft.ElevatedButton(
-                                tr("category_editor.add"),
+                            ft.Container(
+                                content=ft.Text(tr("category_editor.add"), color=t.WHITE,
+                                                size=scaled(FONT_BODY), weight=ft.FontWeight.W_500),
                                 bgcolor=t.ACCENT,
-                                color=t.WHITE,
-                                style=ft.ButtonStyle(
-                                    shape=ft.RoundedRectangleBorder(radius=scaled(8)),
-                                    padding=t.pad_sym(horizontal=scaled(CAT_ADD_BTN_PAD_H),
-                                                      vertical=scaled(CAT_ADD_BTN_PAD_V)),
-                                ),
+                                border_radius=scaled(8),
+                                padding=t.pad_sym(horizontal=scaled(CAT_ADD_BTN_PAD_H),
+                                                  vertical=scaled(CAT_ADD_BTN_PAD_V)),
                                 on_click=self._add_category,
+                                ink=True,
                             ),
                         ],
                         spacing=scaled(GAP_LG),
                     ),
-                    padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(BTN_PAD_V)),
+                    padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
+                                       top=scaled(BTN_PAD_V)),
                 ),
                 ft.Container(
                     content=self._cat_error,
@@ -181,15 +181,6 @@ class CategoryEditor:
     # Rows (drag via ⠿ handle only)
     # -------------------------
 
-    def _row_shell(self, content: ft.Control) -> ft.Container:
-        return ft.Container(
-            padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
-                               top=scaled(CAT_ROW_PAD_V), bottom=scaled(CAT_ROW_PAD_V)),
-            border=t.border_bottom(),
-            bgcolor=None,
-            content=content,
-        )
-
     def _row(self, cat: Category, idx: int, settings: AppSettings) -> ft.Control:
         name_text = ft.Text(
             cat.name,
@@ -223,7 +214,7 @@ class CategoryEditor:
             mouse_cursor=ft.MouseCursor.GRAB,
             content=ft.Container(
                 content=ft.Text("⠿", size=scaled(CAT_DRAG_HANDLE), color=t.TEXT_DIMMER, font_family="monospace"),
-                padding=t.pad_sym(horizontal=scaled(CAT_DRAG_PAD_H), vertical=scaled(CAT_DRAG_PAD_V)),
+                padding=t.pad_sym(horizontal=scaled(CAT_DRAG_PAD_H), vertical=scaled(CAT_ROW_PAD_V)),
             ),
         )
 
@@ -238,7 +229,12 @@ class CategoryEditor:
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-        return self._row_shell(inner)
+        return ft.Container(
+            padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H)),
+            border=t.border_bottom(),
+            bgcolor=None,
+            content=inner,
+        )
 
     def _row_editing(self, cat: Category, idx: int, settings: AppSettings) -> ft.Control:
         self._edit_cat_field = ft.TextField(
@@ -256,7 +252,7 @@ class CategoryEditor:
             mouse_cursor=ft.MouseCursor.GRAB,
             content=ft.Container(
                 content=ft.Text("⠿", size=scaled(CAT_DRAG_HANDLE), color=t.TEXT_DIMMER, font_family="monospace"),
-                padding=t.pad_sym(horizontal=scaled(CAT_DRAG_PAD_H), vertical=scaled(CAT_DRAG_PAD_V)),
+                padding=t.pad_sym(horizontal=scaled(CAT_DRAG_PAD_H), vertical=scaled(7)),
             ),
         )
 
@@ -280,8 +276,7 @@ class CategoryEditor:
         )
 
         return ft.Container(
-            padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
-                               top=scaled(7), bottom=scaled(7)),
+            padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H)),
             border=t.border_bottom(),
             bgcolor=t.alpha(t.ACCENT, "0a"),
             content=inner,

@@ -10,6 +10,7 @@ from backend.config import WINDOW_RESIZABLE
 from backend.update_service import check_for_update, get_apk_url
 from frontend import theme as t
 from frontend.theme import scaled
+from frontend.sizes import FONT_TAB
 from frontend.localisation import t as tr
 from frontend.screens.transactions import TransactionsScreen
 from frontend.screens.dashboard import DashboardScreen
@@ -209,7 +210,7 @@ class AppShell:
                     ft.Container(height=scaled(2), width=scaled(24),
                                  bgcolor=t.ACCENT if active else "transparent",
                                  border_radius=scaled(1)),
-                    ft.Text(label, size=scaled(9),
+                    ft.Text(label, size=scaled(FONT_TAB),
                             color=t.ACCENT if active else t.TEXT_DIMMER,
                             font_family="monospace",
                             text_align=ft.TextAlign.CENTER,

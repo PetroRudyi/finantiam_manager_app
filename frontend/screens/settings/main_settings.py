@@ -65,7 +65,7 @@ def build_main_settings(settings: AppSettings,
     active_count = len([c for c in settings.categories if not c.deleted])
 
     return ft.Column([
-        settings_section(tr("settings.general")),
+        settings_section(tr("settings.general"), first=True),
         settings_row(tr("settings.language"), right=lang_dd),
         settings_row(tr("settings.default_currency"), right=currency_dd),
         settings_row(tr("settings.dark_theme"), right=dark_sw),

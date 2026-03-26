@@ -24,7 +24,7 @@ from frontend.sizes import (
     GAP_XL,
 )
 from frontend.screens.settings.sizes import (
-    BACK_ARROW_PAD_H, BACK_ARROW_PAD_V, BACK_BTN_MIN_W,
+    BACK_ARROW_PAD_H, BACK_ARROW_PAD_V,
     SUB_HEADER_PAD_LEFT, SPACER_W, PROGRESS_W, DIALOG_W,
 )
 
@@ -93,7 +93,6 @@ class SettingsScreen(ft.Column):
                         spacing=scaled(4),
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                     ),
-                    min_width=scaled(BACK_BTN_MIN_W),
                     on_click=lambda e: self._go_back(),
                     ink=True, padding=t.pad_sym(horizontal=scaled(BACK_ARROW_PAD_H),
                                                 vertical=scaled(BACK_ARROW_PAD_V)),

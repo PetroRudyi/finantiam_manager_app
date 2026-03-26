@@ -147,8 +147,8 @@ def _receipt_row(receipt: Receipt, selected_ids: Set[str], app_state,
         settings.get_category_name(item.category) for item in receipt.items
     ))
     cats_str = ", ".join(cat_names[:3]) + ("..." if len(cat_names) > 3 else "")
-    dt_str = receipt.created_date.strftime("%d.%m %H:%M")
-    sub_text = f"{dt_str} · {n_items} {tr('transactions.items_suffix')} · {cats_str}"
+    time_str = receipt.created_date.strftime("%H:%M")
+    sub_text = f"{time_str} · {n_items} {tr('transactions.items_suffix')} · {cats_str}"
 
     base_cur = settings.default_currency
     if receipt.transaction_type == "expense":

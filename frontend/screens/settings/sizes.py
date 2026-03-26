@@ -25,7 +25,7 @@ DIALOG_W          = 280  # Ширина контенту діалогу
 
 # ── Редактор категорій ────────────────────────────────
 CAT_DRAG_HANDLE   = 15   # Розмір шрифту drag handle (⠿)
-CAT_DRAG_PAD_H    = 6    # Горизонтальний відступ навколо drag handle (⠿)
+CAT_DRAG_PAD_H    = 9    # Горизонтальний відступ навколо drag handle (⠿)
 CAT_DRAG_PAD_V    = 6    # Вертикальний відступ навколо drag handle (⠿)
 CAT_EDIT_RADIUS   = 7    # Радіус кнопок edit/delete категорії
 CAT_EDIT_PAD_H    = 12   # Горизонтальний відступ кнопок edit/delete
