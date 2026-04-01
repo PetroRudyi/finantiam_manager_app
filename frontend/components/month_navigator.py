@@ -5,7 +5,7 @@ from typing import Callable, Optional
 import flet as ft
 from frontend import theme as t
 from frontend.theme import scaled
-from frontend.sizes import FONT_NAV, PAD_PAGE_H
+from frontend.sizes import FONT_NAV, FONT_NAV_ARROW, PAD_PAGE_H
 
 
 class MonthNavigator(ft.Container):
@@ -29,24 +29,25 @@ class MonthNavigator(ft.Container):
 
         right_controls = extra_right or ft.Container()
 
+        def _arrow_btn(icon: ft.Icons, on_click):
+            return ft.Container(
+                content=ft.Icon(icon, size=scaled(FONT_NAV_ARROW), color=t.TEXT_DIM),
+                on_click=on_click,
+                ink=True, padding=t.pad_sym(horizontal=scaled(10), vertical=scaled(6)),
+            )
+
         super().__init__(
             content=ft.Row([
                 ft.Row([
-                    ft.Container(
-                        content=ft.Text("\u2039", size=scaled(FONT_NAV), color=t.TEXT_DIM),
-                        on_click=lambda e: self._prev_month(),
-                        ink=True, padding=t.pad_sym(horizontal=scaled(4), vertical=scaled(2)),
-                    ),
+                    _arrow_btn(ft.Icons.CHEVRON_LEFT, lambda e: self._prev_month()),
                     ft.Text(month_label, size=scaled(FONT_NAV), color=t.TEXT,
                             weight=ft.FontWeight.W_600),
-                    ft.Container(
-                        content=ft.Text("\u203a", size=scaled(FONT_NAV), color=t.TEXT_DIM),
-                        on_click=lambda e: self._next_month(),
-                        ink=True, padding=t.pad_sym(horizontal=scaled(4), vertical=scaled(2)),
-                    ),
-                ], spacing=scaled(5)),
+                    _arrow_btn(ft.Icons.CHEVRON_RIGHT, lambda e: self._next_month()),
+                ], spacing=scaled(5), alignment=ft.MainAxisAlignment.CENTER,
+                   vertical_alignment=ft.CrossAxisAlignment.CENTER),
                 right_controls,
-            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+               vertical_alignment=ft.CrossAxisAlignment.CENTER),
             padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
                                top=scaled(8), bottom=scaled(6)),
         )

@@ -38,6 +38,7 @@ class CategoryEditor:
         self._cat_error = None
         self._list = None
         self._edit_cat_field = None
+        self._scroll_col = None
 
     def build(self) -> ft.Column:
         settings: AppSettings = self.app_state.settings
@@ -52,6 +53,8 @@ class CategoryEditor:
             text_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT),
             hint_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT_DIMMER),
             content_padding=t.pad_sym(horizontal=scaled(DD_PAD_H), vertical=scaled(CAT_ADD_BTN_PAD_V)),
+            key="new_cat_field",
+            on_focus=lambda e: self._scroll_to("new_cat_field"),
         )
 
         self._cat_error = ft.Text("", size=scaled(FONT_SM_MD), color=t.RED)
@@ -72,7 +75,7 @@ class CategoryEditor:
         if self._editing_cat_idx is not None and 0 <= self._editing_cat_idx < len(active_cats):
             editing_label = f" · {tr('category_editor.editing_label').replace('{name}', active_cats[self._editing_cat_idx].name)}"
 
-        return ft.Column(
+        self._scroll_col = ft.Column(
             [
                 ft.Container(
                     content=ft.Text(
@@ -125,6 +128,13 @@ class CategoryEditor:
             expand=True,
             spacing=0,
         )
+        return self._scroll_col
+
+    def _scroll_to(self, key: str):
+        try:
+            self._scroll_col.scroll_to(key=key, duration=300)
+        except Exception:
+            pass
 
     def reset_editing(self):
         self._editing_cat_idx = None
@@ -241,6 +251,8 @@ class CategoryEditor:
             value=cat.name,
             autofocus=True,
             expand=True,
+            key="edit_cat_field",
+            on_focus=lambda e: self._scroll_to("edit_cat_field"),
             bgcolor=t.SURFACE2,
             border_color=t.ACCENT,
             border_radius=scaled(CAT_EDIT_FIELD_RADIUS),
