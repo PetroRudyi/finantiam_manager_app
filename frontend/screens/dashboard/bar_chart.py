@@ -9,11 +9,12 @@ from backend.models import Receipt
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
-from frontend.sizes import FONT_XS, FONT_SM, LETTER_SPACING, PAD_PAGE_H, GAP_SM, GAP_LG
+from frontend.sizes import FONT_SM, LETTER_SPACING, PAD_PAGE_H, GAP_SM, GAP_LG
 from frontend.screens.dashboard.sizes import (
     CARD_RADIUS, CARD_PAD, CARD_MARGIN_BOTTOM,
     CHART_TOTAL_FONT, BAR_CHART_H, BAR_MAX_H, BAR_MIN_H,
     BAR_TOP_RADIUS, BAR_GAP, BAR_LABEL_GAP,
+    BAR_VALUE_FONT, BAR_MONTH_FONT,
 )
 
 _ENG_MONTH_TO_NUM = {
@@ -45,7 +46,7 @@ def build_bar_chart(receipts: List[Receipt], mode: str,
         bars.append(ft.Column([
             ft.Text(
                 t.format_amount(val, currency=base_currency) if val > 0 else "",
-                size=scaled(FONT_XS), color=color,
+                size=scaled(BAR_VALUE_FONT), color=color,
                 font_family="monospace", text_align=ft.TextAlign.CENTER,
             ),
             ft.Container(
@@ -54,7 +55,7 @@ def build_bar_chart(receipts: List[Receipt], mode: str,
                                               bottom_left=0, bottom_right=0),
                 opacity=1.0 if is_selected else 0.5,
             ),
-            ft.Text(full_name, size=scaled(FONT_XS),
+            ft.Text(full_name, size=scaled(BAR_MONTH_FONT),
                     color=t.ACCENT if is_selected else t.TEXT_DIMMER,
                     font_family="monospace", text_align=ft.TextAlign.CENTER),
         ], spacing=scaled(BAR_LABEL_GAP), horizontal_alignment=ft.CrossAxisAlignment.CENTER,
