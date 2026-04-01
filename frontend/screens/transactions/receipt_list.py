@@ -42,7 +42,7 @@ def build_receipt_list(receipts: List[Receipt], tab_mode: str,
 
     if tab_mode == "total":
         sorted_receipts = sorted(receipts, key=lambda r: r.created_date, reverse=True)
-        rows = [_receipt_row(r, selected_ids, app_state, on_toggle_select, on_edit)
+        rows = [_receipt_row(r, selected_ids, app_state, on_toggle_select, on_edit, show_date=True)
                 for r in sorted_receipts]
         return ft.Column(controls=rows, scroll=ft.ScrollMode.AUTO, expand=True, spacing=0)
 
@@ -117,7 +117,7 @@ def _week_header(week_start: datetime.date, total: float,
     base_amount_str = f"≈ {t.format_amount(total, currency=settings.default_currency)}"
     return ft.Container(
         content=ft.Row([
-            ft.Text(label, size=scaled(FONT_LG), color=t.TEXT,
+            ft.Text(label, size=scaled(DATE_DAY_FONT), color=t.TEXT,
                     weight=ft.FontWeight.W_600, font_family="monospace"),
             ft.Text(base_amount_str, size=scaled(HEADER_AMOUNT_FONT), color=color, font_family="monospace"),
         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
@@ -128,7 +128,7 @@ def _week_header(week_start: datetime.date, total: float,
 
 def _receipt_row(receipt: Receipt, selected_ids: Set[str], app_state,
                  on_toggle_select: Callable[[str], None],
-                 on_edit: Callable) -> ft.Container:
+                 on_edit: Callable, show_date: bool = False) -> ft.Container:
     is_sel = receipt.id in selected_ids
     color = t.RED if receipt.transaction_type == "expense" else t.BLUE
 
@@ -147,7 +147,7 @@ def _receipt_row(receipt: Receipt, selected_ids: Set[str], app_state,
         settings.get_category_name(item.category) for item in receipt.items
     ))
     cats_str = ", ".join(cat_names[:3]) + ("..." if len(cat_names) > 3 else "")
-    time_str = receipt.created_date.strftime("%H:%M")
+    time_str = receipt.created_date.strftime("%d.%m %H:%M") if show_date else receipt.created_date.strftime("%H:%M")
     sub_text = f"{time_str} · {n_items} {tr('transactions.items_suffix')} · {cats_str}"
 
     base_cur = settings.default_currency

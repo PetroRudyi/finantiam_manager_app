@@ -43,14 +43,25 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
                         letter_spacing=scaled(LETTER_SPACING))
     _txt = ft.TextStyle(size=scaled(FONT_LG), color=t.TEXT)
 
+    # ref to scrollable body – assigned after creation
+    scroll_body_ref: list = [None]
+
+    def _scroll_to(key: str):
+        try:
+            scroll_body_ref[0].scroll_to(key=key, duration=300)
+        except Exception:
+            pass
+
     name_f = ft.TextField(
         value=item.name if item else "",
         label=tr("item_editor.name"), hint_text=tr("item_editor.name_hint"),
         bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
-        border_radius=scaled(FIELD_RADIUS), autofocus=True,
+        border_radius=scaled(FIELD_RADIUS),
         label_style=_lbl, text_style=_txt,
         hint_style=ft.TextStyle(size=scaled(FONT_LG), color=t.TEXT_DIMMER),
         content_padding=t.pad_sym(horizontal=scaled(EDITOR_FIELD_PAD), vertical=scaled(EDITOR_FIELD_PAD)),
+        key="name_field",
+        on_focus=lambda e: _scroll_to("name_field"),
     )
 
     default_quantity = "1"
@@ -68,22 +79,24 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
         border_radius=scaled(FIELD_RADIUS), expand=True,
         label_style=_lbl, text_style=_txt,
         content_padding=t.pad_sym(horizontal=scaled(EDITOR_FIELD_PAD), vertical=scaled(EDITOR_FIELD_PAD)),
+        key="qty_field",
     )
 
-    def _price_on_focus(e: ft.ControlEvent):
+    def _qty_on_focus(e: ft.ControlEvent):
         tf: ft.TextField = e.control
         if (tf.value or "").strip() == default_quantity:
             tf.value = ""
             tf.update()
+        _scroll_to("qty_field")
 
-    def _price_on_blur(e: ft.ControlEvent):
+    def _qty_on_blur(e: ft.ControlEvent):
         tf: ft.TextField = e.control
         if (tf.value or "").strip() == "":
             tf.value = default_quantity
             tf.update()
 
-    qty_f.on_focus = _price_on_focus
-    qty_f.on_blur = _price_on_blur
+    qty_f.on_focus = _qty_on_focus
+    qty_f.on_blur = _qty_on_blur
 
     price_f = ft.TextField(
         value=str(item.price) if item else "",
@@ -98,6 +111,8 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
         border_radius=scaled(FIELD_RADIUS), expand=True,
         label_style=_lbl, text_style=_txt,
         content_padding=t.pad_sym(horizontal=scaled(EDITOR_FIELD_PAD), vertical=scaled(EDITOR_FIELD_PAD)),
+        key="price_field",
+        on_focus=lambda e: _scroll_to("price_field"),
     )
 
     error_text = ft.Text("", size=scaled(FONT_SM_MD), color=t.RED)
@@ -114,6 +129,8 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
         text_style=ft.TextStyle(size=scaled(FONT_LG), color=t.TEXT),
         hint_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT_DIMMER),
         content_padding=t.pad_sym(horizontal=scaled(EDITOR_FIELD_PAD), vertical=scaled(8)),
+        key="new_cat_field",
+        on_focus=lambda e: _scroll_to("new_cat_field"),
     )
     cat_col = ft.Column(spacing=0)
 
@@ -258,7 +275,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
 
     scrollable_body = ft.Column([
         name_f,
-        ft.Row([qty_f, price_f], spacing=scaled(FORM_GAP)),
+        ft.Row([qty_f, price_f], spacing=scaled(FORM_GAP), key="qty_field_row"),
         ft.Container(
             content=ft.Text(tr("item_editor.category"), size=scaled(FONT_SM), color=t.TEXT_DIMMER,
                             font_family="monospace",
@@ -273,7 +290,8 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
             clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
         ),
         error_text,
-    ], spacing=scaled(GAP_XL), expand=True)
+    ], spacing=scaled(GAP_XL), expand=True, scroll=ft.ScrollMode.AUTO)
+    scroll_body_ref[0] = scrollable_body
 
     buttons_row = ft.Container(
         content=ft.Row([
