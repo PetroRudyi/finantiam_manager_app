@@ -21,13 +21,14 @@ from frontend.screens.add_receipt.items_table import (
 from frontend.screens.add_receipt.item_editor import open_item_editor
 from frontend.screens.add_receipt.ai_handler import get_ai_click_handler
 from frontend.sizes import (
-    FONT_XS, FONT_HEADER, LETTER_SPACING,
+    FONT_XS, FONT_NAV, FONT_HEADER, LETTER_SPACING,
     PAD_PAGE_H, PAD_HEADER_TOP, PAD_HEADER_BOTTOM,
     FIELD_RADIUS, GAP_XS,
 )
 from frontend.screens.add_receipt.sizes import (
     TOTAL_FONT, HEADER_SPACER_W, HEADER_PAD_LEFT,
-    SAVE_BTN_PAD_H, FORM_FIELD_PAD_V,
+    SAVE_BTN_PAD_H, SAVE_BTN_FONT, FORM_FIELD_PAD_V,
+    BACK_ARROW_PAD_H, BACK_ARROW_PAD_V,
 )
 
 
@@ -64,9 +65,20 @@ class AddReceiptScreen(ft.Column):
 
         header = ft.Container(
             content=ft.Row([
-                ft.TextButton(tr("add_receipt.back"),
-                              style=ft.ButtonStyle(color=t.TEXT_DIM),
-                              on_click=lambda e: self.on_cancel()),
+                ft.Container(
+                    content=ft.Row(
+                        [
+                            ft.Text("←", size=scaled(FONT_NAV), color=t.TEXT_DIM),
+                            ft.Text(tr("add_receipt.back"), size=scaled(FONT_NAV), color=t.TEXT_DIM),
+                        ],
+                        spacing=scaled(4),
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                    ),
+                    on_click=lambda e: self.on_cancel(),
+                    ink=True,
+                    padding=t.pad_sym(horizontal=scaled(BACK_ARROW_PAD_H),
+                                      vertical=scaled(BACK_ARROW_PAD_V)),
+                ),
                 ft.Text(tr("add_receipt.new_receipt") if not self.editing_receipt else tr("add_receipt.editing"),
                         size=scaled(FONT_HEADER), color=t.TEXT, weight=ft.FontWeight.W_600),
                 ft.Container(width=scaled(HEADER_SPACER_W)),
@@ -111,6 +123,7 @@ class AddReceiptScreen(ft.Column):
                 ft.ElevatedButton(
                     tr("add_receipt.save"), bgcolor=t.ACCENT, color=t.WHITE,
                     style=ft.ButtonStyle(
+                        text_style=ft.TextStyle(size=scaled(SAVE_BTN_FONT)),
                         shape=ft.RoundedRectangleBorder(radius=scaled(FIELD_RADIUS)),
                         padding=t.pad_sym(horizontal=scaled(SAVE_BTN_PAD_H), vertical=scaled(FORM_FIELD_PAD_V)),
                     ),

@@ -37,7 +37,7 @@
     "top_categories": "ТОП КАТЕГОРІЙ"
   },
   "add_receipt": {
-    "back": "← Назад",
+    "back": "Назад",
     "new_receipt": "Новий чек",
     "editing": "Редагування",
     "total": "РАЗОМ",
@@ -54,11 +54,11 @@
     "upload_photo": "Завантажити фото чеку (AI)"
   },
   "item_editor": {
-    "name": "НАЗВА",
+    "name": "Назва",
     "name_hint": "М'ясо куряче",
-    "quantity": "КІЛЬКІСТЬ",
-    "price": "ЦІНА",
-    "category": "КАТЕГОРІЯ",
+    "quantity": "Кількість",
+    "price": "Ціна",
+    "category": "Категорія",
     "category_hint": "Назва категорії",
     "new_category": "+ Нова категорія",
     "new_item": "Нова позиція",

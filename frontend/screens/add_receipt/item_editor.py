@@ -18,7 +18,7 @@ from frontend.screens.add_receipt.sizes import (
     ACTION_BTN_SIZE, SHEET_HANDLE_W, SHEET_HANDLE_H, SHEET_RADIUS,
     SHEET_HANDLE_PAD_TOP, SHEET_HANDLE_PAD_BOTTOM,
     CAT_ITEM_PAD_H, CAT_ITEM_PAD_V, CAT_SELECTOR_RADIUS,
-    EDITOR_FIELD_PAD, NEW_CAT_ROW_PAD_H, NEW_CAT_ROW_PAD_V, CAT_BTN_GAP,
+    EDITOR_FIELD_PAD, EDITOR_FIELD_FONT, NEW_CAT_ROW_PAD_H, NEW_CAT_ROW_PAD_V, CAT_BTN_GAP,
     FORM_GAP,
 )
 
@@ -41,7 +41,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
 
     _lbl = ft.TextStyle(size=scaled(FONT_SM), color=t.TEXT_DIMMER, font_family="monospace",
                         letter_spacing=scaled(LETTER_SPACING))
-    _txt = ft.TextStyle(size=scaled(FONT_LG), color=t.TEXT)
+    _txt = ft.TextStyle(size=scaled(EDITOR_FIELD_FONT), color=t.TEXT)
 
     # ref to scrollable body – assigned after creation
     scroll_body_ref: list = [None]
@@ -290,7 +290,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
             clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
         ),
         error_text,
-    ], spacing=scaled(GAP_XL), expand=True, scroll=ft.ScrollMode.AUTO)
+    ], spacing=scaled(GAP_XL), expand=True)
     scroll_body_ref[0] = scrollable_body
 
     buttons_row = ft.Container(

@@ -37,7 +37,7 @@
     "top_categories": "TOP CATEGORIES"
   },
   "add_receipt": {
-    "back": "← Back",
+    "back": "Back",
     "new_receipt": "New receipt",
     "editing": "Editing",
     "total": "TOTAL",
@@ -54,11 +54,11 @@
     "upload_photo": "Upload receipt photo (AI)"
   },
   "item_editor": {
-    "name": "NAME",
+    "name": "Name",
     "name_hint": "Chicken breast",
-    "quantity": "QUANTITY",
-    "price": "PRICE",
-    "category": "CATEGORY",
+    "quantity": "Quantity",
+    "price": "Price",
+    "category": "Category",
     "category_hint": "Category name",
     "new_category": "+ New category",
     "new_item": "New item",
