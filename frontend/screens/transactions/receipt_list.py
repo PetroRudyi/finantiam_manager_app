@@ -89,7 +89,7 @@ def _day_header(date: datetime.datetime, total: float,
                 day_receipts: List[Receipt], app_state) -> ft.Container:
     has_expense = any(r.transaction_type == "expense" for r in day_receipts)
     color = t.RED if has_expense else t.BLUE
-    day_name = t.get_days_short().get(date.weekday(), date.strftime("%a"))
+    day_name = t.get_days_full().get(date.weekday(), date.strftime("%A"))
     settings: AppSettings = app_state.settings
     base_amount_str = f"≈ {t.format_amount(total, currency=settings.default_currency)}"
     return ft.Container(
@@ -97,7 +97,7 @@ def _day_header(date: datetime.datetime, total: float,
             ft.Row([
                 ft.Text(date.strftime("%d"), size=scaled(DATE_DAY_FONT), color=t.TEXT,
                         weight=ft.FontWeight.W_600, font_family="monospace"),
-                ft.Text(f"{day_name} · {date.strftime('%m.%y')}",
+                ft.Text(day_name,
                         size=scaled(FONT_SM), color=t.TEXT_DIMMER, font_family="monospace"),
             ], spacing=scaled(8)),
             ft.Text(base_amount_str, size=scaled(HEADER_AMOUNT_FONT), color=color, font_family="monospace"),

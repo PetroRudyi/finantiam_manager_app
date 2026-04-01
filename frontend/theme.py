@@ -40,6 +40,11 @@ def get_days_short() -> dict:
     return {i: t(f"days_short.{i}") for i in range(7)}
 
 
+def get_days_full() -> dict:
+    from frontend.localisation import t
+    return {i: t(f"days_full.{i}") for i in range(7)}
+
+
 def get_months_chart() -> dict:
     from frontend.localisation import t
     return {i: t(f"months_chart.{i}") for i in range(1, 13)}
