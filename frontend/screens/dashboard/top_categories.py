@@ -34,14 +34,14 @@ def build_top_categories(receipts: List[Receipt], mode: str,
                            top=scaled(HEADER_PAD_TOP), bottom=scaled(HEADER_PAD_BOTTOM)),
     )
 
-    rows = [header]
-    for i, (cat, val) in enumerate(list(cat_totals.items())[:8]):
+    category_rows = []
+    for i, (cat, val) in enumerate(cat_totals.items()):
         bar_fraction = val / max_val if max_val > 0 else 0
         bar_width = max(scaled(TOP_CAT_BAR_MIN_W), int(bar_fraction * scaled(TOP_CAT_BAR_MAX_W)))
         color = t.CATEGORY_COLORS[i % len(t.CATEGORY_COLORS)]
         pct = int(val / grand * 100)
 
-        rows.append(ft.Container(
+        category_rows.append(ft.Container(
             content=ft.Row([
                 ft.Text(str(i + 1), size=scaled(FONT_SM), color=t.TEXT_DIMMER,
                         font_family="monospace", width=scaled(RANK_NUM_W)),
@@ -63,10 +63,13 @@ def build_top_categories(receipts: List[Receipt], mode: str,
         ))
 
     if not cat_totals:
-        rows.append(ft.Container(
+        category_rows.append(ft.Container(
             content=ft.Text(tr("dashboard.no_data"), size=scaled(FONT_BODY), color=t.TEXT_DIMMER,
                             text_align=ft.TextAlign.CENTER),
             padding=scaled(EMPTY_PAD), alignment=ft.Alignment(0, 0),
         ))
 
-    return ft.Column(rows, spacing=0)
+    return ft.Column([
+        header,
+        ft.Column(category_rows, spacing=0, scroll=ft.ScrollMode.AUTO),
+    ], spacing=0)

@@ -35,22 +35,28 @@ def build_bar_chart(receipts: List[Receipt], mode: str,
     selected_total = items[selected_idx][1] if len(items) > selected_idx else 0
 
     bars = []
-    months_chart = t.get_months_chart()
+    months_full = t.get_months_full()
     for i, (month_label, val) in enumerate(items):
         is_selected = i == selected_idx
         height = max(scaled(BAR_MIN_H), int((val / max_v) * scaled(BAR_MAX_H))) if max_v > 0 else scaled(BAR_MIN_H)
         month_num = _ENG_MONTH_TO_NUM.get(month_label, 0)
-        chart_label = months_chart.get(month_num, month_label)
+        full_name = months_full.get(month_num, month_label)
+        color = chart_color if is_selected else t.TEXT_DIMMER
         bars.append(ft.Column([
+            ft.Text(
+                t.format_amount(val, currency=base_currency) if val > 0 else "",
+                size=scaled(FONT_XS), color=color,
+                font_family="monospace", text_align=ft.TextAlign.CENTER,
+            ),
             ft.Container(
                 height=height, bgcolor=chart_color,
                 border_radius=ft.BorderRadius(top_left=scaled(BAR_TOP_RADIUS), top_right=scaled(BAR_TOP_RADIUS),
                                               bottom_left=0, bottom_right=0),
                 opacity=1.0 if is_selected else 0.5,
             ),
-            ft.Text(chart_label, size=scaled(FONT_XS),
+            ft.Text(full_name, size=scaled(FONT_XS),
                     color=t.ACCENT if is_selected else t.TEXT_DIMMER,
-                    font_family="monospace"),
+                    font_family="monospace", text_align=ft.TextAlign.CENTER),
         ], spacing=scaled(BAR_LABEL_GAP), horizontal_alignment=ft.CrossAxisAlignment.CENTER,
            expand=True))
 

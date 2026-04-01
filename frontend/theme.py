@@ -50,6 +50,11 @@ def get_months_chart() -> dict:
     return {i: t(f"months_chart.{i}") for i in range(1, 13)}
 
 
+def get_months_full() -> dict:
+    from frontend.localisation import t
+    return {i: t(f"months_full.{i}") for i in range(1, 13)}
+
+
 # ──────────────────────────────────────────
 #  Scaling utility
 # ──────────────────────────────────────────
