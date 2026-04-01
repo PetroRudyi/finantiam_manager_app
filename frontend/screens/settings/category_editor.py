@@ -16,6 +16,7 @@ from frontend.theme import scaled
 from frontend.localisation import t as tr
 from frontend.sizes import (
     FONT_SM, FONT_SM_MD, FONT_BODY, FONT_LG, FONT_NAV,
+    FONT_DIALOG_TITLE, FONT_DIALOG_BODY, FONT_DIALOG_ACTION,
     PAD_PAGE_H, BTN_PAD_V, GAP_LG, BORDER_WIDTH,
 )
 from frontend.screens.settings.sizes import (
@@ -29,9 +30,10 @@ from frontend.screens.settings.sizes import (
 class CategoryEditor:
     """Manages category list CRUD within the settings screen."""
 
-    def __init__(self, app_state, on_rebuild):
+    def __init__(self, app_state, on_rebuild, get_page=None):
         self.app_state = app_state
         self._on_rebuild = on_rebuild
+        self._get_page = get_page
         self._editing_cat_idx = None
 
         self._new_cat_field = None
@@ -216,7 +218,7 @@ class CategoryEditor:
             border_radius=scaled(CAT_EDIT_RADIUS),
             border=t.border_all(scaled(BORDER_WIDTH), t.alpha(t.RED, "33")),
             padding=t.pad_sym(horizontal=scaled(CAT_EDIT_PAD_H), vertical=scaled(CAT_EDIT_PAD_V)),
-            on_click=lambda e, c=cat: self._delete_category(c, settings),
+            on_click=lambda e, c=cat: self._delete_category(e, c, settings),
             ink=True,
         )
 
@@ -357,13 +359,54 @@ class CategoryEditor:
         except Exception:
             pass
 
-    def _delete_category(self, cat: Category, settings: AppSettings):
-        if cat in settings.categories:
-            cat.deleted = True
-            cat.name = "..."
-            backend.save_settings(settings)
+    def _delete_category(self, e, cat: Category, settings: AppSettings):
+        page = self._get_page() if self._get_page else None
+        if page is None:
+            return
 
-            if self._editing_cat_idx is not None:
-                self._editing_cat_idx = None
+        def _on_confirm(e):
+            page.pop_dialog()
+            if cat in settings.categories:
+                cat.deleted = True
+                cat.name = "..."
+                backend.save_settings(settings)
 
-            self._refresh_list(settings)
+                if self._editing_cat_idx is not None:
+                    self._editing_cat_idx = None
+
+                self._refresh_list(settings)
+
+        def _on_cancel(e):
+            page.pop_dialog()
+
+        dlg = ft.AlertDialog(
+            modal=True,
+            title=ft.Text(
+                tr("category_editor.delete_confirm_title"),
+                size=scaled(FONT_DIALOG_TITLE),
+                color=t.TEXT,
+            ),
+            bgcolor=t.SURFACE,
+            content=ft.Text(
+                tr("category_editor.delete_confirm_message").replace("{name}", cat.name),
+                size=scaled(FONT_DIALOG_BODY),
+                color=t.TEXT_DIM,
+            ),
+            actions=[
+                ft.TextButton(
+                    tr("category_editor.delete_confirm_no"),
+                    on_click=_on_cancel,
+                    style=ft.ButtonStyle(text_style=ft.TextStyle(size=scaled(FONT_DIALOG_ACTION))),
+                ),
+                ft.TextButton(
+                    tr("category_editor.delete_confirm_yes"),
+                    on_click=_on_confirm,
+                    style=ft.ButtonStyle(
+                        color=t.RED,
+                        text_style=ft.TextStyle(size=scaled(FONT_DIALOG_ACTION)),
+                    ),
+                ),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+        page.show_dialog(dlg)

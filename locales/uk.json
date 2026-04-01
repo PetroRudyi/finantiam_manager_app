@@ -120,7 +120,11 @@
     "add": "+ Додати",
     "categories_count": "{count} категорій",
     "editing_label": "Редагується: {name}",
-    "category_exists": "Така категорія вже існує"
+    "category_exists": "Така категорія вже існує",
+    "delete_confirm_title": "Видалення категорії",
+    "delete_confirm_message": "Ви впевнені, що хочете видалити \"{name}\"?",
+    "delete_confirm_yes": "Видалити",
+    "delete_confirm_no": "Скасувати"
   },
   "api_key_editor": {
     "label": "API ключ Gemini",

@@ -120,7 +120,11 @@
     "add": "+ Add",
     "categories_count": "{count} categories",
     "editing_label": "Editing: {name}",
-    "category_exists": "This category already exists"
+    "category_exists": "This category already exists",
+    "delete_confirm_title": "Delete category",
+    "delete_confirm_message": "Are you sure you want to delete \"{name}\"?",
+    "delete_confirm_yes": "Delete",
+    "delete_confirm_no": "Cancel"
   },
   "api_key_editor": {
     "label": "Gemini API key",

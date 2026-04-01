@@ -36,7 +36,7 @@ class SettingsScreen(ft.Column):
         self.on_refresh = on_refresh
         self._show_categories = False
         self._show_api_key_editor = False
-        self._cat_editor = CategoryEditor(app_state, on_rebuild=self._rebuild)
+        self._cat_editor = CategoryEditor(app_state, on_rebuild=self._rebuild, get_page=lambda: self.page)
         self._build()
 
     def refresh(self):
