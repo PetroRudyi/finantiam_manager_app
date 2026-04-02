@@ -48,7 +48,7 @@ class ReceiptForm:
 
     def build(self) -> ft.Container:
         _lbl = ft.TextStyle(size=scaled(FONT_SM), color=t.TEXT_DIMMER, font_family="monospace")
-        _txt = ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT)
+        _txt = ft.TextStyle(size=scaled(FONT_SM_MD), color=t.TEXT)
 
         self.date_field = ft.TextField(
             value=self._date.strftime("%d.%m.%Y"), label=tr("receipt_form.date"),

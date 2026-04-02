@@ -29,7 +29,7 @@ class AppShell:
         self.page = page
         self.state = state
         self._in_add_screen = False
-        self._setup_page(width=1000, height=1000)
+        self._setup_page(width=450, height=1000)
 
     # ── Page setup ───────────────────────────────────────────
 
@@ -151,7 +151,10 @@ class AppShell:
                 expand=True,
             )
         elif tab == 1:
-            self._content_area.content = DashboardScreen(app_state=self.state)
+            self._content_area.content = DashboardScreen(
+                app_state=self.state,
+                on_edit_receipt=self.open_add_receipt,
+            )
         else:
             self._content_area.content = SettingsScreen(
                 app_state=self.state, on_refresh=self.rebuild_nav,
@@ -194,6 +197,13 @@ class AppShell:
     def _on_back(self, e):
         if self._in_add_screen:
             self._close_add_screen()
+            return
+        # Check if dashboard is showing category detail
+        if self.state.current_tab == 1:
+            content = self._content_area.content
+            if isinstance(content, DashboardScreen) and content.in_category_detail:
+                content.close_category_detail()
+                return
         # On main screens — do nothing (prevent app from closing)
 
     def _on_keyboard(self, e: ft.KeyboardEvent):

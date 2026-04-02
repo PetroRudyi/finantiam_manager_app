@@ -14,6 +14,7 @@ from frontend.components.type_toggle import TypeToggle
 from frontend.screens.dashboard.bar_chart import build_bar_chart
 from frontend.screens.dashboard.donut_chart import build_donut_chart
 from frontend.screens.dashboard.top_categories import build_top_categories
+from frontend.screens.dashboard.category_detail import CategoryDetailScreen
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
@@ -24,18 +25,31 @@ from frontend.screens.dashboard.sizes import (
 
 
 class DashboardScreen(ft.Column):
-    def __init__(self, app_state):
+    def __init__(self, app_state, on_edit_receipt=None):
         super().__init__(spacing=0, expand=True)
         self.app_state = app_state
+        self._on_edit_receipt = on_edit_receipt
         self._mode = "expense"
         now = datetime.datetime.now()
         self._year = now.year
         self._month = now.month
+        self._in_category_detail = False
         self._build()
 
     def refresh(self):
         self._build()
         self.update()
+
+    @property
+    def in_category_detail(self) -> bool:
+        return self._in_category_detail
+
+    def close_category_detail(self):
+        """Return from category detail to main dashboard."""
+        if self._in_category_detail:
+            self._in_category_detail = False
+            self._build()
+            self.update()
 
     def _build(self):
         self.controls.clear()
@@ -65,7 +79,8 @@ class DashboardScreen(ft.Column):
                 build_bar_chart(receipts, self._mode, self._year, self._month,
                                 settings.default_currency),
                 build_donut_chart(month_receipts, self._mode, settings),
-                build_top_categories(month_receipts, self._mode, settings),
+                build_top_categories(month_receipts, self._mode, settings,
+                                     on_category_click=self._open_category_detail),
             ], expand=True, scroll=ft.ScrollMode.AUTO, spacing=0),
         ]
 
@@ -79,5 +94,25 @@ class DashboardScreen(ft.Column):
 
     def _set_mode(self, mode: str):
         self._mode = mode
+        self._build()
+        self.update()
+
+    def _open_category_detail(self, category_id: str):
+        self._in_category_detail = True
+        self.controls.clear()
+        detail = CategoryDetailScreen(
+            app_state=self.app_state,
+            category_id=category_id,
+            mode=self._mode,
+            year=self._year,
+            month=self._month,
+            on_back=self._close_category_detail,
+            on_edit_receipt=self._on_edit_receipt or (lambda **kw: None),
+        )
+        self.controls.append(detail)
+        self.update()
+
+    def _close_category_detail(self):
+        self._in_category_detail = False
         self._build()
         self.update()

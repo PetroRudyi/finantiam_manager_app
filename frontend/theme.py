@@ -60,6 +60,7 @@ def get_months_full() -> dict:
 # ──────────────────────────────────────────
 
 _scale_factor: float = 1.0
+_page_width: float = BASE_WIDTH
 
 
 def init_scale(page_width: float, page_height: float):
@@ -68,9 +69,15 @@ def init_scale(page_width: float, page_height: float):
     Must be called AFTER page.update() so that page.width / page.height
     reflect the real viewport dimensions (especially on mobile).
     """
-    global _scale_factor
+    global _scale_factor, _page_width
     if page_width > 0 and page_height > 0:
         _scale_factor = min(page_width / BASE_WIDTH, page_height / BASE_HEIGHT)
+        _page_width = page_width
+
+
+def get_page_width() -> float:
+    """Return the actual page width in device pixels."""
+    return _page_width
 
 
 def scaled(value: float) -> float:

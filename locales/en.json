@@ -37,6 +37,10 @@
     "top_categories": "TOP CATEGORIES",
     "other_categories": "Other categories"
   },
+  "category_detail": {
+    "trend_title": "MONTHLY TREND",
+    "receipts_title": "RECEIPTS WITH CATEGORY"
+  },
   "add_receipt": {
     "back": "Back",
     "new_receipt": "New receipt",

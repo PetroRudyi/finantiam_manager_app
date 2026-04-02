@@ -15,6 +15,8 @@ from backend.storage import (
 from backend.analytics import (
     filter_receipts_by_period, get_monthly_totals,
     get_category_totals, get_summary,
+    get_category_monthly_totals, get_receipts_with_category,
+    get_receipt_category_total,
 )
 
 # Exchange

@@ -37,6 +37,10 @@
     "top_categories": "ТОП КАТЕГОРІЙ",
     "other_categories": "Всі інші категорії"
   },
+  "category_detail": {
+    "trend_title": "ТРЕНД ПО МІСЯЦЯХ",
+    "receipts_title": "ЧЕКИ З КАТЕГОРІЄЮ"
+  },
   "add_receipt": {
     "back": "Назад",
     "new_receipt": "Новий чек",

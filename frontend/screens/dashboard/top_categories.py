@@ -18,10 +18,15 @@ from frontend.screens.dashboard.sizes import (
 
 
 def build_top_categories(receipts: List[Receipt], mode: str,
-                         settings: AppSettings) -> ft.Column:
+                         settings: AppSettings,
+                         on_category_click=None) -> ft.Column:
     cat_totals_ids = backend.get_category_totals(receipts, mode)
     cat_totals = {
         settings.get_category_name(cid): val for cid, val in cat_totals_ids.items()
+    }
+    # Keep ID mapping for click handler
+    cat_id_by_name = {
+        settings.get_category_name(cid): cid for cid in cat_totals_ids.keys()
     }
     max_val = max(cat_totals.values()) if cat_totals else 1
     grand = sum(cat_totals.values()) or 1
@@ -41,6 +46,7 @@ def build_top_categories(receipts: List[Receipt], mode: str,
         color = t.CATEGORY_COLORS[i % len(t.CATEGORY_COLORS)]
         pct = int(val / grand * 100)
 
+        cid = cat_id_by_name.get(cat, cat)
         category_rows.append(ft.Container(
             content=ft.Row([
                 ft.Text(str(i + 1), size=scaled(FONT_SM), color=t.TEXT_DIMMER,
@@ -60,6 +66,8 @@ def build_top_categories(receipts: List[Receipt], mode: str,
             padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H),
                                top=scaled(ROW_PAD_V), bottom=scaled(ROW_PAD_V)),
             border=t.border_bottom(),
+            on_click=(lambda e, c=cid: on_category_click(c)) if on_category_click else None,
+            ink=True if on_category_click else False,
         ))
 
     if not cat_totals:

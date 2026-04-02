@@ -27,13 +27,13 @@ def build_column_headers() -> ft.Container:
                     font_family="monospace", expand=True),
             ft.Text(tr("items_table.qty"), size=scaled(FONT_XS), color=t.TEXT_DIMMER,
                     font_family="monospace", width=scaled(COL_QTY_W),
-                    text_align=ft.TextAlign.CENTER),
+                    text_align=ft.TextAlign.LEFT),
             ft.Text(tr("items_table.price"), size=scaled(FONT_XS), color=t.TEXT_DIMMER,
                     font_family="monospace", width=scaled(COL_PRICE_W),
-                    text_align=ft.TextAlign.RIGHT),
+                    text_align=ft.TextAlign.LEFT),
             ft.Text(tr("items_table.cat"), size=scaled(FONT_XS), color=t.TEXT_DIMMER,
                     font_family="monospace", width=scaled(COL_CAT_W),
-                    text_align=ft.TextAlign.RIGHT),
+                    text_align=ft.TextAlign.LEFT),
             ft.Container(width=scaled(COL_ACTIONS_W)),
         ], spacing=scaled(TABLE_GAP)),
         padding=t.pad_only(left=scaled(PAD_PAGE_H), right=scaled(PAD_PAGE_H), bottom=scaled(TABLE_GAP)),
@@ -43,16 +43,18 @@ def build_column_headers() -> ft.Container:
 def build_add_row(on_click: Callable) -> ft.Container:
     return ft.Container(
         content=ft.Text(tr("items_table.add_item"), size=scaled(FONT_MD), color=t.ACCENT,
-                        font_family="monospace"),
-        padding=t.pad_only(left=scaled(PAD_PAGE_H), top=scaled(8), bottom=scaled(4)),
+                        font_family="monospace", text_align=ft.TextAlign.CENTER,
+                        width=float("inf")),
+        padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(8)),
         on_click=on_click,
         ink=True,
+        border=t.border_bottom(),
     )
 
 
 def build_item_row(item: InvoiceItem, idx: int, settings: AppSettings,
                    currency: str, on_edit: Callable, on_remove: Callable) -> ft.Container:
-    cat_label = settings.get_category_name(item.category)[:6]
+    cat_label = settings.get_category_name(item.category)
     return ft.Container(
         content=ft.Row([
             ft.Text(item.name, size=scaled(FONT_BODY), color=t.TEXT, expand=True,
@@ -61,16 +63,19 @@ def build_item_row(item: InvoiceItem, idx: int, settings: AppSettings,
             ft.Text(f"{item.quantity:g}", size=scaled(FONT_SM_MD), color=t.TEXT_DIM,
                     font_family="monospace", width=scaled(COL_QTY_W),
                     text_align=ft.TextAlign.CENTER),
-            ft.Text(f"{get_symbol(currency)}{item.price:.2f}", size=scaled(FONT_MD), color=t.TEXT,
+            ft.Text(f"{item.price:.2f}", size=scaled(FONT_SM_MD), color=t.TEXT,
                     font_family="monospace", width=scaled(COL_PRICE_W),
                     text_align=ft.TextAlign.RIGHT),
             ft.Container(
-                content=ft.Text(cat_label, size=scaled(FONT_XS), color=t.TEXT_DIM,
+                content=ft.Text(cat_label, size=scaled(FONT_SM_MD), color=t.TEXT_DIM,
                                 font_family="monospace",
-                                text_align=ft.TextAlign.CENTER),
+                                text_align=ft.TextAlign.CENTER,
+                                overflow=ft.TextOverflow.ELLIPSIS,
+                                max_lines=1),
                 bgcolor=t.SURFACE2, border_radius=scaled(ICON_BTN_RADIUS),
-                padding=t.pad_sym(horizontal=scaled(5), vertical=scaled(2)),
+                padding=t.pad_sym(horizontal=scaled(3), vertical=scaled(2)),
                 width=scaled(COL_CAT_W),
+                clip_behavior=ft.ClipBehavior.HARD_EDGE,
             ),
             ft.Row([
                 ft.Container(

@@ -9,7 +9,7 @@ import flet.canvas as cv
 import backend
 from backend.models import Receipt, AppSettings
 from frontend import theme as t
-from frontend.theme import scaled
+from frontend.theme import scaled, get_page_width
 from frontend.localisation import t as tr
 from frontend.sizes import FONT_XS, FONT_SM, FONT_SM_MD, LETTER_SPACING, PAD_PAGE_H, GAP_LG
 from frontend.screens.dashboard.sizes import (
@@ -17,17 +17,16 @@ from frontend.screens.dashboard.sizes import (
     LEGEND_DOT_RADIUS,
 )
 
-# Layout constants (design px at base 390px screen)
-_SCREEN_BASE = 390
-_LINE_EXT = 12   # radial line length past pie edge
-_HORIZ    = 14   # horizontal leader line extension
-_TEXT_W   = 50   # max label text width
-_LINE_W   = 0.9  # leader line stroke width
+# Proportions relative to card inner width (fraction of 1.0)
+_LINE_EXT_F = 12 / 338   # radial line length past pie edge
+_HORIZ_F    = 14 / 338   # horizontal leader line extension
+_TEXT_W_F   = 50 / 338   # max label text width
+_LINE_W     = 0.9        # leader line stroke width (absolute design px)
 
-# Font sizes for on-chart labels
-_FONT_NAME = 11  # category name label
-_FONT_PCT  = 9   # percentage label
-_COLOR_PCT = "#c0c0ce"  # light gray for percentage text
+# Font proportions relative to card inner width
+_FONT_NAME_F = 11 / 338  # category name label
+_FONT_PCT_F  = 9 / 338   # percentage label
+_COLOR_PCT = "#c0c0ce"    # light gray for percentage text
 
 
 def build_donut_chart(receipts: List[Receipt], mode: str,
@@ -38,7 +37,7 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
     }
     grand = sum(cat_totals.values()) or 1
 
-    # Top-6 + "others" grouping (same as before)
+    # Top-6 + "others" grouping
     all_items = list(cat_totals.items())
     top_items = all_items[:6]
     rest = all_items[6:]
@@ -47,29 +46,30 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
         top_items = top_items + [(tr("dashboard.other_categories"), other_val)]
     items = top_items
 
-    # Compute canvas width from available card space
-    card_inner = _SCREEN_BASE - 2 * PAD_PAGE_H - 2 * CARD_PAD
-    cw = scaled(card_inner)
-    # Pie radius fills available width after subtracting label margins on both sides
-    line_ext = scaled(_LINE_EXT)
-    horiz = scaled(_HORIZ)
-    text_w = scaled(_TEXT_W)
+    # Derive all sizes from the actual available card inner width (device pixels)
+    page_w = get_page_width()
+    cw = page_w - 2 * scaled(PAD_PAGE_H) - 2 * scaled(CARD_PAD)
+
+    line_ext = cw * _LINE_EXT_F
+    horiz = cw * _HORIZ_F
+    text_w = cw * _TEXT_W_F
     line_w = scaled(_LINE_W)
     label_margin = line_ext + horiz + text_w
     pie_r = (cw / 2) - label_margin
+
+    # Font sizes scale with card width
+    font_name_sz = max(8, cw * _FONT_NAME_F)
+    font_pct_sz = max(6, cw * _FONT_PCT_F)
+
     # Asymmetric vertical padding: top needs less space than bottom
-    font_name_sz = scaled(_FONT_NAME)
-    font_pct_sz = scaled(_FONT_PCT)
     max_label_h = 2 * font_name_sz * 1.25 + font_pct_sz * 1.25
-    v_pad_top = line_ext + font_name_sz * 1.25  # top labels: only ~1 line of name
-    v_pad_bot = line_ext + max_label_h           # bottom labels: 2-line name + pct
+    v_pad_top = line_ext + font_name_sz * 1.25
+    v_pad_bot = line_ext + max_label_h
     ch = pie_r * 2 + v_pad_top + v_pad_bot
     cx = cw / 2
-    cy = v_pad_top + pie_r  # pie center shifted up
+    cy = v_pad_top + pie_r
 
-    gap_angle = 0
     available_angle = 2 * math.pi
-
     shapes = []
     start = -math.pi / 2
 
@@ -98,16 +98,12 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
                 paint=ft.Paint(color=color, style=ft.PaintingStyle.FILL),
             ))
 
-
             # Leader line
             mid_angle = start + sweep / 2
-            # Start point: on the pie edge
             lx1 = cx + pie_r * math.cos(mid_angle)
             ly1 = cy + pie_r * math.sin(mid_angle)
-            # End point: outside pie
             lx2 = cx + (pie_r + line_ext) * math.cos(mid_angle)
             ly2 = cy + (pie_r + line_ext) * math.sin(mid_angle)
-            # Horizontal elbow
             is_right = math.cos(mid_angle) >= 0
             lx3 = lx2 + (horiz if is_right else -horiz)
 
@@ -118,20 +114,20 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
             shapes.append(cv.Line(lx1, ly1, lx2, ly2, paint=line_paint))
             shapes.append(cv.Line(lx2, ly2, lx3, ly2, paint=line_paint))
 
-            # Text starts at lx3+gap (right side) or lx3-text_w-gap (left side)
-            # so it never overlaps the pie
+            text_gap = cw * (2 / 338)
             if is_right:
-                tx = lx3 + scaled(2)
+                tx = lx3 + text_gap
             else:
-                tx = lx3 - text_w - scaled(2)
+                tx = lx3 - text_w - text_gap
             # Estimate how many lines the category name will occupy
-            char_w = font_name_sz * 0.55  # approximate average char width
+            char_w = font_name_sz * 0.55
             text_pixel_w = len(cat) * char_w
             name_lines = max(1, math.ceil(text_pixel_w / text_w))
-            name_block_h = name_lines * font_name_sz * 1.25  # line height
+            name_block_h = name_lines * font_name_sz * 1.25
 
+            vert_offset = cw * (7 / 338)
             shapes.append(cv.Text(
-                x=tx, y=ly2 - scaled(7),
+                x=tx, y=ly2 - vert_offset,
                 value=cat,
                 style=ft.TextStyle(
                     size=font_name_sz,
@@ -141,12 +137,12 @@ def build_donut_chart(receipts: List[Receipt], mode: str,
                 text_align=ft.TextAlign.LEFT,
                 max_width=text_w,
             ))
-            pct_y = ly2 - scaled(7) + name_block_h + scaled(1)
+            pct_y = ly2 - vert_offset + name_block_h + cw * (1 / 338)
             shapes.append(cv.Text(
                 x=tx, y=pct_y,
                 value=f"{pct:.1f} %",
                 style=ft.TextStyle(
-                    size=scaled(_FONT_PCT),
+                    size=font_pct_sz,
                     color=_COLOR_PCT,
                 ),
                 text_align=ft.TextAlign.LEFT,
