@@ -106,7 +106,7 @@ Rules (follow exactly):
 - created_date: null if not printed. Do NOT guess.
 - invoice_items: include each purchased line item. Use a reasonable quantity (1 if missing).
 - Numbers: use decimals with a dot. Remove currency symbols from numeric fields.
-- category: pick the closest label from the available categories when provided; otherwise use '{DEFAULT_CATEGORY}'.
+- category: You MUST ONLY use one of the available categories listed below. Do NOT invent or create new categories. If no category fits, use '{DEFAULT_CATEGORY}'.
 Return text in the same language as the receipt (do not translate).
 {cat_hint}
 """.strip()

@@ -146,7 +146,9 @@ def _map_category(name: str, settings, app_state) -> str:
             cid = settings.get_category_id_by_name(match[0])
 
     if cid is None:
-        cid = settings.ensure_category(raw)
-        backend.save_settings(settings)
-        app_state.settings = settings
+        cid = settings.get_category_id_by_name(DEFAULT_CATEGORY)
+        if cid is None:
+            cid = settings.ensure_category(DEFAULT_CATEGORY)
+            backend.save_settings(settings)
+            app_state.settings = settings
     return cid

@@ -104,7 +104,7 @@ def open_item_editor(page: ft.Page, app_state, items: List[InvoiceItem],
         label=tr("item_editor.price"), keyboard_type=ft.KeyboardType.NUMBER,
         input_filter=ft.InputFilter(
             allow=True,
-            regex_string=r"^(\d+(\.\d{0,2})?)?$",
+            regex_string=r"^-?(\d+(\.\d{0,2})?)?$",
             replacement_string=""
         ),
         bgcolor=t.SURFACE2, border_color=t.BORDER, focused_border_color=t.ACCENT,
