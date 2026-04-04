@@ -76,7 +76,7 @@ class AppShell:
         # Build all UI with correct scale
         self._build_ui()
 
-        safe_top = ft.Container(height=scaled(28), bgcolor=t.BG)
+        safe_top = ft.Container(height=scaled(34), bgcolor=t.BG)
         safe_bottom = ft.Container(height=scaled(16), bgcolor=t.SURFACE)
         self.page.add(ft.Column(
             [safe_top, self._content_area, self._tab_bar, safe_bottom],
@@ -184,7 +184,7 @@ class AppShell:
         t.init_scale(self.page.window.width, self.page.window.height)
         # Rebuild all UI controls with new scale
         self._build_ui()
-        safe_top = ft.Container(height=scaled(28), bgcolor=t.BG)
+        safe_top = ft.Container(height=scaled(34), bgcolor=t.BG)
         safe_bottom = ft.Container(height=scaled(16), bgcolor=t.SURFACE)
         self.page.controls.clear()
         self.page.add(ft.Column(

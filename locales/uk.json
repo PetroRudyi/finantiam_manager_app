@@ -117,7 +117,12 @@
     "export_csv": "Вигрузити всі дані у CSV",
     "saved": "Збережено: {path}",
     "currency_change_title": "Зміна базової валюти",
-    "recalc_progress": "Перерахунок валют... {percent}%"
+    "recalc_progress": "Перерахунок валют... {percent}%",
+    "exchange": "ОБМІН ВАЛЮТ",
+    "exchange_markup": "Надбавка до курсу",
+    "exchange_markup_sub": "Імітація банківської комісії при обміні",
+    "exchange_markup_percent": "Відсоток надбавки",
+    "exchange_markup_example": "Курс × {multiplier} для приблизних сум"
   },
   "category_editor": {
     "drag_hint": "Перетягніть рядок для зміни порядку",

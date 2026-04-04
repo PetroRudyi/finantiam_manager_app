@@ -97,6 +97,8 @@ class AppSettings(BaseModel):
     date_format: str = "DD.MM.YY"
     gemini_api_key: str = ""
     ai_auto_fill: bool = True
+    exchange_markup_enabled: bool = False
+    exchange_markup_percent: float = 0.0
     # список користувацьких категорій (ID + назва)
     categories: List[Category] = Field(
         default_factory=lambda: [

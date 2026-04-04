@@ -224,7 +224,9 @@ class AddReceiptScreen(ft.Column):
         receipt = Receipt(**receipt_kwargs)
 
         if rate is not None:
-            receipt.base_total = backend.convert_amount(receipt.total, rate)
+            markup = settings.exchange_markup_percent if settings.exchange_markup_enabled else 0.0
+            effective_rate = rate * (1 + markup / 100)
+            receipt.base_total = backend.convert_amount(receipt.total, effective_rate)
 
         if self.editing_receipt:
             self.app_state.receipts = backend.update_receipt(receipt)

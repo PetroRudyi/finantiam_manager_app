@@ -11,6 +11,10 @@ def recalculate_all_receipts(new_base_currency: str,
                              progress_callback=None) -> List[Receipt]:
     """Re-fetch exchange rates and recalculate base_total for all receipts."""
     from backend.exchange_service import get_rate_for_receipt, convert_amount
+    from backend.storage.settings import load_settings
+
+    settings = load_settings()
+    markup = settings.exchange_markup_percent if settings.exchange_markup_enabled else 0.0
 
     receipts = load_receipts()
     total = len(receipts)
@@ -26,7 +30,8 @@ def recalculate_all_receipts(new_base_currency: str,
             rate = get_rate_for_receipt(r.currency, new_base_currency, r.created_date)
             r.exchange_rate = rate
             r.base_currency = new_base_currency
-            r.base_total = convert_amount(r.total, rate)
+            effective_rate = rate * (1 + markup / 100) if rate is not None else None
+            r.base_total = convert_amount(r.total, effective_rate)
             if rate is not None:
                 ok += 1
             else:

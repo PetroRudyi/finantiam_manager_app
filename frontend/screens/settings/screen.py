@@ -143,6 +143,9 @@ class SettingsScreen(ft.Column):
         if key == "default_currency" and value != old_value:
             self._recalculate_base_currency(value)
 
+        if key in ("exchange_markup_enabled", "exchange_markup_percent") and value != old_value:
+            self._recalculate_base_currency(settings.default_currency)
+
     def _save_api_key(self, new_key: str):
         self._set("gemini_api_key", new_key)
         self._show_api_key_editor = False
