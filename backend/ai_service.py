@@ -104,7 +104,17 @@ Rules (follow exactly):
 - currency: MUST be one of [{currency_list}]. If not visible, use: {default_currency}. Do NOT use symbols like "Lei", "лей", "₴" — use the ISO code.
 - business_name: null if not printed. Do NOT guess.
 - created_date: null if not printed. Do NOT guess.
-- invoice_items: include each purchased line item. Use a reasonable quantity (1 if missing).
+- invoice_items: include each purchased line item.
+
+CRITICAL price rules:
+- "price" MUST be the TOTAL line price for that item (quantity × unit price), NOT the unit price.
+  Example: "Chicken breast × 3, unit 45.00, total 135.00" → quantity: 3, price: 135.00
+- If the receipt shows both a unit price and a line total, ALWAYS use the line total as "price".
+- Discounts: add discounts as separate items with a NEGATIVE price value.
+  Example: receipt shows "Discount 35%" with value -20.00 → name: "Знижка 35%", quantity: 1, price: -20.00
+  This applies to ALL discounts — per-item, per-group, or whole-receipt.
+- Use a reasonable quantity (1 if missing).
+
 - Numbers: use decimals with a dot. Remove currency symbols from numeric fields.
 - category: You MUST ONLY use one of the available categories listed below. Do NOT invent or create new categories. If no category fits, use '{DEFAULT_CATEGORY}'.
 Return text in the same language as the receipt (do not translate).
