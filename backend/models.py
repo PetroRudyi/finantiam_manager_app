@@ -96,6 +96,7 @@ class AppSettings(BaseModel):
     dark_theme: bool = True
     date_format: str = "DD.MM.YY"
     gemini_api_key: str = ""
+    gemini_model: str = "models/gemini-2.5-flash"
     ai_auto_fill: bool = True
     exchange_markup_enabled: bool = False
     exchange_markup_percent: float = 0.0

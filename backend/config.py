@@ -130,6 +130,19 @@ DEFAULT_CATEGORY: str = (
 DEFAULT_CATEGORIES: List[str] = [c.name for c in DEFAULT_CATEGORY_DEFS]
 
 
+# ── Gemini models ───────────────────────────────────────
+
+GEMINI_MODELS: List[str] = [
+    "models/gemini-2.5-flash",
+    "models/gemini-3-flash-preview",
+    "models/gemini-flash-latest",
+    "models/gemini-flash-lite-latest",
+    "models/gemma-4-26b-a4b-it",
+]
+
+DEFAULT_GEMINI_MODEL: str = GEMINI_MODELS[0]
+
+
 # ── App meta (version, update URLs) ─────────────────────
 
 _app_cfg = _load_json("app.json") if (CONFIG_DIR / "app.json").exists() else {}

@@ -10,6 +10,7 @@ from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr
 from frontend.components.type_toggle import TypeToggle
+from frontend.components.marquee import Marquee
 from frontend.sizes import (
     FONT_SM, FONT_SM_MD, FONT_MD, FONT_BODY,
     PAD_PAGE_H, FIELD_RADIUS, BORDER_WIDTH, GAP_LG,
@@ -96,19 +97,20 @@ class ReceiptForm:
         elif self._ai_running and not status_text:
             status_text = tr("receipt_form.ai_processing")
 
+        # Compute button width so we can decide whether to scroll the text.
+        page_w = int(getattr(self._page, "width", None) or 400)
+        self._ai_btn_outer_w = max(120, page_w - 2 * scaled(PAD_PAGE_H))
+        self._ai_btn_inner_pad = scaled(10)
+
         self.ai_status = ft.Text(status_text, size=scaled(FONT_SM_MD), color=t.TEXT_DIMMER,
                                  font_family="monospace")
 
         self.ai_btn = ft.Container(
-            content=ft.Row([
-                ft.Text(tr("receipt_form.upload_photo"), size=scaled(FONT_MD),
-                        color=t.ACCENT if self._has_api_key else t.TEXT_DIMMER,
-                        font_family="monospace"),
-                self.ai_status,
-            ], alignment=ft.MainAxisAlignment.CENTER, spacing=scaled(GAP_LG)),
+            content=self._build_ai_btn_content(status_text),
+            width=self._ai_btn_outer_w,
             bgcolor=t.alpha(t.ACCENT, "0f") if self._has_api_key else t.SURFACE2,
             border=t.border_all(scaled(BORDER_WIDTH), t.alpha(t.ACCENT, "66") if self._has_api_key else t.BORDER),
-            border_radius=scaled(FIELD_RADIUS), padding=scaled(10),
+            border_radius=scaled(FIELD_RADIUS), padding=self._ai_btn_inner_pad,
             on_click=(None if self._ai_running else
                       (self._on_pick_ai_image if self._has_api_key else None)),
             ink=(self._has_api_key and not self._ai_running),
@@ -125,6 +127,76 @@ class ReceiptForm:
             ], spacing=scaled(FORM_GAP)),
             padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(FORM_PAD_V)),
         )
+
+    # ── AI button content (plain row / marquee) ──────────────
+
+    def _build_ai_btn_content(self, status_text: str):
+        """Build the inner content of the AI upload button.
+
+        If the combined label + status text is wider than the button's inner
+        area, wrap the row in a horizontal Marquee so the full text (e.g. a
+        long error message) remains readable.
+        """
+        label_text = tr("receipt_form.upload_photo")
+        font_md = scaled(FONT_MD)
+        font_sm_md = scaled(FONT_SM_MD)
+        gap = scaled(GAP_LG)
+        label_color = t.ACCENT if self._has_api_key else t.TEXT_DIMMER
+        status_color = t.TEXT_DIMMER
+
+        # Keep a live reference so existing callers that touch
+        # `form.ai_status.value` still work in the non-scrolling case.
+        self.ai_status = ft.Text(
+            status_text, size=font_sm_md, color=status_color, font_family="monospace"
+        )
+
+        def _make_row(status_ctrl: ft.Control) -> ft.Row:
+            return ft.Row(
+                [
+                    ft.Text(label_text, size=font_md, color=label_color,
+                            font_family="monospace"),
+                    status_ctrl,
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                spacing=gap,
+                tight=True,
+            )
+
+        # Rough width estimate for monospace text (~0.6 × font size per char).
+        def _tw(s: str, size: int) -> int:
+            return int(len(s) * size * 0.6)
+
+        combined_w = _tw(label_text, font_md) + gap + _tw(status_text, font_sm_md)
+        inner_w = max(50, self._ai_btn_outer_w - 2 * self._ai_btn_inner_pad)
+
+        if combined_w <= inner_w:
+            return _make_row(self.ai_status)
+
+        # Too wide — scroll it. Marquee builds two independent copies of the
+        # row via the factory, so we can't reuse `self.ai_status` inside it.
+        def _factory():
+            return _make_row(
+                ft.Text(status_text, size=font_sm_md, color=status_color,
+                        font_family="monospace")
+            )
+
+        return Marquee(
+            content_factory=_factory,
+            content_width=combined_w,
+            width=inner_w,
+            height=int(font_md * 1.8),
+            speed=40,
+            gap=60,
+        )
+
+    def set_ai_status(self, text: str):
+        """Update the AI button status text, swapping to a marquee if needed."""
+        self._ai_status_text = text
+        try:
+            self.ai_btn.content = self._build_ai_btn_content(text)
+            self.ai_btn.update()
+        except Exception:
+            pass
 
     # ── Date picker ───────────────────────────────────────────
 

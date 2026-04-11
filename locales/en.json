@@ -111,6 +111,7 @@
     "api_key": "Gemini API key",
     "for_receipts": "For receipt recognition",
     "auto_fill": "Auto-fill",
+    "gemini_model": "Gemini model",
     "data": "DATA",
     "backup": "Backup",
     "backup_sub": "Latest: data in data/",
@@ -139,6 +140,7 @@
   "api_key_editor": {
     "label": "Gemini API key",
     "hint": "AIza...",
+    "model": "Gemini model",
     "info": "The key is used only for requests to Gemini service for receipt recognition.\nThe app developer has no access to your API key and cannot charge your account.",
     "cancel": "Cancel",
     "save": "Save"

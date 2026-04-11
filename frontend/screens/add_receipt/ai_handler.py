@@ -54,6 +54,7 @@ async def pick_ai_image(screen, page: ft.Page):
                 api_key=settings.gemini_api_key,
                 default_currency=settings.default_currency,
                 categories=settings.categories,
+                model=getattr(settings, "gemini_model", None),
             )
             _set_ai_status(screen, tr("ai.status_response"))
             merged = backend.merge_duplicate_items(data.invoice_items)
@@ -85,9 +86,10 @@ async def pick_ai_image(screen, page: ft.Page):
                 page.update()
             except Exception:
                 pass
-        except Exception:
+        except Exception as exc:
             screen._ai_running = False
-            _set_ai_status(screen, tr("ai.status_error"))
+            err_detail = str(exc) or repr(exc)
+            _set_ai_status(screen, f"{tr('ai.status_error')}: {err_detail}")
             try:
                 from frontend.screens.add_receipt.ai_handler import get_ai_click_handler
 
@@ -116,6 +118,11 @@ def get_ai_click_handler(screen, page: ft.Page):
 
 def _set_ai_status(screen, text: str):
     screen._ai_status_text = text
+    try:
+        screen._form.set_ai_status(text)
+        return
+    except Exception:
+        pass
     try:
         screen._form.ai_status.value = text
         screen._form.ai_status.update()

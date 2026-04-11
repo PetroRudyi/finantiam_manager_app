@@ -4,7 +4,7 @@
 import flet as ft
 
 from backend.models import AppSettings
-from backend.config import CURRENCY_CODES, SUPPORTED_LANGUAGES
+from backend.config import CURRENCY_CODES, SUPPORTED_LANGUAGES, GEMINI_MODELS, DEFAULT_GEMINI_MODEL
 from frontend import theme as t
 from frontend.theme import scaled
 from frontend.localisation import t as tr, current_language
@@ -52,6 +52,20 @@ def build_main_settings(settings: AppSettings,
     # AI auto-fill switch
     ai_sw = ft.Switch(value=settings.ai_auto_fill, active_color=t.ACCENT)
     ai_sw.on_change = lambda e: on_set("ai_auto_fill", e.control.value)
+
+    # Gemini model dropdown
+    current_model = getattr(settings, "gemini_model", None) or DEFAULT_GEMINI_MODEL
+    if current_model not in GEMINI_MODELS:
+        current_model = DEFAULT_GEMINI_MODEL
+    model_dd = ft.Dropdown(
+        value=current_model,
+        bgcolor=t.SURFACE2, border_color=t.BORDER, border_radius=scaled(DD_RADIUS),
+        text_style=ft.TextStyle(size=scaled(FONT_BODY), color=t.TEXT, font_family="monospace"),
+        content_padding=t.pad_sym(horizontal=scaled(DD_PAD_H), vertical=scaled(DD_PAD_V)),
+        expand=True,
+        options=[ft.dropdown.Option(key=m, text=m) for m in GEMINI_MODELS],
+    )
+    model_dd.on_select = lambda e: on_set("gemini_model", e.control.value)
 
     # API key masked preview
     api_key = settings.gemini_api_key
@@ -141,6 +155,15 @@ def build_main_settings(settings: AppSettings,
             on_click=lambda e: on_open_api_key(),
         ),
         settings_row(tr("settings.auto_fill"), right=ai_sw),
+        ft.Container(
+            content=ft.Column([
+                ft.Text(tr("settings.gemini_model"),
+                        size=scaled(FONT_SM), color=t.TEXT_DIMMER,
+                        font_family="monospace"),
+                model_dd,
+            ], spacing=scaled(4)),
+            padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(BTN_PAD_V)),
+        ),
 
         settings_section(tr("settings.data")),
         settings_row(tr("settings.backup"),

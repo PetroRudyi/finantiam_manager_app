@@ -58,6 +58,7 @@ def extract_receipt_from_image(
     api_key: str,
     default_currency: str = DEFAULT_CURRENCY,
     categories: Optional[List[str]] = None,
+    model: Optional[str] = None,
 ) -> AIReceiptDetail:
     try:
         from google import genai
@@ -121,14 +122,20 @@ Return text in the same language as the receipt (do not translate).
 {cat_hint}
 """.strip()
 
+    from backend.config import DEFAULT_GEMINI_MODEL
+    model_name = (model or DEFAULT_GEMINI_MODEL).strip()
+    # The google-genai SDK accepts model names without the "models/" prefix.
+    if model_name.startswith("models/"):
+        model_name = model_name[len("models/"):]
+
     client = genai.Client(api_key=api_key)
     contents = [prompt, img]
 
     last_err: Optional[Exception] = None
-    for _attempt in range(3):
+    for _attempt in range(1):
         try:
             resp = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model=model_name,
                 contents=contents,
                 config=types.GenerateContentConfig(
                     temperature=0.1,
