@@ -2,9 +2,16 @@
 """backend/analytics.py — Pure computation on receipt data (no disk I/O)."""
 
 import datetime
-from typing import List
+from typing import List, Optional
 
 from backend.models import Receipt
+
+
+def _apply_shared_filter(receipts: List[Receipt],
+                         shared_filter: Optional[bool]) -> List[Receipt]:
+    if shared_filter is None:
+        return receipts
+    return [r for r in receipts if r.is_shared == shared_filter]
 
 
 def filter_receipts_by_period(receipts: List[Receipt], mode: str) -> List[Receipt]:
@@ -15,12 +22,14 @@ def filter_receipts_by_period(receipts: List[Receipt], mode: str) -> List[Receip
 
 
 def get_monthly_totals(receipts: List[Receipt], tx_type: str = "expense",
-                       target_year: int = None, target_month: int = None) -> dict:
+                       target_year: int = None, target_month: int = None,
+                       shared_filter: Optional[bool] = None) -> dict:
     """Return totals for 6 consecutive months.
 
     If *target_year*/*target_month* are given the target month is placed at the
     penultimate position (index 4 of 6).  Otherwise the current month is last.
     """
+    receipts = _apply_shared_filter(receipts, shared_filter)
     month_keys = []
 
     if target_year is not None and target_month is not None:
@@ -52,7 +61,9 @@ def get_monthly_totals(receipts: List[Receipt], tx_type: str = "expense",
     return totals
 
 
-def get_category_totals(receipts: List[Receipt], tx_type: str = "expense") -> dict:
+def get_category_totals(receipts: List[Receipt], tx_type: str = "expense",
+                        shared_filter: Optional[bool] = None) -> dict:
+    receipts = _apply_shared_filter(receipts, shared_filter)
     totals: dict = {}
     for r in receipts:
         if r.transaction_type != tx_type:
@@ -66,11 +77,13 @@ def get_category_totals(receipts: List[Receipt], tx_type: str = "expense") -> di
 def get_category_monthly_totals(receipts: List[Receipt], category_id: str,
                                 tx_type: str = "expense",
                                 target_year: int = None,
-                                target_month: int = None) -> dict:
+                                target_month: int = None,
+                                shared_filter: Optional[bool] = None) -> dict:
     """Return monthly totals for a specific category over 6 consecutive months.
 
     The target month is placed at the penultimate position (index 4 of 6).
     """
+    receipts = _apply_shared_filter(receipts, shared_filter)
     month_keys = []
 
     if target_year is not None and target_month is not None:
@@ -108,8 +121,10 @@ def get_category_monthly_totals(receipts: List[Receipt], category_id: str,
 
 
 def get_receipts_with_category(receipts: List[Receipt], category_id: str,
-                               tx_type: str = "expense") -> List[Receipt]:
+                               tx_type: str = "expense",
+                               shared_filter: Optional[bool] = None) -> List[Receipt]:
     """Return receipts that contain at least one item in the given category."""
+    receipts = _apply_shared_filter(receipts, shared_filter)
     result = []
     for r in receipts:
         if r.transaction_type != tx_type:
@@ -125,7 +140,9 @@ def get_receipt_category_total(receipt: Receipt, category_id: str) -> float:
     return sum(item.price * scale for item in receipt.items if item.category == category_id)
 
 
-def get_summary(receipts: List[Receipt]) -> dict:
+def get_summary(receipts: List[Receipt],
+                shared_filter: Optional[bool] = None) -> dict:
+    receipts = _apply_shared_filter(receipts, shared_filter)
     income   = sum(r.effective_total for r in receipts if r.transaction_type == "income")
     expenses = sum(r.effective_total for r in receipts if r.transaction_type == "expense")
     return {"income": income, "expenses": expenses, "balance": income - expenses}

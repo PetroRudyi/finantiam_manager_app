@@ -35,7 +35,10 @@
     "categories_title": "КАТЕГОРІЇ",
     "no_data": "Немає даних",
     "top_categories": "ТОП КАТЕГОРІЙ",
-    "other_categories": "Всі інші категорії"
+    "other_categories": "Всі інші категорії",
+    "filter_all": "Всі",
+    "filter_shared": "Спільні",
+    "filter_personal": "Персональні"
   },
   "category_detail": {
     "trend_title": "ТРЕНД ПО МІСЯЦЯХ",
@@ -56,7 +59,8 @@
     "currency": "Валюта",
     "api_key_not_set": "API ключ не налаштований",
     "ai_processing": "AI: обробка…",
-    "upload_photo": "Завантажити фото чеку (AI)"
+    "upload_photo": "Завантажити фото чеку (AI)",
+    "shared_expense": "Спільна витрата"
   },
   "item_editor": {
     "name": "Назва",

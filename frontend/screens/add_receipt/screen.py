@@ -56,6 +56,7 @@ class AddReceiptScreen(ft.Column):
         self._currency = r.currency if r else self.app_state.settings.default_currency
         self._type = r.transaction_type if r else "expense"
         self._items: List[InvoiceItem] = list(r.items) if r else []
+        self._is_shared = r.is_shared if r else False
         self._ai_running = False
         self._ai_status_text = ""
 
@@ -99,6 +100,8 @@ class AddReceiptScreen(ft.Column):
             on_type_change=self._set_type,
             on_pick_ai_image=get_ai_click_handler(self, self._page_ref),
             page=self._page_ref,
+            is_shared=self._is_shared,
+            on_shared_change=self._set_shared,
         )
         form_container = self._form.build()
 
@@ -164,6 +167,11 @@ class AddReceiptScreen(ft.Column):
         self._rebuild_items()
         self._update_total()
 
+    def _set_shared(self, value: bool):
+        self._is_shared = value
+        self._build()
+        self.update()
+
     def _set_type(self, mode: str):
         self._type = mode
         self._build()
@@ -215,6 +223,7 @@ class AddReceiptScreen(ft.Column):
             business_name=self._form.shop_field.value.strip() or None,
             currency=receipt_currency,
             transaction_type=self._type,
+            is_shared=self._is_shared,
             items=self._items,
             exchange_rate=rate,
             base_currency=base_currency,

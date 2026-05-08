@@ -12,9 +12,11 @@ from frontend.screens.dashboard.line_chart import build_line_chart
 
 
 def build_bar_chart(receipts: List[Receipt], mode: str,
-                    year: int, month: int, base_currency: str) -> ft.Container:
+                    year: int, month: int, base_currency: str,
+                    shared_filter=None) -> ft.Container:
     totals = backend.get_monthly_totals(
         receipts, mode, target_year=year, target_month=month,
+        shared_filter=shared_filter,
     )
     chart_color = t.RED if mode == "expense" else t.BLUE
 

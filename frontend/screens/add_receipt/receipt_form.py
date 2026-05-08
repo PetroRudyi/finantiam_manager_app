@@ -34,7 +34,9 @@ class ReceiptForm:
                  on_currency_change: Callable[[str], None],
                  on_type_change: Callable[[str], None],
                  on_pick_ai_image,
-                 page: ft.Page):
+                 page: ft.Page,
+                 is_shared: bool = False,
+                 on_shared_change: Callable[[bool], None] = None):
         self._date = date
         self._business = business
         self._currency = currency
@@ -46,6 +48,8 @@ class ReceiptForm:
         self._on_type_change = on_type_change
         self._on_pick_ai_image = on_pick_ai_image
         self._page = page
+        self._is_shared = is_shared
+        self._on_shared_change = on_shared_change
 
     def build(self) -> ft.Container:
         _lbl = ft.TextStyle(size=scaled(FONT_SM), color=t.TEXT_DIMMER, font_family="monospace")
@@ -91,6 +95,25 @@ class ReceiptForm:
         type_row = TypeToggle(self._tx_type, on_change=self._on_type_change,
                               style="outlined")
 
+        shared_checkbox = ft.Container(
+            content=ft.Row([
+                ft.Container(
+                    width=scaled(22), height=scaled(22),
+                    border_radius=scaled(4),
+                    bgcolor=t.ACCENT if self._is_shared else "transparent",
+                    border=t.border_all(1.5, t.ACCENT if self._is_shared else t.BORDER),
+                    alignment=ft.Alignment(0, 0),
+                    content=ft.Text("✓", size=scaled(14), color=t.WHITE,
+                                    weight=ft.FontWeight.W_600) if self._is_shared else None,
+                    on_click=self._toggle_shared,
+                    ink=True,
+                ),
+                ft.Icon(ft.Icons.PEOPLE_OUTLINE, size=scaled(18), color=t.TEXT_DIMMER),
+                ft.Text(tr("receipt_form.shared_expense"), size=scaled(FONT_SM_MD),
+                        color=t.TEXT, font_family="monospace"),
+            ], spacing=scaled(8), vertical_alignment=ft.CrossAxisAlignment.CENTER),
+        )
+
         status_text = self._ai_status_text
         if not self._has_api_key:
             status_text = tr("receipt_form.api_key_not_set")
@@ -123,10 +146,16 @@ class ReceiptForm:
                 ft.Row([date_block, self.time_field], spacing=scaled(FORM_GAP)),
                 ft.Row([self.shop_field, self.currency_field], spacing=scaled(FORM_GAP)),
                 type_row,
+                shared_checkbox,
                 self.ai_btn,
             ], spacing=scaled(FORM_GAP)),
             padding=t.pad_sym(horizontal=scaled(PAD_PAGE_H), vertical=scaled(FORM_PAD_V)),
         )
+
+    def _toggle_shared(self, e):
+        self._is_shared = not self._is_shared
+        if self._on_shared_change:
+            self._on_shared_change(self._is_shared)
 
     # ── AI button content (plain row / marquee) ──────────────
 

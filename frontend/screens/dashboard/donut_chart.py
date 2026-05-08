@@ -30,8 +30,9 @@ _COLOR_PCT = "#c0c0ce"    # light gray for percentage text
 
 
 def build_donut_chart(receipts: List[Receipt], mode: str,
-                      settings: AppSettings) -> ft.Container:
-    cat_totals_ids = backend.get_category_totals(receipts, mode)
+                      settings: AppSettings,
+                      shared_filter=None) -> ft.Container:
+    cat_totals_ids = backend.get_category_totals(receipts, mode, shared_filter=shared_filter)
     cat_totals = {
         settings.get_category_name(cid): val for cid, val in cat_totals_ids.items()
     }

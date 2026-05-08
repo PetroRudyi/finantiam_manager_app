@@ -50,6 +50,7 @@ class Receipt(BaseModel):
     # currency зберігає ID / код валюти (з дефолтного конфігу)
     currency: str = DEFAULT_CURRENCY
     transaction_type: str = "expense"   # "expense" | "income"
+    is_shared: bool = False
     items: List[InvoiceItem] = Field(default_factory=list)
 
     # Курс валют: конвертація receipt.currency → base_currency

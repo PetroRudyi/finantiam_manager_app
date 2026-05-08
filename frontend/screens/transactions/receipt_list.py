@@ -170,12 +170,20 @@ def _receipt_row(receipt: Receipt, selected_ids: Set[str], app_state,
     else:
         amount_str = t.format_amount(receipt.total, sign=True, currency=receipt.currency)
 
+    name_controls = [
+        ft.Text(receipt.business_name or tr("transactions.receipt"), size=scaled(FONT_LG),
+                color=t.TEXT, weight=ft.FontWeight.W_500,
+                overflow=ft.TextOverflow.ELLIPSIS),
+    ]
+    if receipt.is_shared:
+        name_controls.append(
+            ft.Icon(ft.Icons.PEOPLE_OUTLINE, size=scaled(14), color=t.TEXT_DIMMER))
+
     row_content = ft.Container(
         content=ft.Row([
             ft.Column([
-                ft.Text(receipt.business_name or tr("transactions.receipt"), size=scaled(FONT_LG),
-                        color=t.TEXT, weight=ft.FontWeight.W_500,
-                        overflow=ft.TextOverflow.ELLIPSIS),
+                ft.Row(name_controls, spacing=scaled(4),
+                       vertical_alignment=ft.CrossAxisAlignment.CENTER),
                 ft.Text(sub_text, size=scaled(FONT_SM), color=t.TEXT_DIMMER),
             ], spacing=scaled(GAP_XS), expand=True),
             ft.Text(amount_str, size=scaled(AMOUNT_FONT), color=color,

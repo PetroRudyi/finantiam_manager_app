@@ -19,8 +19,9 @@ from frontend.screens.dashboard.sizes import (
 
 def build_top_categories(receipts: List[Receipt], mode: str,
                          settings: AppSettings,
-                         on_category_click=None) -> ft.Column:
-    cat_totals_ids = backend.get_category_totals(receipts, mode)
+                         on_category_click=None,
+                         shared_filter=None) -> ft.Column:
+    cat_totals_ids = backend.get_category_totals(receipts, mode, shared_filter=shared_filter)
     cat_totals = {
         settings.get_category_name(cid): val for cid, val in cat_totals_ids.items()
     }

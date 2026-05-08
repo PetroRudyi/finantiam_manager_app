@@ -35,7 +35,10 @@
     "categories_title": "CATEGORIES",
     "no_data": "No data",
     "top_categories": "TOP CATEGORIES",
-    "other_categories": "Other categories"
+    "other_categories": "Other categories",
+    "filter_all": "All",
+    "filter_shared": "Shared",
+    "filter_personal": "Personal"
   },
   "category_detail": {
     "trend_title": "MONTHLY TREND",
@@ -56,7 +59,8 @@
     "currency": "Currency",
     "api_key_not_set": "API key not configured",
     "ai_processing": "AI: processing…",
-    "upload_photo": "Upload receipt photo (AI)"
+    "upload_photo": "Upload receipt photo (AI)",
+    "shared_expense": "Shared expense"
   },
   "item_editor": {
     "name": "Name",
